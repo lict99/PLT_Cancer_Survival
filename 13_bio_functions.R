@@ -30,9 +30,9 @@ if (file.exists("13/ncbi_snp.RData")) {
   save(ncbi_snp, file = "13/ncbi_snp.RData")
 }
 
-genelist <- ncbi_snp$gene %>% 
-  strsplit("/", fixed = TRUE) %>% 
-  unlist() %>% 
+genelist <- ncbi_snp$gene %>%
+  strsplit("/", fixed = TRUE) %>%
+  unlist() %>%
   bitr(
     "SYMBOL",
     "ENTREZID",
@@ -50,7 +50,7 @@ go <- enrichGO(
 kegg <- enrichKEGG(
   genelist$ENTREZID,
   "hsa"
-) %>% 
+) %>%
   setReadable(
     "org.Hs.eg.db",
     keyType = "ENTREZID"

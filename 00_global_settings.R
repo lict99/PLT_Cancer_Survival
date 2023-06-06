@@ -186,4 +186,3 @@ save(
   run_Cox_loop,
   file = "00/functions.RData"
 )
-list.files("")
