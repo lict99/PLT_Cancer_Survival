@@ -176,6 +176,25 @@ run_Cox_loop <- function(mlagtime,
   return(list)
 }
 
+extract_loop_data <- function(loop_data, target) {
+  ls <- list()
+  for (i in names(loop_data)) {
+    smr <- loop_data[[i]] %>%
+      lapply(summary) %>%
+      sapply(
+        function(x) {
+          data.frame(
+            target = target,
+            covars = ,
+            icd_codes = ,
+          )
+        }
+      )
+  }
+
+  ls[[i]] <- x
+}
+
 # data saving -------------------------------------------------------------
 
 save(date_end, file = "00/end_of_follow-up_time.RData")
