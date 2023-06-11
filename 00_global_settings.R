@@ -186,12 +186,11 @@ extract_loop_data <- function(loop_data, target) {
           data.frame(
             target = target,
             covars = ,
-            icd_codes = ,
-          )
+            icd_codes =
+            )
         }
       )
   }
-
   ls[[i]] <- x
 }
 
