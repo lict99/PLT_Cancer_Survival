@@ -12,6 +12,7 @@ date_end <- as.Date("2021-07-01")
 ## cancer ICD codes
 ICD_incl <- list(
   All_sites = "^C[0-8][0-9]|^C9[0-7]|^1[4-9][0-9]|^20[0-8]",
+  # Secondary_solid_tumor = "^C7[89]",
   Female_breast = "^C50|^174" %>%
     set_attr("sex", "female"),
   Lung = "^C3[34]|^162",

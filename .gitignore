@@ -78,6 +78,5 @@ Temporary Items
 
 # Just code
 /**/
-*.Rproj
-archive_*
-deprec_*
+archive*
+deprec*

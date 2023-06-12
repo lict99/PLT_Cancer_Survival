@@ -6,13 +6,17 @@ library(openxlsx)
 
 load("00/cancer_ICD_codes_with_attr.RData")
 load("01/whole_cancer_data_for_Cox.RData")
-load("00/functions.RData")
+# load("00/functions.RData")
 
 dir.create("02", FALSE)
 
 # Cox regression ----------------------------------------------------------
 
-multi_lag <- c(0, 365.25 / 2, 365.25)
+multi_lag <- list(
+  c(0, Inf),
+  c(365.25 / 2, Inf),
+  c(365.25, Inf)
+)
 
 multi_var1 <- c(
   "platelet_per_100",
@@ -62,3 +66,5 @@ platelet400_uni_Cox <- run_Cox_loop(
 )
 
 # data arrangement --------------------------------------------------------
+
+
