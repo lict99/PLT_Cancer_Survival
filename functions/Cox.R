@@ -12,7 +12,7 @@ extract_Cox_data <- function(
     lagtime_col = "lag_time",
     lagtime = NULL,
     ICD_codes = cancer_ICD_codes) {
-  if (!is.numeric(lagtime) && length(lagtime) != 2) {
+  if (!is.numeric(lagtime) || length(lagtime) != 2) {
     stop("Lag time window is not two numbers!")
   }
   list <- lapply(
@@ -71,20 +71,72 @@ run_Cox_per_lag <- function(
 ## extract summary table from run_Cox_per_lag() call
 extract_smr_data <- function(
     run_data,
-    target = "platelet") {
+    target) {
   list <- lapply(
     run_data,
     function(x) {
-      zph_p <- x[["zph"]]["GLOBAL", "p"]
       smr <- x[["smr"]]
-      df <- data.frame()
+      data.frame(
+        n = smr[["n"]],
+        nevent = smr[["nevent"]],
+        covars = rownames(smr[["conf.int"]]) %>%
+          extract(!grepl(target, .)) %>%
+          paste(collapse = " | "),
+        target = rownames(smr[["conf.int"]]) %>%
+          extract(grepl(target, .)),
+        HR = smr[["conf.int"]] %>%
+          extract(grepl(target, rownames(.)), "exp(coef)"),
+        lower.95 = smr[["conf.int"]] %>%
+          extract(grepl(target, rownames(.)), "lower .95"),
+        upper.95 = smr[["conf.int"]] %>%
+          extract(grepl(target, rownames(.)), "upper .95"),
+        p = smr[["coefficients"]] %>%
+          extract(grepl(target, rownames(.)), "Pr(>|z|)"),
+        zph_p = tryCatch(x[["zph"]]["GLOBAL", "p"], error = function(...) NA)
+      )
     }
   )
+  df <- data.frame()
+  for (i in seq_along(list)) {
+    dfi <- data.frame(cancer_site = names(list)[i]) %>%
+      cbind(list[[i]])
+    df <- rbind(df, dfi)
+  }
+  df
 }
 
 ## run Cox regression for multiple lag time values
-run_Cox_loop <- function(mlagtime) {
-  extract_Cox_data() %>%
-    run_Cox_per_lag() %>%
-    extract_smr_data()
+run_Cox_loop <- function(
+    mlagtime,
+    vars,
+    target,
+    data_list = whole_cancer_data,
+    lagtime_col = "lag_time",
+    ICD_codes = cancer_ICD_codes,
+    futime_col = "fu_time",
+    event_col = "cancer_death",
+    eventcode = 1) {
+  list <- list()
+  for (i in seq_along(mlagtime)) {
+    nm <- paste(
+      "lagtime_",
+      min(mlagtime[[i]]), "_", max(mlagtime[[i]]),
+      collapse = ""
+    )
+    list[[nm]] <- extract_Cox_data(
+      data_list = data_list,
+      vars = vars,
+      lagtime_col = lagtime_col,
+      lagtime = mlagtime[[i]],
+      ICD_codes = ICD_codes
+    ) %>%
+      run_Cox_per_lag(
+        futime_col = futime_col,
+        event_col = event_col,
+        eventcode = eventcode
+      ) %>%
+      extract_smr_data(target = target)
+  }
+  list
 }
+sprintf()

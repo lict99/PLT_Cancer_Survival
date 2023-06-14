@@ -40,9 +40,14 @@ platelet_per_100_multi_Cox <- extract_Cox_data(
   vars = vars_per_100,
   lagtime = multi_lag[[1]]
 ) %>%
-  run_Cox_per_lag()
+  run_Cox_per_lag() %>%
+  extract_smr_data()
 
-platelet300_multi_Cox
+platelet300_multi_Cox <- run_Cox_loop(
+  mlagtime = multi_lag,
+  vars = vars_300,
+  target = "platelet"
+)
 
 platelet400_multi_Cox
 
