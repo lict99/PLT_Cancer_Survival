@@ -18,7 +18,7 @@ multi_lag <- list(
   c(365.25, Inf)
 )
 
-multi_var1 <- c(
+vars_per_100 <- c(
   "platelet_per_100",
   "age",
   "sex",
@@ -27,44 +27,30 @@ multi_var1 <- c(
   "alcohol_status",
   "bmi",
   "TDI",
-  "race"
+  "race",
+  "fu_time",
+  "cancer_death"
 )
 
-multi_var2 <- multi_var1 %>% inset(1, "platelet_300")
-multi_var3 <- multi_var1 %>% inset(1, "platelet_400")
+vars_300 <- vars_per_100 %>% inset(1, "platelet_300")
+vars_400 <- vars_per_100 %>% inset(1, "platelet_400")
 
 ## multivariate
-platelet_per_100_multi_Cox <- run_Cox_loop(
-  mlagtime = multi_lag,
-  vars = multi_var1
-)
+platelet_per_100_multi_Cox <- extract_Cox_data(
+  vars = vars_per_100,
+  lagtime = multi_lag[[1]]
+) %>%
+  run_Cox_per_lag()
 
-platelet300_multi_Cox <- run_Cox_loop(
-  mlagtime = multi_lag,
-  vars = multi_var2
-)
+platelet300_multi_Cox
 
-platelet400_multi_Cox <- run_Cox_loop(
-  mlagtime = multi_lag,
-  vars = multi_var3
-)
+platelet400_multi_Cox
 
 ## univariate
-platelet_per_100_uni_Cox <- run_Cox_loop(
-  mlagtime = multi_lag,
-  vars = "platelet_per_100"
-)
+platelet_per_100_uni_Cox
 
-platelet300_uni_Cox <- run_Cox_loop(
-  mlagtime = multi_lag,
-  vars = "platelet_300"
-)
+platelet300_uni_Cox
 
-platelet400_uni_Cox <- run_Cox_loop(
-  mlagtime = multi_lag,
-  vars = "platelet_400"
-)
+platelet400_uni_Cox
 
 # data arrangement --------------------------------------------------------
-
-
