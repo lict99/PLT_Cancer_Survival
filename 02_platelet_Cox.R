@@ -6,7 +6,7 @@ library(openxlsx)
 
 load("00/cancer_ICD_codes_with_attr.RData")
 load("01/whole_cancer_data_for_Cox.RData")
-# load("00/functions.RData")
+source("functions/Cox.R")
 
 dir.create("02", FALSE)
 
@@ -36,12 +36,11 @@ vars_300 <- vars_per_100 %>% inset(1, "platelet_300")
 vars_400 <- vars_per_100 %>% inset(1, "platelet_400")
 
 ## multivariate
-platelet_per_100_multi_Cox <- extract_Cox_data(
+platelet_per_100_multi_Cox <- run_Cox_loop(
+  mlagtime = multi_lag,
   vars = vars_per_100,
-  lagtime = multi_lag[[1]]
-) %>%
-  run_Cox_per_lag() %>%
-  extract_smr_data()
+  target = "platelet"
+)
 
 platelet300_multi_Cox <- run_Cox_loop(
   mlagtime = multi_lag,
@@ -49,13 +48,35 @@ platelet300_multi_Cox <- run_Cox_loop(
   target = "platelet"
 )
 
-platelet400_multi_Cox
+platelet400_multi_Cox <- run_Cox_loop(
+  mlagtime = multi_lag,
+  vars = vars_400,
+  target = "platelet"
+)
 
 ## univariate
-platelet_per_100_uni_Cox
+platelet_per_100_uni_Cox <- run_Cox_loop(
+  mlagtime = multi_lag,
+  vars = c("platelet_per_100", "fu_time", "cancer_death"),
+  target = "platelet"
+)
 
-platelet300_uni_Cox
+platelet300_uni_Cox <- run_Cox_loop(
+  mlagtime = multi_lag,
+  vars = c("platelet_300", "fu_time", "cancer_death"),
+  target = "platelet"
+)
 
-platelet400_uni_Cox
+platelet400_uni_Cox <- run_Cox_loop(
+  mlagtime = multi_lag,
+  vars = c("platelet_400", "fu_time", "cancer_death"),
+  target = "platelet"
+)
 
 # data arrangement --------------------------------------------------------
+
+for (i in ls(pattern = "platelet")) {
+  write.xlsx(
+    get(i), paste0("./02/", i, ".xlsx"), TRUE
+  )
+}

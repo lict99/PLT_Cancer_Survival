@@ -12,7 +12,7 @@ date_end <- as.Date("2021-07-01")
 ## cancer ICD codes
 ICD_incl <- list(
   All_sites = "^C[0-8][0-9]|^C9[0-7]|^1[4-9][0-9]|^20[0-8]",
-  Secondary_solid = "^C7[89]",
+  Secondary = "^C7[7-9]",
   Female_breast = "^C50|^174" %>%
     set_attr("sex", "female"),
   Lung = "^C3[34]|^162",
@@ -63,7 +63,9 @@ ICD_incl <- list(
 ## cancer ICD codes excluding some types of cancers
 ICD_excl <- list(
   E_nonmelanoma_skin = "^C44|^173",
-  E_lymphoid_haematopoietic = "^C8[1-9]|^C9[0-6]|^20[0-8]"
+  E_lymphoid_haematopoietic = "^C8[1-9]|^C9[0-6]|^20[0-8]",
+  E_secondary = "^C7[7-9]",
+  E_lymph_and_secondary = "^C7[7-9]|^C8[1-9]|^C9[0-6]|^20[0-8]"
 ) %>%
   lapply(X = ., FUN = `attr<-`, which = "incl", value = FALSE)
 

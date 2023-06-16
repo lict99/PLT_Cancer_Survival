@@ -124,19 +124,18 @@ run_Cox_loop <- function(
       collapse = ""
     )
     list[[nm]] <- extract_Cox_data(
-      data_list = data_list,
-      vars = vars,
-      lagtime_col = lagtime_col,
+      data_list,
+      vars,
+      lagtime_col,
       lagtime = mlagtime[[i]],
-      ICD_codes = ICD_codes
+      ICD_codes
     ) %>%
       run_Cox_per_lag(
-        futime_col = futime_col,
-        event_col = event_col,
-        eventcode = eventcode
+        futime_col,
+        event_col,
+        eventcode
       ) %>%
-      extract_smr_data(target = target)
+      extract_smr_data(target)
   }
   list
 }
-sprintf()

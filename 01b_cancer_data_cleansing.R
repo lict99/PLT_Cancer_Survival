@@ -1,4 +1,3 @@
-
 # env settings ------------------------------------------------------------
 
 library(magrittr)
@@ -19,7 +18,7 @@ diag_per_cancer <- lapply(
   function(x) {
     if (attr(x, "incl") == TRUE) {
       subset(UKb_diagnosis_cancer, grepl(x, ICD_diagnosis))
-    } else if(attr(x, "incl") == FALSE) {
+    } else if (attr(x, "incl") == FALSE) {
       subset(UKb_diagnosis_cancer, !grepl(x, ICD_diagnosis))
     } else {
       NA
@@ -39,7 +38,7 @@ death_per_cancer <- lapply(
   function(x) {
     if (attr(x, "incl") == TRUE) {
       subset(UKb_death_cancer, grepl(x, ICD10_death))
-    } else if(attr(x, "incl") == FALSE) {
+    } else if (attr(x, "incl") == FALSE) {
       subset(UKb_death_cancer, !grepl(x, ICD10_death))
     } else {
       NA
@@ -49,33 +48,34 @@ death_per_cancer <- lapply(
 
 # index of diagnosis to death ---------------------------------------------
 
-death_fu_end <- UKb_death[, -3] %>% 
-  extract(order(use_series(., eid), use_series(., date_death)), ) %>% 
+death_fu_end <- UKb_death[, -3] %>%
+  extract(order(use_series(., eid), use_series(., date_death)), ) %>%
   extract(!duplicated(use_series(., eid)), )
 
 cancer_diag_to_death <- list()
 for (i in names(cancer_ICD_codes)) {
-  diag_i <- diag_per_cancer[[i]] %>% 
-    extract(order(use_series(., eid), use_series(., date_diagnosis)), ) %>% 
-    extract(!duplicated(use_series(., eid)), -2) %>% 
+  diag_i <- diag_per_cancer[[i]] %>%
+    extract(order(use_series(., eid), use_series(., date_diagnosis)), ) %>%
+    extract(!duplicated(use_series(., eid)), -2) %>%
     set_colnames(c("eid", "date_cancer_diagnosis"))
-  
-  death_i <- death_per_cancer[[i]] %>% 
-    extract(order(use_series(., eid), use_series(., date_death)), ) %>% 
-    extract(!duplicated(use_series(., eid)), -3) %>% 
+
+  death_i <- death_per_cancer[[i]] %>%
+    extract(order(use_series(., eid), use_series(., date_death)), ) %>%
+    extract(!duplicated(use_series(., eid)), -3) %>%
     set_colnames(c("eid", "date_cancer_death"))
-  
+
   cancer_diag_to_death[[i]] <- merge(
-    diag_i, death_i, by = "eid", all.x = TRUE
-  ) %>% 
-    merge(death_fu_end, by = "eid", all.x = TRUE) %>% 
+    diag_i, death_i,
+    by = "eid", all.x = TRUE
+  ) %>%
+    merge(death_fu_end, by = "eid", all.x = TRUE) %>%
     transform(
       cancer_death = ifelse(is.na(date_cancer_death), 0, 1),
       fu_end = ifelse(
-        is.na(date_death), 
-        as.character(date_end), 
+        is.na(date_death),
+        as.character(date_end),
         as.character(date_death)
-      ) %>% 
+      ) %>%
         as.Date()
     )
 }
@@ -87,13 +87,21 @@ cancer_data_Cox <- lapply(
   }
 )
 
-whole_cancer_data <- cancer_data_Cox %>% 
+whole_cancer_data <- cancer_data_Cox %>%
   lapply(
     function(x) {
       transform(
         x,
-        lag_time = difftime(date_cancer_diagnosis, date_attending, units = "days"),
-        fu_time = difftime(fu_end, date_cancer_diagnosis, units = "days"),
+        lag_time = difftime(
+          date_cancer_diagnosis,
+          date_attending,
+          units = "days"
+        ),
+        fu_time = difftime(
+          fu_end,
+          date_cancer_diagnosis,
+          units = "days"
+        ),
         platelet_per_100 = platelet / 100,
         platelet_300 = ifelse(platelet >= 300, "YES", "NO") %>% factor(),
         platelet_400 = ifelse(platelet >= 400, "YES", "NO") %>% factor()

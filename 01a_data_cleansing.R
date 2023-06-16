@@ -64,9 +64,12 @@ gc()
 
 ## combination of data regarding diagnosis
 ICD_diagnoses <- rbind(
-  Date_cancer2[, c(1, 5, 2)] %>% set_colnames(c("eid", "diagnosis", "date_of_diagnosis")),
-  diagnosis_ICD10_2 %>% set_colnames(c("eid", "diagnosis", "date_of_diagnosis")),
-  diagnosis_ICD9_2 %>% set_colnames(c("eid", "diagnosis", "date_of_diagnosis"))
+  Date_cancer2[, c(1, 5, 2)] %>%
+    set_colnames(c("eid", "diagnosis", "date_of_diagnosis")),
+  diagnosis_ICD10_2 %>%
+    set_colnames(c("eid", "diagnosis", "date_of_diagnosis")),
+  diagnosis_ICD9_2 %>%
+    set_colnames(c("eid", "diagnosis", "date_of_diagnosis"))
 ) %>%
   extract(
     order(
