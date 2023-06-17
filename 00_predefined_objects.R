@@ -6,9 +6,6 @@ dir.create("00", FALSE)
 
 # predefined objects ----
 
-## end of follow-up time
-date_end <- as.Date("2021-07-01")
-
 ## cancer ICD codes
 ICD_incl <- list(
   All_sites = "^C[0-8][0-9]|^C9[0-7]|^1[4-9][0-9]|^20[0-8]",
@@ -72,7 +69,53 @@ ICD_excl <- list(
 ## combination of all ICD codes
 cancer_ICD_codes <- c(ICD_incl, ICD_excl)
 
+## full cancer names
+cancer_names <- list(
+  All_sites = "All sites",
+  Secondary = "Secondary malignant neoplasm",
+  Female_breast = "Female breast",
+  Lung = "Lung",
+  Colorectum = "Colorectum",
+  Prostate = "Prostate",
+  Nonmelanoma_of_skin = "Nonmelanoma of skin",
+  Stomach = "Stomach",
+  Liver = "Liver",
+  Cervix_uteri = "Cervix uteri",
+  Esophagus = "Esophagus",
+  Thyroid = "Thyroid",
+  Bladder = "Bladder",
+  Non_Hodgkin_lymphoma = "Non-Hodgkin lymphoma",
+  Pancreas = "Pancreas",
+  Leukemia = "Leukemia",
+  Kidney = "Kidney",
+  Corpus_uteri = "Corpus uteri",
+  Lip_oral_cavity = "Lip, oral cavity",
+  Melanoma_of_skin = "Melanoma of skin",
+  Ovary = "Ovary",
+  Brain_nervous_system = "Brain, nervous system",
+  Larynx = "Larynx",
+  Multiple_myeloma = "Multiple myeloma",
+  Nasopharynx = "Nasopharynx",
+  Gallbladder = "Gallbladder",
+  Oropharynx = "Oropharynx",
+  Hypopharynx = "Hypopharynx",
+  Hodgkin_lymphoma = "Hodgkin lymphoma",
+  Testis = "Testis",
+  Salivary_glands = "Salivary glands",
+  Vulva = "Vulva",
+  Penis = "Penis",
+  Kaposi_sarcoma = "Kaposi sarcoma",
+  Mesothelioma = "Mesothelioma",
+  Vagina = "Vagina",
+  E_nonmelanoma_skin = "All sites excluding nonmelanoma skin",
+  E_lymphoid_haematopoietic =
+    "All sites excluding lymphoid, haematopoietic and related tissue",
+  E_secondary = "All sites excluding Secondary malignant neoplasm",
+  E_lymph_and_secondary =
+    "All sites excluding lymphoid, haematopoietic and related tissue and secondary malignant neoplasm"
+)
+
 # data saving ----
 
-save(date_end, file = "00/end_of_follow-up_time.RData")
+save(cancer_names, file = "00/cancer_names.RData")
 save(cancer_ICD_codes, file = "00/cancer_ICD_codes_with_attr.RData")

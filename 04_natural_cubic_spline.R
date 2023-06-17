@@ -1,5 +1,14 @@
 # env settings ------------------------------------------------------------
 
+library(magrittr)
+library(survival)
+library(Hmisc)
+library(smoothHR)
+library(lmtest)
+library(ggplot2)
+library(ggsci)
+library(scales)
+
 load("01/whole_cancer_data_for_Cox.RData")
 load("00/cancer_ICD_codes_with_attr.RData")
 source("functions/Cox_regression.R")

@@ -1,15 +1,5 @@
-# env settings ----
+# HR estimates ----
 
-library(magrittr)
-library(survival)
-library(Hmisc)
-library(smoothHR)
-library(lmtest)
-library(ggplot2)
-library(ggsci)
-library(scales)
-
-# HR estimates calculation ----
 cal_hr <- function(data) {
   if (any(grepl("sex", colnames(data)))) {
     fit <- coxph(
@@ -62,6 +52,8 @@ cal_hr <- function(data) {
     lrtest = lrtest(fit2, fit)[2, "Pr(>Chisq)"]
   )
 }
+
+# graph created by ggpplot2 ----
 
 geom_hr <- function(data) {
   colors <- pal_nejm(palette = c("default"), alpha = 1)(8)

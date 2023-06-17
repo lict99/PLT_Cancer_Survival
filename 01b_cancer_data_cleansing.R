@@ -4,7 +4,9 @@ library(magrittr)
 
 load("01/UKB_all_info.RData")
 load("00/cancer_ICD_codes_with_attr.RData")
-load("00/end_of_follow-up_time.RData")
+
+# end of follow-up time ---------------------------------------------------
+date_end <- as.Date("2021-07-01")
 
 # cancer diagnosis --------------------------------------------------------
 

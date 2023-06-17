@@ -1,8 +1,3 @@
-# env settings ----
-
-library(magrittr)
-library(survival)
-
 # functions used in Cox proportional hazard regression ----
 
 ## extract data by vars and filter by "sex"

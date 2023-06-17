@@ -1,5 +1,7 @@
 # env settings ------------------------------------------------------------
 
+library(magrittr)
+library(survival)
 library(openxlsx)
 
 load("00/cancer_ICD_codes_with_attr.RData")
