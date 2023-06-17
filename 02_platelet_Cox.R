@@ -1,12 +1,10 @@
 # env settings ------------------------------------------------------------
 
-library(magrittr)
-library(survival)
 library(openxlsx)
 
 load("00/cancer_ICD_codes_with_attr.RData")
 load("01/whole_cancer_data_for_Cox.RData")
-source("functions/Cox.R")
+source("functions/Cox_regression.R")
 
 dir.create("02", FALSE)
 
@@ -77,6 +75,6 @@ platelet400_uni_Cox <- run_Cox_loop(
 
 for (i in ls(pattern = "platelet")) {
   write.xlsx(
-    get(i), paste0("./02/", i, ".xlsx"), TRUE
+    get(i), paste0("02/", i, ".xlsx"), TRUE
   )
 }
