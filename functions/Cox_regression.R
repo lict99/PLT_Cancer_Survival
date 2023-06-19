@@ -32,6 +32,14 @@ extract_Cox_data <- function(
       }
     }
   }
+  if (!is.element("sex", vars)) {
+    list <- lapply(
+      list,
+      function(x) {
+        x[, colnames(x) != "sex", drop = FALSE]
+      }
+    )
+  }
   list
 }
 
@@ -87,7 +95,11 @@ extract_smr_data <- function(
           extract(grepl(target, rownames(.)), "upper .95"),
         p = smr[["coefficients"]] %>%
           extract(grepl(target, rownames(.)), "Pr(>|z|)"),
-        zph_p = tryCatch(x[["zph"]]["GLOBAL", "p"], error = function(...) NA)
+        zph_p_target = tryCatch(
+          x[["zph"]] %>%
+            extract(grepl(target, rownames(.)), "p"),
+          error = function(...) NA
+        )
       )
     }
   )

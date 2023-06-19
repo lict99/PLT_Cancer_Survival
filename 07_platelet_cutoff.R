@@ -1,4 +1,3 @@
-
 # env settings ------------------------------------------------------------
 
 library(cutoff)
@@ -14,7 +13,7 @@ tidy_data_dia_after_att <- transform(
   futime = as.numeric(Date_end - Date_of_diagnosis)
 )
 
-data1 <- tidy_data_dia_after_att[, c("futime", "OS", "Platelet")] %>% 
+data1 <- tidy_data_dia_after_att[, c("futime", "OS", "Platelet")] %>%
   na.omit()
 
 cutoff <- cox(
@@ -23,14 +22,13 @@ cutoff <- cox(
   y = "OS",
   x = "Platelet",
   cut.numb = 1,
-  n.per=0.25,
-  y.per=0.10
+  n.per = 0.25,
+  y.per = 0.10
 )
 
 cutoff2 <- surv_cutpoint(
-  data1, 
+  data1,
   "futime",
   "OS",
   "Platelet"
 )
-

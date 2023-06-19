@@ -11,6 +11,7 @@ library(scales)
 
 load("01/whole_cancer_data_for_Cox.RData")
 load("00/cancer_ICD_codes_with_attr.RData")
+load("00/cancer_names.RData")
 source("functions/Cox_regression.R")
 source("functions/natural_cubic_spline.R")
 
@@ -25,26 +26,23 @@ vars <- c(
   "asprin", "smoking_status", "alcohol_status", "bmi", "TDI", "race"
 )
 
-data <- extract_Cox_data(lagtime = c(0, Inf), vars = vars)
-
-hr_smth <- lapply(data, function(x) try(cal_hr(x), silent = TRUE))
+hr_smth <- lapply(
+  extract_Cox_data(lagtime = c(0, Inf), vars = vars),
+  function(x) try(cal_hr(x), silent = TRUE)
+)
 
 # plotting ----------------------------------------------------------------
 
 plot_list <- lapply(hr_smth, function(x) try(geom_hr(x), silent = TRUE)) %>%
-  extract(., which(sapply(., is.list)))
-
-# mplot <- plot_grid(
-#   plotlist = plot_list,
-#   align = "none",
-#   ncol = sqrt(length(plot_list)) %>% ceiling(),
-#   labels = names(plot_list) %>%
-#     gsub("_", " ", ., fixed = TRUE) %>%
-#     gsub("E ", "Excluding ", ., fixed = TRUE),
-#   label_fontface = "plain",
-#   hjust = 0,
-#   vjust = 1.1,
-#   label_x = 0.1
-# )
-
-# save_plot("04/rcs_plot_lag0.pdf", mplot, base_height = 30)
+  extract(., which(sapply(., is.list))) %>%
+  {
+    list <- list()
+    for (i in names(.)) {
+      list[[i]] <- extract2(., i) +
+        labs(
+          title = cancer_names[[i]],
+          caption = "The reference value is the median of platelet counts"
+        )
+    }
+    list
+  }

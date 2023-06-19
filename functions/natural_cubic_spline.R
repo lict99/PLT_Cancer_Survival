@@ -69,7 +69,12 @@ geom_hr <- function(data) {
   col_ci <- "black"
   p1 <- ggplot() +
     geom_ribbon(
-      aes(x = dst$x, ymin = min(dst_y_rsc), ymax = dst_y_rsc, fill = "Density"),
+      aes(
+        x = dst$x,
+        ymin = min(dst_y_rsc),
+        ymax = dst_y_rsc,
+        fill = "Density"
+      ),
       color = col_dst
     ) +
     geom_hline(yintercept = 1, color = "gray") +
@@ -91,25 +96,25 @@ geom_hr <- function(data) {
     ) +
     annotate(
       "text",
-      x = max(point$platelet),
+      x = max(dst$x),
       y = 0.3,
       # y = ceiling(max(dst_y_rsc)),
       label = ifelse(
         p < 0.001,
-        "p-value < 0.001",
-        paste("p-value", "=", round(p, 3))
+        paste("p-value =", sprintf("%.3e", p)),
+        paste("p-value =", sprintf("%.3f", p))
       ),
-      hjust = 0.8
+      hjust = 1
     ) +
     scale_x_continuous(
-      name = expression(paste("Platelet Count (", 10^9, "/L)"))
+      name = expression(paste("Platelet Counts (", 10^9, "/L)"))
     ) +
     scale_y_continuous(
       breaks = seq(0, ceiling(hr_lmt[2]), by = 1),
       name = "Hazard Ratio",
       sec.axis = sec_axis(
         trans = ~ rescale(., dst_lmt, c(0, max(.))),
-        name = "Density of Platelet Count"
+        name = "Density of Platelet Counts"
       )
     ) +
     scale_color_manual(
@@ -126,7 +131,7 @@ geom_hr <- function(data) {
       values = c(alpha(col_dst, 0.8))
     ) +
     coord_cartesian(
-      ylim = c(0, ceiling(hr_lmt[2]) + 0.1)
+      ylim = c(0, ceiling(hr_lmt[2]))
     ) +
     theme_classic() +
     theme(
