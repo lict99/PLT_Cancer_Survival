@@ -29,7 +29,7 @@ vars_per_100 <- c(
   "TDI",
   "race",
   "fu_time",
-  "cancer_death"
+  "fu_event"
 )
 
 vars_300 <- vars_per_100 %>% inset(1, "platelet_300")
@@ -37,6 +37,7 @@ vars_400 <- vars_per_100 %>% inset(1, "platelet_400")
 
 ## multivariate
 platelet_per_100_multi_Cox <- run_Cox_loop(
+  data_list = whole_cancer_data[["OS"]],
   mlagtime = multi_lag,
   vars = vars_per_100,
   target = "platelet"
@@ -57,19 +58,19 @@ platelet400_multi_Cox <- run_Cox_loop(
 ## univariate
 platelet_per_100_uni_Cox <- run_Cox_loop(
   mlagtime = multi_lag,
-  vars = c("platelet_per_100", "fu_time", "cancer_death"),
+  vars = c("platelet_per_100", "fu_time", "fu_event"),
   target = "platelet"
 )
 
 platelet300_uni_Cox <- run_Cox_loop(
   mlagtime = multi_lag,
-  vars = c("platelet_300", "fu_time", "cancer_death"),
+  vars = c("platelet_300", "fu_time", "fu_event"),
   target = "platelet"
 )
 
 platelet400_uni_Cox <- run_Cox_loop(
   mlagtime = multi_lag,
-  vars = c("platelet_400", "fu_time", "cancer_death"),
+  vars = c("platelet_400", "fu_time", "fu_event"),
   target = "platelet"
 )
 

@@ -20,14 +20,18 @@ dir.create("04", FALSE)
 # calculation -------------------------------------------------------------
 
 vars <- c(
-  "fu_time", "cancer_death",
+  "fu_time", "fu_event",
   "platelet", "age",
   "sex",
   "asprin", "smoking_status", "alcohol_status", "bmi", "TDI", "race"
 )
 
 hr_smth <- lapply(
-  extract_Cox_data(lagtime = c(0, Inf), vars = vars),
+  extract_Cox_data(
+    data_list = whole_cancer_data[["OS"]],
+    lagtime = c(0, Inf),
+    vars = vars
+  ),
   function(x) try(cal_hr(x), silent = TRUE)
 )
 

@@ -3,7 +3,7 @@
 cal_hr <- function(data) {
   if (any(grepl("sex", colnames(data)))) {
     fit <- coxph(
-      formula = Surv(fu_time, cancer_death == 1) ~
+      formula = Surv(fu_time, fu_event == 1) ~
         rcspline.eval(platelet, nk = 3, inclx = TRUE) + sex +
         age + asprin + smoking_status + alcohol_status + bmi + TDI + race,
       data = data,
@@ -12,7 +12,7 @@ cal_hr <- function(data) {
     )
   } else {
     fit <- coxph(
-      formula = Surv(fu_time, cancer_death == 1) ~
+      formula = Surv(fu_time, fu_event == 1) ~
         rcspline.eval(platelet, nk = 3, inclx = TRUE) +
         age + asprin + smoking_status + alcohol_status + bmi + TDI + race,
       data = data,
@@ -21,7 +21,7 @@ cal_hr <- function(data) {
     )
   }
   fit2 <- coxph(
-    Surv(fu_time, cancer_death == 1) ~ .,
+    Surv(fu_time, fu_event == 1) ~ .,
     data = data,
     x = TRUE,
     singular.ok = TRUE

@@ -2,7 +2,7 @@
 
 ## extract data by vars and filter by "sex"
 extract_Cox_data <- function(
-    data_list = whole_cancer_data,
+    data_list,
     vars,
     lagtime_col = "lag_time",
     lagtime = NULL,
@@ -47,7 +47,7 @@ extract_Cox_data <- function(
 run_Cox_per_lag <- function(
     ext_data,
     futime_col = "fu_time",
-    event_col = "cancer_death",
+    event_col = "fu_event",
     eventcode = 1) {
   fit <- lapply(
     ext_data,
@@ -117,11 +117,11 @@ run_Cox_loop <- function(
     mlagtime,
     vars,
     target,
-    data_list = whole_cancer_data,
+    data_list,
     lagtime_col = "lag_time",
     ICD_codes = cancer_ICD_codes,
     futime_col = "fu_time",
-    event_col = "cancer_death",
+    event_col = "fu_event",
     eventcode = 1) {
   list <- list()
   for (i in seq_along(mlagtime)) {
