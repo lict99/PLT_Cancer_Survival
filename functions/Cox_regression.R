@@ -26,7 +26,7 @@ extract_Cox_data <- function(
       if (attr(ICD_codes[[i]], "sex") == "male") {
         list[[i]] <- (list[[i]][, "sex"] == "Male") %>%
           extract(list[[i]], ., vars[vars != "sex"], drop = FALSE)
-      } else if (attr(ICD_codes[[i]], "sex") == "Female") {
+      } else if (attr(ICD_codes[[i]], "sex") == "female") {
         list[[i]] <- (list[[i]][, "sex"] == "Female") %>%
           extract(list[[i]], ., vars[vars != "sex"], drop = FALSE)
       }
@@ -99,7 +99,8 @@ extract_smr_data <- function(
           x[["zph"]] %>%
             extract(grepl(target, rownames(.)), "p"),
           error = function(...) NA
-        )
+        ) %>%
+          ifelse(length(.) == 1, ., NA)
       )
     }
   )
@@ -123,14 +124,15 @@ run_Cox_loop <- function(
     futime_col = "fu_time",
     event_col = "fu_event",
     eventcode = 1) {
-  list <- list()
+  df <- data.frame()
   for (i in seq_along(mlagtime)) {
-    nm <- paste(
-      "lagtime_",
-      min(mlagtime[[i]]), "_", max(mlagtime[[i]]),
-      collapse = ""
+    lag <- paste(
+      min(mlagtime[[i]]),
+      "to",
+      max(mlagtime[[i]]),
+      "day(s)"
     )
-    list[[nm]] <- extract_Cox_data(
+    dfi <- extract_Cox_data(
       data_list,
       vars,
       lagtime_col,
@@ -142,7 +144,9 @@ run_Cox_loop <- function(
         event_col,
         eventcode
       ) %>%
-      extract_smr_data(target)
+      extract_smr_data(target) %>%
+      transform(lag_time = lag)
+    df <- rbind(df, dfi)
   }
-  list
+  df
 }

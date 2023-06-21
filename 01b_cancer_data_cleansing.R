@@ -16,6 +16,14 @@ whole_cancer_data <- list(
   ),
   CSS = extract_survival(
     death_codes = cancer_ICD_codes
+  ),
+  death_by_blood_and_circulation = extract_survival(
+    death_codes = lapply(
+      cancer_ICD_codes,
+      function(x) {
+        "^D5[0-35-9]|^D[68][0-9]|^D7[0-7]|^I|^28[0-9]|^39[0-9]|^4[0-5][0-9]"
+      }
+    )
   )
 )
 
