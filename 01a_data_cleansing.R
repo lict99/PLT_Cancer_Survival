@@ -91,7 +91,7 @@ gc()
 
 data_merged <- merge(
   Basic2,
-  asprin,
+  aspirin,
   by = "eid",
   all = TRUE
 ) %>%
@@ -136,7 +136,7 @@ UKb_baseline <- data_merged %>%
     race = race %>%
       ifelse(equals(., "Do not know"), NA, .) %>%
       ifelse(equals(., "Prefer not to answer"), NA, .),
-    asprin = factor(asprin, levels = c(0, 1), labels = c("NO", "YES")),
+    aspirin = factor(aspirin, levels = c(0, 1), labels = c("NO", "YES")),
     date_attending = as.Date(date_attending),
     smoking_status = factor(
       smoking_status,

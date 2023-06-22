@@ -5,7 +5,7 @@ cal_hr <- function(data) {
     fit <- coxph(
       formula = Surv(fu_time, fu_event == 1) ~
         rcspline.eval(platelet, nk = 3, inclx = TRUE) + sex +
-        age + asprin + smoking_status + alcohol_status + bmi + TDI + race,
+        age + aspirin + smoking_status + alcohol_status + bmi + TDI + race,
       data = data,
       x = TRUE,
       singular.ok = TRUE
@@ -14,7 +14,7 @@ cal_hr <- function(data) {
     fit <- coxph(
       formula = Surv(fu_time, fu_event == 1) ~
         rcspline.eval(platelet, nk = 3, inclx = TRUE) +
-        age + asprin + smoking_status + alcohol_status + bmi + TDI + race,
+        age + aspirin + smoking_status + alcohol_status + bmi + TDI + race,
       data = data,
       x = TRUE,
       singular.ok = TRUE

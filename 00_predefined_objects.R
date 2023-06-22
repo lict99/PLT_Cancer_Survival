@@ -78,6 +78,7 @@ cancer_names <- list(
 )
 
 # data saving ----
+
 if (identical(names(cancer_ICD_codes), names(cancer_names))) {
   save(cancer_names, file = "00/cancer_names.RData")
   save(cancer_ICD_codes, file = "00/cancer_ICD_codes_with_attr.RData")

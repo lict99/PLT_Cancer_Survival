@@ -12,15 +12,13 @@ dir.create("05", FALSE)
 
 # Cox regression for diagnosis before attending ----
 
-lag <- list(
-  c(-Inf, 0)
-)
+lag <- list(c(-Inf, 0))
 
 vars_per_100 <- c(
   "platelet_per_100",
   "age",
   "sex",
-  "asprin",
+  "aspirin",
   "smoking_status",
   "alcohol_status",
   "bmi",

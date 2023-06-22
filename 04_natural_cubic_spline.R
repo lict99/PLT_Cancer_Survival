@@ -24,7 +24,7 @@ vars <- c(
   "fu_time", "fu_event",
   "platelet", "age",
   "sex",
-  "asprin", "smoking_status", "alcohol_status", "bmi", "TDI", "race"
+  "aspirin", "smoking_status", "alcohol_status", "bmi", "TDI", "race"
 )
 
 plot_list <- list()
@@ -58,3 +58,7 @@ for (i in names(whole_cancer_data)) {
       list
     }
 }
+
+# plots saving ----
+
+save(plot_list, file = "04/natural_cubic_spline_plots.RData")
