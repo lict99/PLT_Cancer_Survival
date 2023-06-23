@@ -13,11 +13,12 @@ load("01/whole_cancer_data_for_Cox.RData")
 load("00/cancer_ICD_codes_with_attr.RData")
 load("00/cancer_names.RData")
 source("functions/Cox_regression.R")
-source("functions/natural_cubic_spline.R")
+source("functions/natural_spline.R")
 
 dir.create("04", FALSE)
 
 # calculation and plotting ----
+
 lag <- c(0, Inf)
 
 vars <- c(

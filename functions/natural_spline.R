@@ -53,7 +53,7 @@ cal_hr <- function(data) {
   )
 }
 
-# graph created by ggpplot2 ----
+# graph created by ggplot2 ----
 
 geom_hr <- function(data) {
   colors <- pal_nejm(palette = c("default"), alpha = 1)(8)

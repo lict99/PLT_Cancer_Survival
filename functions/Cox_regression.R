@@ -2,7 +2,7 @@
 
 ## extract data by vars and filter by "sex"
 extract_Cox_data <- function(
-    data_list,
+    data_list, # a list nested with different diseases data
     vars,
     lagtime_col = "lag_time",
     lagtime = NULL,
