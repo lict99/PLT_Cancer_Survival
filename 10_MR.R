@@ -1,4 +1,3 @@
-
 # env settings ------------------------------------------------------------
 
 library(magrittr)
@@ -19,7 +18,7 @@ if (file.exists("10/allele_frequency_of_EUR_in_LDlink.RData")) {
   load("10/allele_frequency_of_EUR_in_LDlink.RData")
 } else {
   snp_eaf <- sapply(
-    union(pc_snps$SNP, Cox_snp$All_sites$snp),
+    union(pc_snps$SNP, Cox_snp[["OS"]][["All_sites"]][, "snp"]),
     function(x) {
       message("finding haplotype for ", x)
       try(
@@ -40,7 +39,7 @@ if (file.exists("10/allele_frequency_of_EUR_in_LDlink.RData")) {
 pc_snps_ieu <- subset(
   pc_snps,
   is.element(SNP, ld_reflookup(rsid = SNP, pop = "EUR"))
-) %>%  
+) %>%
   format_data(
     type = "exposure",
     snp_col = "SNP",
@@ -50,11 +49,14 @@ pc_snps_ieu <- subset(
     other_allele_col = "reference.allele",
     pval_col = "P",
     samplesize_col = "n"
-  ) %>%  
+  ) %>%
   clump_data(pop = "EUR")
 
 # find proxies
-snp_need_prx <- setdiff(pc_snps_ieu$SNP, Cox_snp$All_sites$snp)
+snp_need_prx <- setdiff(
+  pc_snps_ieu$SNP,
+  Cox_snp[["OS"]][["All_sites"]][, "snp"]
+)
 
 if (file.exists("10/snp_proxies.RData")) {
   load("10/snp_proxies.RData")
@@ -80,19 +82,19 @@ if (file.exists("10/snp_proxies.RData")) {
 snp_prx_fil <- lapply(
   snp_prx,
   function(x) {
-    subset(x, R2 >= 0.8) %>% 
-      subset(is.element(RS_Number, Cox_snp$All_sites$snp)) %>% 
+    subset(x, R2 >= 0.8) %>%
+      subset(is.element(RS_Number, Cox_snp[["OS"]][["All_sites"]][, "snp"])) %>%
       extract(which.max(use_series(., R2)), )
   }
 )
 
 # substitute proxies
-pc_snps_prx <- pc_snps %>% 
+pc_snps_prx <- pc_snps %>%
   subset(is.element(SNP, pc_snps_ieu$SNP))
 for (i in snp_need_prx) {
   prx_sub <- snp_prx_fil[[i]][, "RS_Number"]
-  a_info <- snp_prx_fil[[i]][, "Correlated_Alleles"] %>% 
-    strsplit("", fixed = TRUE) %>% 
+  a_info <- snp_prx_fil[[i]][, "Correlated_Alleles"] %>%
+    strsplit("", fixed = TRUE) %>%
     extract2(1)
   if (length(a_info) == 7) {
     if (all(pc_snps[pc_snps$SNP == i, c(2, 3)] == a_info[c(1, 5)])) {
@@ -138,53 +140,61 @@ pc_snps_exp <- format_data(
   pval_col = "P",
   samplesize_col = "n",
   eaf_col = "eaf"
-) %>% 
+) %>%
   clump_data(pop = "EUR")
 
-css_snp_out <- lapply(
-  Cox_snp,
-  function(x) {
-    if (any(x[, "p"] <= 5e-08, na.rm = TRUE)) {
-      message("p-value <= 5E-08 in outcome!")
+snp_out <- list()
+for (i in names(Cox_snp)) {
+  snp_out[[i]] <- lapply(
+    Cox_snp[[i]],
+    function(x) {
+      if (any(x[, "p"] <= 5e-08, na.rm = TRUE)) {
+        message("p-value <= 5E-08 in outcome!")
+      }
+      format_data(
+        dat = x,
+        type = "outcome",
+        phenotype_col = "phenotype",
+        snp_col = "snp",
+        beta_col = "coef",
+        se_col = "se",
+        eaf_col = "eaf",
+        effect_allele_col = "eff",
+        other_allele_col = "ref",
+        pval_col = "p",
+        samplesize_col = "n"
+      )
     }
-    format_data(
-      dat = x,
-      type = "outcome",
-      phenotype_col = "phenotype",
-      snp_col = "snp",
-      beta_col = "coef",
-      se_col = "se",
-      eaf_col = "eaf",
-      effect_allele_col = "eff",
-      other_allele_col = "ref",
-      pval_col = "p",
-      samplesize_col = "n"
-    )
-  }
-)
+  )
+}
 
-mr_data <- lapply(
-  css_snp_out,
-  function(x) {
-    harmonise_data(
-      exposure_dat = pc_snps_exp,
-      outcome_dat = x,
-      action = 2
-    )
-  }
-)
+mr_data <- list()
+for (i in names(snp_out)) {
+  mr_data[[i]] <- lapply(
+    snp_out[[i]],
+    function(x) {
+      harmonise_data(
+        exposure_dat = pc_snps_exp,
+        outcome_dat = x,
+        action = 2
+      )
+    }
+  )
+}
 
 # MR ----------------------------------------------------------------------
 
-mr_res <- lapply(
-  mr_data,
-  function(x) {
-    try(
-      mr(x) %>% 
-        generate_odds_ratios()
-    )
-  }
-)
+mr_res <- list()
+for (i in names(mr_data)) {
+  mr_res[[i]] <- lapply(
+    mr_data[[i]],
+    function(x) {
+      try(
+        mr(x) %>% generate_odds_ratios()
+      )
+    }
+  )
+}
 
 # data saving -------------------------------------------------------------
 

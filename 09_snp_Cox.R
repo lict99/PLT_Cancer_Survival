@@ -1,4 +1,3 @@
-
 # env settings ------------------------------------------------------------
 
 library(magrittr)
@@ -7,7 +6,7 @@ library(openxlsx)
 
 load("01/whole_cancer_data_for_Cox.RData")
 load("00/cancer_ICD_codes_with_attr.RData")
-load("00/functions.RData")
+source("functions/Cox_regression.R")
 
 ukb_snp_ind <- read.csv("src/SNP/UKb_snp_individual.csv")
 ukb_snp_ind_supp <- read.csv("src/SNP/UKb_snp_individual_supp.csv")
@@ -20,18 +19,18 @@ dir.create("09", FALSE)
 
 # data preprocessing ------------------------------------------------------
 
-snp_smr <- ukb_snp_sum %>% 
+snp_smr <- ukb_snp_sum %>%
   transform(
     affy = paste0("affy", affy_id),
     snp = paste0("rs", rs_id)
-  ) %>% 
-  subset(subset = is.element(snp, union(pc_snp[, 1], pc_snp_prx[, 1]))) %>% 
+  ) %>%
+  subset(subset = is.element(snp, union(pc_snp[, 1], pc_snp_prx[, 1]))) %>%
   subset(
     subset = is.element(
-      affy, 
+      affy,
       union(colnames(ukb_snp_ind), colnames(ukb_snp_ind_supp))
     )
-  ) %>% 
+  ) %>%
   transform(
     ref_allele = apply(
       ., 1,
@@ -59,14 +58,22 @@ snp_smr <- ukb_snp_sum %>%
     )
   )
 
-Cox_data <- extract_Cox_data(
-  vars = c("eid", "fu_time", "cancer_death", "age", "sex"),
-  lagtime = 0
+Cox_data <- lapply(
+  whole_cancer_data,
+  function(x) {
+    extract_Cox_data(
+      data_list = x,
+      vars = c("eid", "fu_time", "fu_event", "age", "sex"),
+      lagtime = c(0, Inf)
+    )
+  }
 )
+
+cancer_eid <- Cox_data[["OS"]][["All_sites"]][, "eid"]
 
 snp_ind_ca <- subset(
   merge(ukb_snp_ind, ukb_snp_ind_supp, by = "eid", all = TRUE),
-  is.element(eid, Cox_data$All_sites$eid)
+  is.element(eid, cancer_eid)
 )
 
 ## a safe process of substitution
@@ -96,56 +103,64 @@ for (i in snp_smr$affy) {
   snp_ind[, i] <- as.numeric(col_snp)
 }
 
-data_Cox_snp <- lapply(
-  Cox_data,
-  function(x) {merge(x, snp_ind, by = "eid", all.x = TRUE)}
-)
+data_Cox_snp <- list()
+for (i in names(Cox_data)) {
+  data_Cox_snp[[i]] <- lapply(
+    Cox_data[[i]],
+    function(x) {
+      merge(x, snp_ind, by = "eid", all.x = TRUE)
+    }
+  )
+}
 
 # Cox regression of SNP ---------------------------------------------------
 
-Cox_snp <- lapply(
-  data_Cox_snp,
-  function(x) {
-    snp_df <- data.frame()
-    for (i in snp_smr$affy) {
-      if (is.element("sex", colnames(x))) {
-        fml <- as.formula(
-          paste("Surv(fu_time, cancer_death == 1) ~ age + sex +", i)
+Cox_snp <- list()
+for (i in names(data_Cox_snp)) {
+  Cox_snp[[i]] <- lapply(
+    data_Cox_snp[[i]],
+    function(x) {
+      snp_df <- data.frame()
+      for (i in snp_smr$affy) {
+        if (is.element("se", colnames(x))) {
+          fml <- as.formula(
+            paste("Surv(fu_time, fu_time == 1) ~ age + sex +", i)
+          )
+          fit <- coxph(
+            fml,
+            data = x,
+            singular.ok = TRUE,
+            x = TRUE
+          )
+        } else {
+          fml <- as.formula(
+            paste("Surv(fu_time, fu_time == 1) ~ age +", i)
+          )
+          fit <- coxph(
+            fml,
+            data = x,
+            singular.ok = TRUE,
+            x = TRUE
+          )
+        }
+        smr <- summary(fit)
+        df <- data.frame(
+          affy = i,
+          snp = snp_smr[snp_smr$affy == i, "snp"],
+          ref = snp_smr[snp_smr$affy == i, "ref_allele"],
+          eff = snp_smr[snp_smr$affy == i, "eff_allele"],
+          coef = smr[["coefficients"]][i, "coef"],
+          se = smr[["coefficients"]][i, "se(coef)"],
+          p = smr[["coefficients"]][i, "Pr(>|z|)"],
+          n = fit[["n"]],
+          eaf = (sum(fit[["x"]][, i])) / (fit[["n"]] * 2)
         )
-        fit <- coxph(
-          fml,
-          data = x,
-          singular.ok = TRUE,
-          x = TRUE
-        )
-      } else {
-        fml <- as.formula(
-          paste("Surv(fu_time, cancer_death == 1) ~ age +", i)
-        )
-        fit <- coxph(
-          fml,
-          data = x,
-          singular.ok = TRUE,
-          x = TRUE
-        )
+        snp_df <- rbind(snp_df, df)
       }
-      smr <- summary(fit)
-      df <- data.frame(
-        affy = i,
-        snp = snp_smr[snp_smr$affy == i, "snp"],
-        ref = snp_smr[snp_smr$affy == i, "ref_allele"],
-        eff = snp_smr[snp_smr$affy == i, "eff_allele"],
-        coef = smr[["coefficients"]][i, "coef"],
-        se = smr[["coefficients"]][i, "se(coef)"],
-        p = smr[["coefficients"]][i, "Pr(>|z|)"],
-        n = fit[["n"]],
-        eaf = (sum(fit[["x"]][, i])) / (fit[["n"]] * 2)
-      )
-      snp_df <- rbind(snp_df, df)
+      snp_df
     }
-    return(snp_df)
-  }
-)
+  )
+}
 
 # data saving -------------------------------------------------------------
 
