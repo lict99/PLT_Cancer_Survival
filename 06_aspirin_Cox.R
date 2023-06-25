@@ -19,53 +19,50 @@ multi_lag <- list(
   c(365.25, Inf)
 )
 
-# vars_per_100 <- c(
-#   "platelet_per_100",
-#   "age",
-#   "sex",
-#   "aspirin",
-#   "smoking_status",
-#   "alcohol_status",
-#   "bmi",
-#   "TDI",
-#   "race",
-#   "fu_time",
-#   "fu_event"
-# )
+vars_aspirin <- c(
+  "platelet_per_100",
+  "age",
+  "sex",
+  "aspirin",
+  "smoking_status",
+  "alcohol_status",
+  "bmi",
+  "TDI",
+  "race",
+  "fu_time",
+  "fu_event"
+)
 
-# vars_300 <- vars_per_100 %>% inset(1, "platelet_300")
-# vars_400 <- vars_per_100 %>% inset(1, "platelet_400")
-
-# ## multivariate
-# platelet_per_100_multi <- lapply(
-#   whole_cancer_data,
-#   function(x) {
-#     run_Cox_loop(
-#       data_list = x,
-#       mlagtime = multi_lag,
-#       vars = vars_per_100,
-#       target = "platelet"
-#     )
-#   }
-# )
-
-## univariate
-aspirin_uni <- lapply(
+## model 1
+aspirin_m1 <- lapply(
   whole_cancer_data,
   function(x) {
     run_Cox_loop(
       data_list = x,
       mlagtime = multi_lag,
-      vars = c("aspirin", "fu_time", "fu_event"),
+      vars = c("aspirin", "age", "sex", "fu_time", "fu_event"),
       target = "aspirin"
     )
   }
 )
 
-# # data saving ----
+## model 2
+aspirin_m2 <- lapply(
+  whole_cancer_data,
+  function(x) {
+    run_Cox_loop(
+      data_list = x,
+      mlagtime = multi_lag,
+      vars = vars_aspirin,
+      target = "aspirin"
+    )
+  }
+)
 
-# for (i in ls(pattern = "platelet")) {
-#   write.xlsx(
-#     get(i), paste0("02/", i, ".xlsx"), TRUE
-#   )
-# }
+# data saving ----
+
+for (i in ls(pattern = "^aspirin")) {
+  write.xlsx(
+    get(i), paste0("06/", i, ".xlsx"), TRUE
+  )
+}

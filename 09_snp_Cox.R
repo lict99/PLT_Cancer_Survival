@@ -116,15 +116,15 @@ for (i in names(Cox_data)) {
 # Cox regression of SNP ---------------------------------------------------
 
 Cox_snp <- list()
-for (i in names(data_Cox_snp)) {
-  Cox_snp[[i]] <- lapply(
-    data_Cox_snp[[i]],
+for (j in names(data_Cox_snp)) {
+  Cox_snp[[j]] <- lapply(
+    data_Cox_snp[[j]],
     function(x) {
       snp_df <- data.frame()
       for (i in snp_smr$affy) {
-        if (is.element("se", colnames(x))) {
+        if (is.element("sex", colnames(x))) {
           fml <- as.formula(
-            paste("Surv(fu_time, fu_time == 1) ~ age + sex +", i)
+            paste("Surv(fu_time, fu_event == 1) ~ age + sex +", i)
           )
           fit <- coxph(
             fml,
@@ -134,7 +134,7 @@ for (i in names(data_Cox_snp)) {
           )
         } else {
           fml <- as.formula(
-            paste("Surv(fu_time, fu_time == 1) ~ age +", i)
+            paste("Surv(fu_time, fu_event == 1) ~ age +", i)
           )
           fit <- coxph(
             fml,

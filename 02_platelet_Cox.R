@@ -35,8 +35,8 @@ vars_per_100 <- c(
 vars_300 <- vars_per_100 %>% inset(1, "platelet_300")
 vars_400 <- vars_per_100 %>% inset(1, "platelet_400")
 
-## multivariate
-platelet_per_100_multi <- lapply(
+## model 2
+platelet_per_100_m2 <- lapply(
   whole_cancer_data,
   function(x) {
     run_Cox_loop(
@@ -48,7 +48,7 @@ platelet_per_100_multi <- lapply(
   }
 )
 
-platelet300_multi <- lapply(
+platelet300_m2 <- lapply(
   whole_cancer_data,
   function(x) {
     run_Cox_loop(
@@ -60,7 +60,7 @@ platelet300_multi <- lapply(
   }
 )
 
-platelet400_multi <- lapply(
+platelet400_m2 <- lapply(
   whole_cancer_data,
   function(x) {
     run_Cox_loop(
@@ -72,26 +72,26 @@ platelet400_multi <- lapply(
   }
 )
 
-## univariate
-platelet_per_100_uni <- lapply(
+## model 1
+platelet_per_100_m1 <- lapply(
   whole_cancer_data,
   function(x) {
     run_Cox_loop(
       data_list = x,
       mlagtime = multi_lag,
-      vars = c("platelet_per_100", "fu_time", "fu_event"),
+      vars = c("platelet_per_100", "age", "sex", "fu_time", "fu_event"),
       target = "platelet"
     )
   }
 )
 
-platelet300_uni <- lapply(
+platelet300_m1 <- lapply(
   whole_cancer_data,
   function(x) {
     run_Cox_loop(
       data_list = x,
       mlagtime = multi_lag,
-      vars = c("platelet_300", "fu_time", "fu_event"),
+      vars = c("platelet_300", "age", "sex", "fu_time", "fu_event"),
       target = "platelet"
     )
   }
@@ -103,7 +103,7 @@ platelet400_uni <- lapply(
     run_Cox_loop(
       data_list = x,
       mlagtime = multi_lag,
-      vars = c("platelet_400", "fu_time", "fu_event"),
+      vars = c("platelet_400", "age", "sex", "fu_time", "fu_event"),
       target = "platelet"
     )
   }
@@ -111,7 +111,7 @@ platelet400_uni <- lapply(
 
 # data saving ----
 
-for (i in ls(pattern = "platelet")) {
+for (i in ls(pattern = "^platelet")) {
   write.xlsx(
     get(i), paste0("02/", i, ".xlsx"), TRUE
   )
