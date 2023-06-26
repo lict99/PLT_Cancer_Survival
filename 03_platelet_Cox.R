@@ -97,7 +97,7 @@ platelet300_m1 <- lapply(
   }
 )
 
-platelet400_uni <- lapply(
+platelet400_m1 <- lapply(
   whole_cancer_data,
   function(x) {
     run_Cox_loop(
