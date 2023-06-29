@@ -61,7 +61,7 @@ aspirin_m2 <- lapply(
 
 # data saving ----
 
-for (i in ls(pattern = "^aspirin")) {
+for (i in ls(pattern = "^aspirin_m")) {
   write.xlsx(
     get(i), paste0("06/", i, ".xlsx"), TRUE
   )

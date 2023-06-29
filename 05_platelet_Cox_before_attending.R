@@ -69,7 +69,7 @@ platelet400_bam2 <- lapply(
 )
 
 ## model 1
-platelet_per_100_uni_ba <- lapply(
+platelet_per_100_bam1 <- lapply(
   whole_cancer_data,
   function(x) {
     run_Cox_loop(
@@ -81,7 +81,7 @@ platelet_per_100_uni_ba <- lapply(
   }
 )
 
-platelet300_uni_ba <- lapply(
+platelet300_bam1 <- lapply(
   whole_cancer_data,
   function(x) {
     run_Cox_loop(
@@ -93,7 +93,7 @@ platelet300_uni_ba <- lapply(
   }
 )
 
-platelet400_uni_ba <- lapply(
+platelet400_bam1 <- lapply(
   whole_cancer_data,
   function(x) {
     run_Cox_loop(
@@ -107,7 +107,7 @@ platelet400_uni_ba <- lapply(
 
 # data saving ----
 
-for (i in ls(pattern = "^platelet")) {
+for (i in ls(pattern = "^platelet.+_bam")) {
   write.xlsx(
     get(i), paste0("05/", i, ".xlsx"), TRUE
   )
