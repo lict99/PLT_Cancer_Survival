@@ -8,7 +8,7 @@ load("00/cancer_ICD_codes_with_attr.RData")
 load("01/whole_cancer_data_for_Cox.RData")
 source("functions/Cox_regression.R")
 
-dir.create("02", FALSE)
+dir.create("03", FALSE)
 
 # Cox regression ----
 
@@ -113,6 +113,6 @@ platelet400_m1 <- lapply(
 
 for (i in ls(pattern = "^platelet.+_m")) {
   write.xlsx(
-    get(i), paste0("02/", i, ".xlsx"), TRUE
+    get(i), paste0("03/", i, ".xlsx"), TRUE
   )
 }

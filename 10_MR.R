@@ -13,12 +13,15 @@ dir.create("10", FALSE)
 
 # data arrangement --------------------------------------------------------
 
+# snps in Cox regression
+snps_cox <- Cox_snp[["OS"]][["All_sites"]][, "snp"]
+
 # find allele frequency of EUR
 if (file.exists("10/allele_frequency_of_EUR_in_LDlink.RData")) {
   load("10/allele_frequency_of_EUR_in_LDlink.RData")
 } else {
   snp_eaf <- sapply(
-    union(pc_snps$SNP, Cox_snp[["OS"]][["All_sites"]][, "snp"]),
+    union(pc_snps$SNP, snps_cox),
     function(x) {
       message("finding haplotype for ", x)
       try(
@@ -55,7 +58,7 @@ pc_snps_ieu <- subset(
 # find proxies
 snp_need_prx <- setdiff(
   pc_snps_ieu$SNP,
-  Cox_snp[["OS"]][["All_sites"]][, "snp"]
+  snps_cox
 )
 
 if (file.exists("10/snp_proxies.RData")) {
@@ -83,7 +86,7 @@ snp_prx_fil <- lapply(
   snp_prx,
   function(x) {
     subset(x, R2 >= 0.8) %>%
-      subset(is.element(RS_Number, Cox_snp[["OS"]][["All_sites"]][, "snp"])) %>%
+      subset(is.element(RS_Number, snps_cox)) %>%
       extract(which.max(use_series(., R2)), )
   }
 )
@@ -124,7 +127,7 @@ pc_snps_eaf <- transform(
       } else {
         stop("Mismatch allele!")
       }
-      return(as.numeric(f))
+      as.numeric(f)
     }
   )
 )

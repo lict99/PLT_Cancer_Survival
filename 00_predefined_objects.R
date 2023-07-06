@@ -39,7 +39,7 @@ cancer_ICD_codes <- list(
   Hodgkin_lymphoma = "^C81|^201",
   # Anus = "", # merged to colorectum
   Mesothelioma = "^C45", # no ICD-9 codes exist
-  lymphoid_haematopoietic = "^C8[1-9]|^C9[0-6]|^20[0-8]",
+  Lymphoid_haematopoietic = "^C8[1-9]|^C9[0-6]|^20[0-8]",
   Secondary = "^C7[7-9]|^19[6-8]",
   E_lymphoid_haematopoietic = "^C[0-7][0-9]|^C80|^1[4-9][0-9]"
 )
@@ -71,7 +71,7 @@ cancer_names <- list(
   Gallbladder = "Gallbladder",
   Hodgkin_lymphoma = "Hodgkin lymphoma",
   Mesothelioma = "Mesothelioma",
-  lymphoid_haematopoietic = "Lymphoid, haematopoietic and related tissue",
+  Lymphoid_haematopoietic = "Lymphoid, haematopoietic and related tissue",
   Secondary = "Secondary malignant neoplasm",
   E_lymphoid_haematopoietic =
     "All sites excluding lymphoid, haematopoietic and related tissue"
