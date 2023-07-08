@@ -1,6 +1,8 @@
 # env settings ----
 
 library(magrittr)
+library(table1)
+library(openxlsx)
 
 load(file = "01/whole_cancer_data_for_Cox.RData")
 load(file = "00/cancer_ICD_codes_with_attr.RData")
@@ -21,6 +23,7 @@ vars_fct <- c(
   "race"
 )
 
+## compute manually
 bsl <- lapply(
   whole_cancer_data,
   function(x) {
@@ -29,7 +32,6 @@ bsl <- lapply(
       vars = c(
         vars_num,
         vars_fct,
-        "fu_time",
         "fu_event",
         "lag_time"
       ),
@@ -111,7 +113,49 @@ bsl <- lapply(
   }
 )
 
+## produce tables
+tables <- lapply(
+  whole_cancer_data,
+  function(x) {
+    extract_Cox_data(
+      data_list = x,
+      vars = c(
+        vars_num,
+        vars_fct,
+        "fu_event",
+        "lag_time"
+      ),
+      lagtime = c(-Inf, Inf)
+    ) %>%
+      lapply(
+        function(y) {
+          transform(
+            y,
+            lag_time = ifelse(
+              lag_time >= 0,
+              "lag_time >= 0",
+              "lag_time < 0"
+            ) %>%
+              factor(),
+            fu_event = factor(
+              fu_event,
+              levels = c(0, 1),
+              labels = c("Censored events", "Failure events")
+            )
+          ) %>%
+            table1(
+              ~ . | lag_time,
+              data = .,
+              overall = FALSE
+            ) %>%
+            as.data.frame()
+        }
+      )
+  }
+)
+
 # data saving ----
 
-capture.output(bsl, file = "02/baseline_stats_test.txt")
 save(bsl, file = "02/baseline_stats_test.RData")
+write.xlsx(tables[["OS"]], file = "02/table1_for_OS.xlsx")
+write.xlsx(tables[["CSS"]], file = "02/table1_for_CSS.xlsx")
