@@ -7,6 +7,7 @@ load("00/cancer_ICD_codes_with_attr.RData")
 source("functions/different_survival.R")
 
 # expiration of research ----
+
 date_end <- as.Date("2021-07-01")
 
 # extract different survival outcomes ----

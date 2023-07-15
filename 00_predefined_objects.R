@@ -9,6 +9,8 @@ dir.create("00", FALSE)
 ## cancer ICD codes
 cancer_ICD_codes <- list(
   All_sites = "^C[0-8][0-9]|^C9[0-7]|^1[4-9][0-9]|^20[0-8]",
+  E_lymphoid_haematopoietic = "^C[0-7][0-9]|^C80|^1[4-9][0-9]",
+  Lymphoid_haematopoietic = "^C8[1-9]|^C9[0-6]|^20[0-8]",
   Female_breast = "^C50|^174" %>%
     set_attr("sex", "female"),
   Lung = "^C3[34]|^162",
@@ -39,14 +41,15 @@ cancer_ICD_codes <- list(
   Hodgkin_lymphoma = "^C81|^201",
   # Anus = "", # merged to colorectum
   Mesothelioma = "^C45", # no ICD-9 codes exist
-  Lymphoid_haematopoietic = "^C8[1-9]|^C9[0-6]|^20[0-8]",
-  Secondary = "^C7[7-9]|^19[6-8]",
-  E_lymphoid_haematopoietic = "^C[0-7][0-9]|^C80|^1[4-9][0-9]"
+  Secondary = "^C7[7-9]|^19[6-8]"
 )
 
-## full cancer names
-cancer_names <- list(
+## full cancer sites
+cancer_sites <- list(
   All_sites = "All sites",
+  E_lymphoid_haematopoietic =
+    "All sites excluding lymphoid, haematopoietic and related tissue",
+  Lymphoid_haematopoietic = "Lymphoid, haematopoietic and related tissue",
   Female_breast = "Female breast",
   Lung = "Lung",
   Colorectum = "Colorectum",
@@ -71,16 +74,47 @@ cancer_names <- list(
   Gallbladder = "Gallbladder",
   Hodgkin_lymphoma = "Hodgkin lymphoma",
   Mesothelioma = "Mesothelioma",
-  Lymphoid_haematopoietic = "Lymphoid, haematopoietic and related tissue",
-  Secondary = "Secondary malignant neoplasm",
-  E_lymphoid_haematopoietic =
-    "All sites excluding lymphoid, haematopoietic and related tissue"
+  Secondary = "Secondary malignant neoplasm"
+)
+
+## full cancer names
+cancer_names <- list(
+  All_sites = "Pan-cancer",
+  E_lymphoid_haematopoietic = "Solid cancer",
+  Lymphoid_haematopoietic = "Hematologic cancer",
+  Female_breast = "Female breast cancer",
+  Lung = "Lung cancer",
+  Colorectum = "Colorectal cancer",
+  Prostate = "Prostate cancer",
+  Nonmelanoma_of_skin = "Nonmelanoma skin cancer",
+  Stomach = "Gastric cancer",
+  Head_and_neck = "Head and neck cancer",
+  Liver = "Liver cancer",
+  Cervix_uteri = "Cervical cancer",
+  Esophagus = "Esophageal cancer",
+  Thyroid = "Thyroid cancer",
+  Bladder = "Bladder cancer",
+  Non_Hodgkin_lymphoma = "Non-Hodgkin lymphoma",
+  Pancreas = "Pancreatic cancer",
+  Leukemia = "Leukemia",
+  Kidney = "Kidney cancer",
+  Corpus_uteri = "Endometrial cancer",
+  Melanoma_of_skin = "Melanoma skin cancer",
+  Ovary = "Ovarian cancer",
+  Brain_nervous_system = "Central nervous system cancer",
+  Multiple_myeloma = "Multiple myeloma",
+  Gallbladder = "Gallbladder cancer",
+  Hodgkin_lymphoma = "Hodgkin lymphoma",
+  Mesothelioma = "Mesothelioma",
+  Secondary = "Secondary cancer"
 )
 
 # data saving ----
 
-if (identical(names(cancer_ICD_codes), names(cancer_names))) {
+if (identical(names(cancer_ICD_codes), names(cancer_names)) &&
+  identical(names(cancer_ICD_codes), names(cancer_sites))) {
   save(cancer_names, file = "00/cancer_names.RData")
+  save(cancer_sites, file = "00/cancer_sites.RData")
   save(cancer_ICD_codes, file = "00/cancer_ICD_codes_with_attr.RData")
 } else {
   stop("Different cancer definitions!")

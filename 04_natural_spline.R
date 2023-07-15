@@ -63,3 +63,4 @@ for (i in names(whole_cancer_data)) {
 # plots saving ----
 
 save(plot_list, file = "04/natural_cubic_spline_plots.RData")
+load("04/natural_cubic_spline_plots.RData")
