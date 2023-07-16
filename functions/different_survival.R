@@ -90,7 +90,8 @@ extract_survival <- function(
         platelet_per_100 = platelet / 100,
         platelet_300 = ifelse(platelet >= 300, "YES", "NO") %>% factor(),
         platelet_400 = ifelse(platelet >= 400, "YES", "NO") %>% factor()
-      )
+      ) %>%
+      subset(fu_time >= 0) # delete cases with invalid follow-up time
   }
   list
 }
