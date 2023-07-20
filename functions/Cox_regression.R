@@ -101,7 +101,16 @@ extract_smr_data <- function(
           error = function(...) NA
         ) %>%
           ifelse(length(.) == 1, ., NA)
-      )
+      ) %>%
+        transform(
+          HR_f = paste0(
+            sprintf("%.2f", HR),
+            " (",
+            sprintf("%.2f", lower.95), "-", sprintf("%.2f", upper.95),
+            ")"
+          ),
+          p_f = ifelse(p < 0.001, sprintf("%.3e", p), sprintf("%.3f", p))
+        )
     }
   )
   df <- data.frame()
