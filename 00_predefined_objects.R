@@ -82,7 +82,7 @@ cancer_names <- list(
   All_sites = "Pan-cancer",
   E_lymphoid_haematopoietic = "Solid cancer",
   Lymphoid_haematopoietic = "Hematologic cancer",
-  Female_breast = "Female breast cancer",
+  Female_breast = "Breast cancer",
   Lung = "Lung cancer",
   Colorectum = "Colorectal cancer",
   Prostate = "Prostate cancer",
