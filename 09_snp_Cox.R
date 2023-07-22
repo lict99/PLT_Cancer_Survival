@@ -1,4 +1,4 @@
-# env settings ------------------------------------------------------------
+# env settings ----
 
 library(magrittr)
 library(survival)
@@ -17,7 +17,7 @@ pc_snp_prx <- read.xlsx("src/SNP/query_snp.xlsx", 1, colNames = FALSE)
 
 dir.create("09", FALSE)
 
-# data preprocessing ------------------------------------------------------
+# data preprocessing ----
 
 snp_smr <- ukb_snp_sum %>%
   transform(
@@ -113,7 +113,7 @@ for (i in names(Cox_data)) {
   )
 }
 
-# Cox regression of SNP ---------------------------------------------------
+# Cox regression of SNP ----
 
 Cox_snp <- list()
 for (j in names(data_Cox_snp)) {
@@ -162,7 +162,7 @@ for (j in names(data_Cox_snp)) {
   )
 }
 
-# data saving -------------------------------------------------------------
+# data saving ----
 
 save(snp_smr, file = "09/pc_snp_summary.RData")
 save(snp_ind_ca, file = "09/genotype_with_cancer.RData")
