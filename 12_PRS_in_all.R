@@ -80,7 +80,11 @@ prs_all <- data.frame(
     a %*% b
   })()
 ) %>%
-  merge(UKb_baseline[, c("eid", "platelet")], by = "eid", all.x = TRUE) %>%
+  merge(
+    UKb_baseline[, c("eid", "platelet", "age", "sex")],
+    by = "eid",
+    all.x = TRUE
+  ) %>%
   na.omit()
 
 # plotting ----
@@ -99,5 +103,17 @@ prs_u_plot <- gg_prs(
 
 # plots saving ----
 
-ggsave("12/weighted_PRS_in_all.pdf", prs_w_plot)
-ggsave("12/unweighted_PRS_in_all.pdf", prs_u_plot)
+ggsave(
+  "12/weighted_PRS_in_all.pdf",
+  prs_w_plot,
+  width = 13.4,
+  height = 9.91,
+  units = "in"
+)
+ggsave(
+  "12/unweighted_PRS_in_all.pdf",
+  prs_u_plot,
+  width = 13.4,
+  height = 9.91,
+  units = "in"
+)

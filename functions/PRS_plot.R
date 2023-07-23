@@ -4,7 +4,8 @@ gg_prs <- function(
     data,
     annotate = NULL,
     x_col,
-    y_col = "platelet") {
+    y_col = "platelet",
+    covars = c("age", "sex")) {
   ## calculation
   cor <- cor(
     data[, x_col],
@@ -26,12 +27,17 @@ gg_prs <- function(
 
 
   fit_smr <- lm(
-    as.formula(paste(y_col, "~", x_col)),
+    as.formula(
+      paste(
+        paste(y_col, "~", x_col),
+        paste(covars, collapse = "+"),
+        sep = "+"
+      )
+    ),
     data
   ) %>%
     summary()
 
-  r_sq <- fit_smr$r.squared %>% sprintf("%.3f", .)
   f <- fit_smr$fstatistic[1] %>% sprintf("%.3f", .)
   fv1 <- fit_smr$fstatistic[2]
   fv2 <- fit_smr$fstatistic[3]
@@ -126,8 +132,6 @@ gg_prs <- function(
           "Sample size = ", nrow(data),
           "\n",
           "Pearson r = ", cor, "; P-value = ", cor_p,
-          "\n",
-          "R-squared", " = ", r_sq,
           "\n",
           "F(", fv1, ", ", fv2, ") = ", f, "; P-value = ", fit_p,
           sep = ""
