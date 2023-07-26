@@ -6,10 +6,13 @@ library(TwoSampleMR)
 library(LDlinkR)
 library(openxlsx)
 
-load("09/Cox_regression_of_SNP.RData")
+load("00/cancer_names.RData")
+load("08/Cox_regression_of_SNP.RData")
 pc_snps <- read.xlsx("src/SNP/PC_SNPs.xlsx", 1)
+pheno_df <- read.xlsx("src/SNP/phenoscanner_confounder.xlsx", 1)
+confounder <- read.xlsx("src/SNP/phenoscanner_confounder.xlsx", 2)
 
-dir.create("10", FALSE)
+dir.create("09", FALSE)
 
 # data arrangement ----
 
@@ -17,8 +20,8 @@ dir.create("10", FALSE)
 snps_cox <- Cox_snp[["OS"]][["All_sites"]][, "snp"]
 
 # find allele frequency of EUR
-if (file.exists("10/allele_frequency_of_EUR_in_LDlink.RData")) {
-  load("10/allele_frequency_of_EUR_in_LDlink.RData")
+if (file.exists("09/allele_frequency_of_EUR_in_LDlink.RData")) {
+  load("09/allele_frequency_of_EUR_in_LDlink.RData")
 } else {
   snp_eaf <- sapply(
     union(pc_snps$SNP, snps_cox),
@@ -36,7 +39,7 @@ if (file.exists("10/allele_frequency_of_EUR_in_LDlink.RData")) {
     },
     simplify = FALSE
   )
-  save(snp_eaf, file = "10/allele_frequency_of_EUR_in_LDlink.RData")
+  save(snp_eaf, file = "09/allele_frequency_of_EUR_in_LDlink.RData")
 }
 
 pc_snps_ieu <- subset(
@@ -61,8 +64,8 @@ snp_need_prx <- setdiff(
   snps_cox
 )
 
-if (file.exists("10/snp_proxies.RData")) {
-  load("10/snp_proxies.RData")
+if (file.exists("09/snp_proxies.RData")) {
+  load("09/snp_proxies.RData")
 } else {
   snp_prx <- sapply(
     snp_need_prx,
@@ -78,7 +81,7 @@ if (file.exists("10/snp_proxies.RData")) {
     },
     simplify = FALSE
   )
-  save(snp_prx, file = "10/snp_proxies.RData")
+  save(snp_prx, file = "09/snp_proxies.RData")
 }
 
 # select proxies
@@ -132,43 +135,57 @@ pc_snps_eaf <- transform(
   )
 )
 
-pc_snps_exp <- format_data(
-  dat = pc_snps_eaf,
+pc_snps_exp_all <- format_data(
+  dat = transform(
+    pc_snps_eaf,
+    Phenotype = "platelet counts",
+    id = "PLT10^9/L"
+  ),
   type = "exposure",
   snp_col = "SNP",
+  phenotype_col = "Phenotype",
   beta_col = "Effect",
   se_col = "SE",
   effect_allele_col = "effect.allele",
   other_allele_col = "reference.allele",
   pval_col = "P",
   samplesize_col = "n",
-  eaf_col = "eaf"
+  eaf_col = "eaf",
+  id_col = "id"
 ) %>%
   clump_data(pop = "EUR")
 
+## confounder SNPs
+cfd_trait <- subset(confounder, confounder == 1)$trait
+cfd_snp <- subset(pheno_df, is.element(trait, cfd_trait))$snp %>% unique()
+
+## remove confounder SNPs
+pc_snps_exp <- subset(pc_snps_exp_all, !is.element(SNP, cfd_snp))
+
 snp_out <- list()
 for (i in names(Cox_snp)) {
-  snp_out[[i]] <- lapply(
-    Cox_snp[[i]],
-    function(x) {
-      if (any(x[, "p"] <= 5e-08, na.rm = TRUE)) {
-        stop("p-value <= 5E-08 in outcome!")
-      }
-      format_data(
-        dat = x,
-        type = "outcome",
-        phenotype_col = "phenotype",
-        snp_col = "snp",
-        beta_col = "coef",
-        se_col = "se",
-        eaf_col = "eaf",
-        effect_allele_col = "eff",
-        other_allele_col = "ref",
-        pval_col = "p",
-        samplesize_col = "n"
-      )
+  for (j in names(Cox_snp[[i]])) {
+    if (any(Cox_snp[[i]][[j]][, "p"] <= 5e-08, na.rm = TRUE)) {
+      stop("p-value <= 5E-08 in outcome!")
     }
-  )
+    snp_out[[i]][[j]] <- format_data(
+      dat = transform(
+        Cox_snp[[i]][[j]],
+        Phenotype = i,
+        id = cancer_names[[j]]
+      ),
+      type = "outcome",
+      phenotype_col = "Phenotype",
+      snp_col = "snp",
+      beta_col = "coef",
+      se_col = "se",
+      eaf_col = "eaf",
+      effect_allele_col = "eff",
+      other_allele_col = "ref",
+      pval_col = "p",
+      samplesize_col = "n"
+    )
+  }
 }
 
 mr_data <- lapply(
@@ -187,81 +204,6 @@ mr_data <- lapply(
   }
 )
 
-# MR ----
-
-mr_res <- lapply(
-  mr_data,
-  function(x) {
-    lapply(
-      x,
-      function(y) {
-        mr(
-          y,
-          method_list = c("mr_ivw", "mr_egger_regression", "mr_weighted_median")
-        ) %>%
-          generate_odds_ratios() %>%
-          transform(
-            OR_f = paste0(
-              sprintf("%.3f", or),
-              " (",
-              sprintf("%.3f", or_lci95), "-", sprintf("%.3f", or_uci95),
-              ")"
-            ),
-            p_f = ifelse(
-              pval < 0.001,
-              sprintf("%.3e", pval),
-              sprintf("%.3f", pval)
-            )
-          )
-      }
-    )
-  }
-)
-
-mr_hete <- lapply(
-  mr_data,
-  function(x) {
-    lapply(
-      x,
-      function(y) {
-        mr_heterogeneity(y)
-      }
-    )
-  }
-)
-
-mr_plei <- lapply(
-  mr_data,
-  function(x) {
-    lapply(
-      x,
-      function(y) {
-        mr_pleiotropy_test(y)
-      }
-    )
-  }
-)
-
-mr_loo_plot <- lapply(
-  mr_data,
-  function(x) {
-    lapply(
-      x,
-      function(y) {
-        z <- mr_leaveoneout(y) %>% mr_leaveoneout_plot()
-        z
-      }
-    )
-  }
-)
-
 # data saving ----
 
-save(mr_data, file = "10/MR_harmonised_data.RData")
-save(mr_res, file = "10/MR_results.RData")
-write.xlsx(mr_res[["OS"]], "10/MR_results_OS.xlsx", TRUE)
-write.xlsx(mr_res[["CSS"]], "10/MR_results_CSS.xlsx", TRUE)
-write.xlsx(mr_hete[["OS"]], "10/MR_heterogeneity_OS.xlsx", TRUE)
-write.xlsx(mr_hete[["CSS"]], "10/MR_heterogeneity_CSS.xlsx", TRUE)
-write.xlsx(mr_plei[["OS"]], "10/MR_pleiotropy_OS.xlsx", TRUE)
-write.xlsx(mr_plei[["CSS"]], "10/MR_pleiotropy_CSS.xlsx", TRUE)
+save(mr_data, file = "09/MR_harmonised_data.RData")

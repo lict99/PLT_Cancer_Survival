@@ -15,7 +15,7 @@ ukb_snp_sum <- read.delim("src/SNP/UKb_snp_summary.txt")
 pc_snp <- read.xlsx("src/SNP/PC_SNPs.xlsx", 1)
 pc_snp_prx <- read.xlsx("src/SNP/query_snp.xlsx", 1, colNames = FALSE)
 
-dir.create("09", FALSE)
+dir.create("08", FALSE)
 
 # data preprocessing ----
 
@@ -164,6 +164,6 @@ for (j in names(data_Cox_snp)) {
 
 # data saving ----
 
-save(snp_smr, file = "09/pc_snp_summary.RData")
-save(snp_ind_ca, file = "09/genotype_with_cancer.RData")
-save(Cox_snp, file = "09/Cox_regression_of_SNP.RData")
+save(snp_smr, file = "08/pc_snp_summary.RData")
+save(snp_ind_ca, file = "08/genotype_with_cancer.RData")
+save(Cox_snp, file = "08/Cox_regression_of_SNP.RData")
