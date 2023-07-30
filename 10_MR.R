@@ -2,12 +2,15 @@
 
 library(magrittr)
 library(TwoSampleMR)
+library(parallel)
+library(openxlsx)
 
 load("09/MR_harmonised_data.RData")
 
 dir.create("10", FALSE)
 
 set.seed(1)
+cl <- makeCluster(detectCores())
 
 # MR ----
 
@@ -42,6 +45,15 @@ mr_res <- lapply(
   }
 )
 
+x <- mapply(
+  function(x1, x2) {
+    z <- mr_scatter_plot(x1, x2)
+    z
+  },
+  mr_res[[2]],
+  mr_data[[2]]
+)
+
 mr_hete <- lapply(
   mr_data,
   function(x) {
@@ -69,14 +81,17 @@ mr_plei <- lapply(
 mr_presso <- lapply(
   mr_data,
   function(x) {
-    lapply(
-      x,
+    parLapply(
+      cl, x,
       function(y) {
+        library(TwoSampleMR)
+        set.seed(1)
         run_mr_presso(y)
       }
     )
   }
 )
+stopCluster(cl)
 
 mr_loo_plot <- lapply(
   mr_data,
@@ -94,6 +109,7 @@ mr_loo_plot <- lapply(
 # data saving ----
 
 save(mr_res, file = "10/MR_results.RData")
+save(mr_presso, file = "10/MR_presso.RData")
 write.xlsx(mr_res[["OS"]], "10/MR_results_OS.xlsx", TRUE)
 write.xlsx(mr_res[["CSS"]], "10/MR_results_CSS.xlsx", TRUE)
 write.xlsx(mr_hete[["OS"]], "10/MR_heterogeneity_OS.xlsx", TRUE)

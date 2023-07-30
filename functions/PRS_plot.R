@@ -4,8 +4,7 @@ gg_prs <- function(
     data,
     annotate = NULL,
     x_col,
-    y_col = "platelet",
-    covars = c("age", "sex")) {
+    y_col = "platelet") {
   ## calculation
   cor <- cor(
     data[, x_col],
@@ -22,18 +21,11 @@ gg_prs <- function(
   ) %>%
     extract2("p.value") %>%
     {
-      ifelse(is_less_than(., 0.001), sprintf("%.3e", .), sprintf("%.3f", .))
+      ifelse(is_less_than(., 0.001), "< 0.001", paste("=", sprintf("%.3f", .)))
     }
 
-
   fit_smr <- lm(
-    as.formula(
-      paste(
-        paste(y_col, "~", x_col),
-        paste(covars, collapse = "+"),
-        sep = "+"
-      )
-    ),
+    as.formula(paste(y_col, "~", x_col)),
     data
   ) %>%
     summary()
@@ -48,7 +40,7 @@ gg_prs <- function(
     lower.tail = FALSE
   ) %>%
     {
-      ifelse(is_less_than(., 0.001), sprintf("%.3e", .), sprintf("%.3f", .))
+      ifelse(is_less_than(., 0.001), "< 0.001", paste("=", sprintf("%.3f", .)))
     }
 
   ## plotting
@@ -124,18 +116,19 @@ gg_prs <- function(
     annotate(
       "text",
       x = max(data[, x_col]),
-      y = max(data$platelet),
-      label =
-        paste(
-          annotate,
-          "\n",
-          "Sample size = ", nrow(data),
-          "\n",
-          "Pearson r = ", cor, "; P-value = ", cor_p,
-          "\n",
-          "F(", fv1, ", ", fv2, ") = ", f, "; P-value = ", fit_p,
-          sep = ""
-        ),
+      y = max(data[, y_col]),
+      label = paste(
+        annotate,
+        "\n",
+        "Sample size = ", nrow(data),
+        "\n",
+        "Pearson r = ", cor, "; P-value ", cor_p,
+        "\n",
+        "R\u00b2 = ",
+        "\n",
+        "F(", fv1, ", ", fv2, ") = ", f, "; P-value ", fit_p,
+        sep = ""
+      ),
       hjust = 1,
       vjust = 1
     ) +

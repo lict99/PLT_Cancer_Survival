@@ -2,9 +2,11 @@
 
 library(magrittr)
 
+set.seed(1)
+
 # run R scripts ----
 
-r_files <- list.files(pattern = "^0[0-6].+R$") %>%
+r_files <- list.files(pattern = "^\\d\\d.+\\.R$") %>%
   sort()
 
 for (fs in r_files) {

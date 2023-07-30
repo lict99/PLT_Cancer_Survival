@@ -13,7 +13,7 @@ ukb_snp_ind_supp <- read.csv("src/SNP/UKb_snp_individual_supp.csv")
 ukb_snp_sum <- read.delim("src/SNP/UKb_snp_summary.txt")
 
 pc_snp <- read.xlsx("src/SNP/PC_SNPs.xlsx", 1)
-pc_snp_prx <- read.xlsx("src/SNP/query_snp.xlsx", 1, colNames = FALSE)
+pc_snp_prx <- read.xlsx("src/SNP/query_snp.xlsx", 1)
 
 dir.create("08", FALSE)
 
