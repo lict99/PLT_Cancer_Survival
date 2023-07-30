@@ -26,7 +26,7 @@ if (file.exists("09/allele_frequency_of_EUR_in_LDlink.RData")) {
   snp_eaf <- sapply(
     union(pc_snps$SNP, snps_cox),
     function(x) {
-      message("finding haplotype for ", x)
+      message("Finding haplotype for ", x)
       try(
         LDhap(
           snps = x,
@@ -42,21 +42,26 @@ if (file.exists("09/allele_frequency_of_EUR_in_LDlink.RData")) {
   save(snp_eaf, file = "09/allele_frequency_of_EUR_in_LDlink.RData")
 }
 
-pc_snps_ieu <- subset(
-  pc_snps,
-  is.element(SNP, ld_reflookup(rsid = SNP, pop = "EUR"))
-) %>%
-  format_data(
-    type = "exposure",
-    snp_col = "SNP",
-    beta_col = "Effect",
-    se_col = "SE",
-    effect_allele_col = "effect.allele",
-    other_allele_col = "reference.allele",
-    pval_col = "P",
-    samplesize_col = "n"
+if (file.exists("09/pc_snp_ieu.RData")) {
+  load("09/pc_snp_ieu.RData")
+} else {
+  pc_snps_ieu <- subset(
+    pc_snps,
+    is.element(SNP, ld_reflookup(rsid = SNP, pop = "EUR"))
   ) %>%
-  clump_data(pop = "EUR")
+    format_data(
+      type = "exposure",
+      snp_col = "SNP",
+      beta_col = "Effect",
+      se_col = "SE",
+      effect_allele_col = "effect.allele",
+      other_allele_col = "reference.allele",
+      pval_col = "P",
+      samplesize_col = "n"
+    ) %>%
+    clump_data(pop = "EUR")
+  save(pc_snps_ieu, file = "09/pc_snp_ieu.RData")
+}
 
 # find proxies
 snp_need_prx <- setdiff(
@@ -135,31 +140,36 @@ pc_snps_eaf <- transform(
   )
 )
 
-pc_snps_exp_all <- format_data(
-  dat = transform(
-    pc_snps_eaf,
-    Phenotype = "platelet counts",
-    id = "PLT10^9/L"
-  ),
-  type = "exposure",
-  snp_col = "SNP",
-  phenotype_col = "Phenotype",
-  beta_col = "Effect",
-  se_col = "SE",
-  effect_allele_col = "effect.allele",
-  other_allele_col = "reference.allele",
-  pval_col = "P",
-  samplesize_col = "n",
-  eaf_col = "eaf",
-  id_col = "id"
-) %>%
-  clump_data(pop = "EUR")
+if (file.exists("09/pc_snp_exp_all.RData")) {
+  load("09/pc_snp_exp_all.RData")
+} else {
+  pc_snps_exp_all <- format_data(
+    dat = transform(
+      pc_snps_eaf,
+      Phenotype = "platelet counts",
+      id = "PLT10^9/L"
+    ),
+    type = "exposure",
+    snp_col = "SNP",
+    phenotype_col = "Phenotype",
+    beta_col = "Effect",
+    se_col = "SE",
+    effect_allele_col = "effect.allele",
+    other_allele_col = "reference.allele",
+    pval_col = "P",
+    samplesize_col = "n",
+    eaf_col = "eaf",
+    id_col = "id"
+  ) %>%
+    clump_data(pop = "EUR")
+  save(pc_snps_exp_all, file = "09/pc_snp_exp_all.RData")
+}
 
-## confounder SNPs
-cfd_trait <- subset(confounder, confounder == 1)$trait
+## confounding SNPs
+cfd_trait <- subset(confounder, confounder == 1)$trait %>% unique()
 cfd_snp <- subset(pheno_df, is.element(trait, cfd_trait))$snp %>% unique()
 
-## remove confounder SNPs
+## remove confounding SNPs
 pc_snps_exp <- subset(pc_snps_exp_all, !is.element(SNP, cfd_snp))
 
 snp_out <- list()
