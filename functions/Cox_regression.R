@@ -21,7 +21,7 @@ extract_Cox_data <- function(
         x[, unique(c(vars, "sex"))]
       }
     )
-  for (i in names(ICD_codes)) {
+  for (i in names(list)) {
     if (length(attr(ICD_codes[[i]], "sex") != 0)) {
       if (attr(ICD_codes[[i]], "sex") == "male") {
         list[[i]] <- (list[[i]][, "sex"] == "Male") %>%

@@ -6,6 +6,7 @@ library(openxlsx)
 
 load(file = "01/whole_cancer_data_for_Cox.RData")
 load(file = "00/cancer_ICD_codes_with_attr.RData")
+load(file = "00/cancer_names.RData")
 source("functions/Cox_regression.R")
 
 dir.create("02", FALSE)
@@ -58,7 +59,43 @@ tables <- lapply(
   }
 )
 
+## calculate number and proportion
+## all participants with cancer including eligible and ineligible patients
+nprop <- list(
+  lag_no_limit = extract_Cox_data(
+    data_list = whole_cancer_data[["OS"]],
+    vars = c("eid"),
+    lagtime = c(-Inf, Inf)
+  ) %>%
+    {
+      n <- sapply(., nrow)
+      n_max <- max(n)
+      prop <- sapply(., function(x) nrow(x) / n_max)
+      data.frame(
+        cancer = unlist(cancer_names[names(.)]),
+        N = n,
+        proportion = paste0(sprintf("%.1f", prop * 100), "%")
+      )
+    },
+  lag_0 = extract_Cox_data(
+    data_list = whole_cancer_data[["OS"]],
+    vars = c("eid"),
+    lagtime = c(0, Inf)
+  ) %>%
+    {
+      n <- sapply(., nrow)
+      n_max <- max(n)
+      prop <- sapply(., function(x) nrow(x) / n_max)
+      data.frame(
+        cancer = unlist(cancer_names[names(.)]),
+        N = n,
+        proportion = paste0(sprintf("%.1f", prop * 100), "%")
+      )
+    }
+)
+
 # data saving ----
 
 write.xlsx(tables[["OS"]], file = "02/table1_for_OS.xlsx")
 write.xlsx(tables[["CSS"]], file = "02/table1_for_CSS.xlsx")
+write.xlsx(nprop, file = "02/number_and_proportion.xlsx")

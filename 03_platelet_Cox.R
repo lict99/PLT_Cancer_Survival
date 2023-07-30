@@ -111,6 +111,8 @@ platelet400_m1 <- lapply(
 
 # data saving ----
 
+save(list = ls(pattern = "^platelet.+_m"), file = "03/platelet_Cox.RData")
+
 for (i in ls(pattern = "^platelet.+_m")) {
   write.xlsx(
     get(i), paste0("03/", i, ".xlsx"), TRUE
