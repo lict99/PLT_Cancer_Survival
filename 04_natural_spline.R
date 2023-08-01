@@ -7,6 +7,7 @@ library(smoothHR)
 library(lmtest)
 library(ggplot2)
 library(scales)
+library(patchwork)
 
 load("01/whole_cancer_data_for_Cox.RData")
 load("00/cancer_ICD_codes_with_attr.RData")
@@ -57,6 +58,20 @@ for (i in names(whole_cancer_data)) {
     }
 }
 
+p_patch <- plot_list[["OS"]][["All_sites"]] +
+  plot_list[["CSS"]][["All_sites"]] +
+  guide_area() +
+  plot_annotation(tag_levels = "A") +
+  plot_layout(
+    design = c(
+      area(1, 1, 9, 5),
+      area(1, 6, 9, 10),
+      area(10, 1, 10, 10)
+    ),
+    guides = "collect"
+  ) &
+  theme(legend.position = "bottom")
+
 # plots saving ----
 
 for (i in names(plot_list)) {
@@ -70,3 +85,11 @@ for (i in names(plot_list)) {
     )
   }
 }
+
+ggsave(
+  "04/Pan-cancer.pdf",
+  p_patch,
+  height = 9,
+  width = 18,
+  device = grDevices::cairo_pdf
+)
