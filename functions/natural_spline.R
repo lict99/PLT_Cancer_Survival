@@ -56,7 +56,6 @@ cal_hr <- function(data) {
 # graph created by ggplot2 ----
 
 geom_hr <- function(data) {
-  colors <- pal_nejm(palette = c("default"), alpha = 1)(8)
   dataset <- data$dataset
   p <- data$lrtest
   point <- data$hr_point
@@ -64,8 +63,8 @@ geom_hr <- function(data) {
   dst_lmt <- c(0, max(dst$y))
   hr_lmt <- c(0, max(point$HR))
   dst_y_rsc <- rescale(dst$y, hr_lmt, dst_lmt)
-  col_dst <- colors[5]
-  col_hr <- colors[1]
+  col_dst <- "#7876B1FF"
+  col_hr <- "#BC3C29FF"
   col_ci <- "black"
   p1 <- ggplot() +
     geom_ribbon(
@@ -101,8 +100,8 @@ geom_hr <- function(data) {
       # y = ceiling(max(dst_y_rsc)),
       label = ifelse(
         p < 0.001,
-        paste("p-value =", sprintf("%.3e", p)),
-        paste("p-value =", sprintf("%.3f", p))
+        paste("P-value =", sprintf("%.3e", p)),
+        paste("P-value =", sprintf("%.3f", p))
       ),
       hjust = 1
     ) +

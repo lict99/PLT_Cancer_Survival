@@ -6,7 +6,6 @@ library(Hmisc)
 library(smoothHR)
 library(lmtest)
 library(ggplot2)
-library(ggsci)
 library(scales)
 
 load("01/whole_cancer_data_for_Cox.RData")
@@ -47,11 +46,9 @@ for (i in names(whole_cancer_data)) {
           labs(
             title = cancer_names[[j]],
             caption = paste(
-              "The reference value is the median of platelet counts.",
+              "The reference value is the median of platelet counts",
               "\n",
-              paste("survival:", i),
-              "; ",
-              paste("lag time:", paste(lag, collapse = " to "), "day(s)"),
+              paste("Cancer survival:", i),
               sep = ""
             )
           )
@@ -62,4 +59,14 @@ for (i in names(whole_cancer_data)) {
 
 # plots saving ----
 
-save(plot_list, file = "04/natural_cubic_spline_plots.RData")
+for (i in names(plot_list)) {
+  for (j in names(plot_list[[i]])) {
+    ggsave(
+      paste0("04/", i, "_", cancer_names[[j]], ".pdf"),
+      plot_list[[i]][[j]],
+      height = 9,
+      width = 12,
+      device = grDevices::cairo_pdf
+    )
+  }
+}
