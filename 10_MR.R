@@ -5,6 +5,7 @@ library(TwoSampleMR)
 library(parallel)
 library(openxlsx)
 
+load("00/cancer_names.RData")
 load("09/MR_harmonised_data.RData")
 
 dir.create("10", FALSE)
@@ -45,14 +46,6 @@ mr_res <- lapply(
   }
 )
 
-x <- mapply(
-  function(x1, x2) {
-    z <- mr_scatter_plot(x1, x2)
-    z
-  },
-  mr_res[[2]],
-  mr_data[[2]]
-)
 
 mr_hete <- lapply(
   mr_data,
@@ -108,11 +101,47 @@ mr_loo_plot <- lapply(
 
 # data saving ----
 
-save(mr_res, file = "10/MR_results.RData")
-save(mr_presso, file = "10/MR_presso.RData")
-write.xlsx(mr_res[["OS"]], "10/MR_results_OS.xlsx", TRUE)
-write.xlsx(mr_res[["CSS"]], "10/MR_results_CSS.xlsx", TRUE)
-write.xlsx(mr_hete[["OS"]], "10/MR_heterogeneity_OS.xlsx", TRUE)
-write.xlsx(mr_hete[["CSS"]], "10/MR_heterogeneity_CSS.xlsx", TRUE)
-write.xlsx(mr_plei[["OS"]], "10/MR_pleiotropy_OS.xlsx", TRUE)
-write.xlsx(mr_plei[["CSS"]], "10/MR_pleiotropy_CSS.xlsx", TRUE)
+write.xlsx(
+  lapply(
+    mr_res,
+    function(x) {
+      df <- data.frame()
+      for (i in names(x)) {
+        df <- rbind(df, x[[i]])
+      }
+      df
+    }
+  ),
+  "10/MR_results.xlsx",
+  TRUE
+)
+
+write.xlsx(
+  lapply(
+    mr_hete,
+    function(x) {
+      df <- data.frame()
+      for (i in names(x)) {
+        df <- rbind(df, x[[i]])
+      }
+      df
+    }
+  ),
+  "10/MR_heterogeneity.xlsx",
+  TRUE
+)
+
+write.xlsx(
+  lapply(
+    mr_plei,
+    function(x) {
+      df <- data.frame()
+      for (i in names(x)) {
+        df <- rbind(df, x[[i]])
+      }
+      df
+    }
+  ),
+  "10/MR_pleiotropy.xlsx",
+  TRUE
+)
