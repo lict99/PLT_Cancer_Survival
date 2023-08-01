@@ -41,6 +41,7 @@ gg_forest <- function(data, lag, title) {
     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
   p4 <- ggplot(data = data[["OS"]]) +
+    geom_vline(xintercept = 1, linetype = "dashed", color = "grey") +
     geom_pointrange(
       aes(
         x = HR,
@@ -50,7 +51,6 @@ gg_forest <- function(data, lag, title) {
       ),
       size = 0.1
     ) +
-    geom_vline(xintercept = 1, linetype = "dashed", color = "grey") +
     xlab("Hazard ratio (95% CI)") +
     theme_classic() +
     theme(
@@ -88,6 +88,7 @@ gg_forest <- function(data, lag, title) {
     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
   p7 <- ggplot(data = data[["CSS"]]) +
+    geom_vline(xintercept = 1, linetype = "dashed", color = "grey") +
     geom_pointrange(
       aes(
         x = HR,
@@ -97,7 +98,6 @@ gg_forest <- function(data, lag, title) {
       ),
       size = 0.1
     ) +
-    geom_vline(xintercept = 1, linetype = "dashed", color = "grey") +
     xlab("Hazard ratio (95% CI)") +
     theme_classic() +
     theme(
