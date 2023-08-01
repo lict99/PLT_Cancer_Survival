@@ -1,73 +1,61 @@
 # env settings ----
 
 library(magrittr)
-library(forestplot)
+library(ggplot2)
+library(patchwork)
 
 load("00/cancer_names.RData")
 load("03/platelet_Cox.RData")
+source("functions/forest_plot.R")
 
 dir.create("07", FALSE)
 
-# data preparation ----
+# forest plot ----
 
-## extract and format data
-prep_fp_data <- function(data_df,
-                         colnames = c(
-                           "cancer_site", "HR_f", "p_f",
-                           "HR", "lower.95", "upper.95"
-                         ),
-                         lag,
-                         full_names = cancer_names) {
-  df <- subset(data_df, lag_time == lag) %>%
-    extract(, colnames, drop = FALSE)
-  if (identical(df$cancer_site, names(full_names))) {
-    df$cancer_site <- unlist(full_names)
+lag_time <- c(
+  "0 to Inf day(s)", "182.625 to Inf day(s)", "365.25 to Inf day(s)"
+)
+
+for (i in ls(pattern = "platelet.+m[12]")) {
+  pc_type <- if (grepl("_100_", i)) {
+    "10\u00b9\u00b9/L"
+  } else if (grepl("300_", i)) {
+    "\u2265300\u00d710\u2079/L"
+  } else if (grepl("400_", i)) {
+    "\u2265400\u00d710\u2079/L"
+  } else {
+    stop("Invalid objects! Check ls() call.")
   }
-  df
+  model <- switch(strsplit(i, "_")[[1]][length(strsplit(i, "_")[[1]])],
+    "m1" = "model 1",
+    "m2" = "model 2",
+    stop("Invalid model name!")
+  )
+  for (j in lag_time) {
+    fp <- gg_forest(
+      get(i),
+      j,
+      paste0(
+        "Cox proportional hazards model",
+        " (", model, ") ",
+        "\nfor platelet counts ",
+        " (", pc_type, ") ",
+        "on cancer survival"
+      )
+    )
+    ggsave(
+      paste0(
+        "07/",
+        i,
+        "_",
+        strsplit(j, " ")[[1]][1],
+        ".pdf"
+      ),
+      fp,
+      width = 13,
+      height = 9,
+      units = "in",
+      device = grDevices::cairo_pdf
+    )
+  }
 }
-pdf("07/forest_plot.pdf", width = 13, height = 13 * 0.618)
-(function() {
-  tmp <- prep_fp_data(platelet300_m2[[1]], lag = "0 to Inf day(s)")
-  tmp2 <- prep_fp_data(platelet300_m2[[2]], lag = "0 to Inf day(s)")
-
-  p1 <- forestplot(
-    x = tmp,
-    mean = HR,
-    lower = lower.95,
-    upper = upper.95,
-    labeltext = c(cancer_site, HR_f, p_f),
-    zero = 1,
-    boxsize = 0.1,
-    clip = c(floor(min(tmp$HR)), ceiling(max(tmp$HR)))
-  ) %>%
-    fp_add_header(
-      cancer_site = "Cancer type",
-      HR_f = "HR (95% CI) for OS",
-      p_f = "P-value"
-    )
-
-  p2 <- forestplot(
-    x = tmp2,
-    mean = HR,
-    lower = lower.95,
-    upper = upper.95,
-    labeltext = c(HR_f, p_f),
-    zero = 1,
-    boxsize = 0.1,
-    align = c("r", "r"),
-    clip = c(floor(min(tmp2$HR)), ceiling(max(tmp2$HR)))
-  ) %>%
-    fp_add_header(
-      HR_f = "HR (95% CI) for CSS",
-      p_f = "P-value"
-    )
-  grid.newpage()
-  pushViewport(viewport(layout = grid.layout(1, 2, widths = c(4.3, 3))))
-  pushViewport(viewport(layout.pos.col = 1))
-  plot(p1)
-  popViewport(1)
-  pushViewport(viewport(layout.pos.col = 2))
-  plot(p2)
-  popViewport(2)
-})()
-dev.off()
