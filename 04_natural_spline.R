@@ -49,7 +49,13 @@ for (i in names(whole_cancer_data)) {
             caption = paste(
               "The reference value is the median of platelet counts",
               "\n",
-              paste("Cancer survival:", i),
+              paste(
+                "Cancer Survival:",
+                switch(i,
+                  "OS" = "Overall Survival",
+                  "CSS" = "Cancer-specific Survival"
+                )
+              ),
               sep = ""
             )
           )

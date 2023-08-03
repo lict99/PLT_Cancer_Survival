@@ -101,7 +101,7 @@ prs_w_plot <- lapply(
   function(x) {
     list <- list()
     for (i in names(x)) {
-      list[[i]] <- gg_prs(
+      list[[i]] <- geom_prs(
         data = x[[i]],
         annotate = cancer_names[[i]],
         x_col = "prs_w"
@@ -116,7 +116,7 @@ prs_u_plot <- lapply(
   function(x) {
     list <- list()
     for (i in names(x)) {
-      list[[i]] <- gg_prs(
+      list[[i]] <- geom_prs(
         data = x[[i]],
         annotate = cancer_names[[i]],
         x_col = "prs_u"

@@ -89,13 +89,13 @@ prs_all <- data.frame(
 
 # plotting ----
 
-prs_w_plot <- gg_prs(
+prs_w_plot <- geom_prs(
   data = prs_all,
   annotate = "All participants in UK biobank",
   x_col = "prs_w"
 )
 
-prs_u_plot <- gg_prs(
+prs_u_plot <- geom_prs(
   data = prs_all,
   annotate = "All participants in UK biobank",
   x_col = "prs_u"
@@ -108,12 +108,14 @@ ggsave(
   prs_w_plot,
   width = 13.4,
   height = 9.91,
-  units = "in"
+  units = "in",
+  device = grDevices::cairo_pdf
 )
 ggsave(
   "12/unweighted_PRS_in_all.pdf",
   prs_u_plot,
   width = 13.4,
   height = 9.91,
-  units = "in"
+  units = "in",
+  device = grDevices::cairo_pdf
 )

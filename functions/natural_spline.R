@@ -20,12 +20,14 @@ cal_hr <- function(data) {
       singular.ok = TRUE
     )
   }
+
   fit2 <- coxph(
     Surv(fu_time, fu_event == 1) ~ .,
     data = data,
     x = TRUE,
     singular.ok = TRUE
   )
+
   hr <- smoothHR(data = data, coxfit = fit)
   hr_point <- predict.HR(
     hr,
@@ -66,6 +68,7 @@ geom_hr <- function(data) {
   col_dst <- "#7876B1FF"
   col_hr <- "#BC3C29FF"
   col_ci <- "black"
+
   p1 <- ggplot() +
     geom_ribbon(
       aes(
@@ -78,12 +81,12 @@ geom_hr <- function(data) {
     ) +
     geom_hline(yintercept = 1, color = "gray") +
     geom_line(
-      aes(x = platelet, y = lower_95, color = "95% CI"),
+      aes(x = platelet, y = lower_95, color = "95% Confidence Interval"),
       point,
       linetype = 2
     ) +
     geom_line(
-      aes(x = platelet, y = upper_95, color = "95% CI"),
+      aes(x = platelet, y = upper_95, color = "95% Confidence Interval"),
       point,
       linetype = 2
     ) +
@@ -100,8 +103,8 @@ geom_hr <- function(data) {
       # y = ceiling(max(dst_y_rsc)),
       label = ifelse(
         p < 0.001,
-        paste("P-value =", sprintf("%.3e", p)),
-        paste("P-value =", sprintf("%.3f", p))
+        paste("\ud835\ude17-value =", sprintf("%.3e", p)),
+        paste("\ud835\ude17-value =", sprintf("%.3f", p))
       ),
       hjust = 1
     ) +
@@ -117,7 +120,7 @@ geom_hr <- function(data) {
       )
     ) +
     scale_color_manual(
-      breaks = c("Hazard Ratio", "95% CI"),
+      breaks = c("Hazard Ratio", "95% Confidence Interval"),
       values = c(col_hr, col_ci),
       guide = guide_legend(
         title = NULL,
@@ -137,5 +140,6 @@ geom_hr <- function(data) {
       legend.position = "right",
       axis.text = element_text(color = "black")
     )
+
   p1
 }

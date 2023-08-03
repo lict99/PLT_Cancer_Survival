@@ -1,5 +1,8 @@
-gg_forest <- function(data, lag, title) {
+# forest plot created by ggplot2 ----
+
+geom_forest <- function(data, lag, title) {
   data <- lapply(data, function(x) subset(x, lag_time == lag))
+
   p1 <- ggplot(data = data[["OS"]]) +
     geom_text(
       aes(
@@ -36,7 +39,7 @@ gg_forest <- function(data, lag, title) {
       ),
       hjust = 0.5
     ) +
-    labs(title = "P-value") +
+    labs(title = "\ud835\ude17-value") +
     theme_void() +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
@@ -83,7 +86,7 @@ gg_forest <- function(data, lag, title) {
       ),
       hjust = 0.5
     ) +
-    labs(title = "P-value") +
+    labs(title = "\ud835\ude17-value") +
     theme_void() +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
@@ -116,5 +119,6 @@ gg_forest <- function(data, lag, title) {
         plot.title = element_text(face = "bold", hjust = 0.5)
       )
     )
+
   p_all
 }

@@ -1,6 +1,6 @@
-# PRS plot by ggplot2 ----
+# PRS plot created by ggplot2 ----
 
-gg_prs <- function(
+geom_prs <- function(
     data,
     annotate = NULL,
     x_col,
@@ -30,6 +30,7 @@ gg_prs <- function(
   ) %>%
     summary()
 
+  r_squared <- fit_smr$r.squared %>% sprintf("%.3f", .)
   f <- fit_smr$fstatistic[1] %>% sprintf("%.3f", .)
   fv1 <- fit_smr$fstatistic[2]
   fv2 <- fit_smr$fstatistic[3]
@@ -122,11 +123,11 @@ gg_prs <- function(
         "\n",
         "Sample size = ", nrow(data),
         "\n",
-        "Pearson r = ", cor, "; P-value ", cor_p,
+        "Pearson r = ", cor, "; \ud835\ude17-value ", cor_p,
         "\n",
-        "R\u00b2 = ",
+        "R\u00b2 = ", r_squared,
         "\n",
-        "F(", fv1, ", ", fv2, ") = ", f, "; P-value ", fit_p,
+        "F(", fv1, ", ", fv2, ") = ", f, "; \ud835\ude17-value ", fit_p,
         sep = ""
       ),
       hjust = 1,
@@ -141,5 +142,6 @@ gg_prs <- function(
       widths = c(8, 2),
       heights = c(2, 8)
     )
+
   p_all
 }

@@ -32,7 +32,7 @@ for (i in ls(pattern = "platelet.+m[12]")) {
     stop("Invalid model name!")
   )
   for (j in lag_time) {
-    fp <- gg_forest(
+    fp <- geom_forest(
       get(i),
       j,
       paste0(
