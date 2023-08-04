@@ -81,7 +81,7 @@ cancer_sites <- list(
 cancer_names <- list(
   All_sites = "Pan-cancer",
   E_lymphoid_haematopoietic = "Solid cancer",
-  Lymphoid_haematopoietic = "Hematologic cancer",
+  Lymphoid_haematopoietic = "Hematologic/lymphatic cancer",
   Female_breast = "Breast cancer",
   Lung = "Lung cancer",
   Colorectum = "Colorectal cancer",
@@ -99,7 +99,7 @@ cancer_names <- list(
   Leukemia = "Leukemia",
   Kidney = "Kidney cancer",
   Corpus_uteri = "Endometrial cancer",
-  Melanoma_of_skin = "Melanoma skin cancer",
+  Melanoma_of_skin = "Melanoma",
   Ovary = "Ovarian cancer",
   Brain_nervous_system = "Central nervous system cancer",
   Multiple_myeloma = "Multiple myeloma",
@@ -111,8 +111,10 @@ cancer_names <- list(
 
 # data saving ----
 
-if (identical(names(cancer_ICD_codes), names(cancer_names)) &&
-  identical(names(cancer_ICD_codes), names(cancer_sites))) {
+if (
+  identical(names(cancer_ICD_codes), names(cancer_names)) &&
+    identical(names(cancer_ICD_codes), names(cancer_sites))
+) {
   save(cancer_names, file = "00/cancer_names.RData")
   save(cancer_sites, file = "00/cancer_sites.RData")
   save(cancer_ICD_codes, file = "00/cancer_ICD_codes_with_attr.RData")
