@@ -103,9 +103,24 @@ geom_hr <- function(data) {
       # y = ceiling(max(dst_y_rsc)),
       label = ifelse(
         p < 0.001,
-        paste("\ud835\ude17-value =", sprintf("%.3e", p)),
-        paste("\ud835\ude17-value =", sprintf("%.3f", p))
+        # paste("\ud835\ude17-value =", sprintf("%.3e", p)),
+        paste(
+          "paste(italic(P), '-', 'value') == ",
+          # gsub("e", "%*%10^", sprintf("%.3e", p))
+          paste(
+            "'", unlist(strsplit(sprintf("%.3e", p), "e"))[1], "'",
+            "%*%10^", unlist(strsplit(sprintf("%.3e", p), "e"))[2]
+          ),
+          sep = ""
+        ),
+        # paste("\ud835\ude17-value =", sprintf("%.3f", p))
+        paste(
+          "paste(italic(P), '-', 'value') == ",
+          "'", sprintf("%.3f", p), "'",
+          sep = ""
+        )
       ),
+      parse = TRUE,
       hjust = 1
     ) +
     scale_x_continuous(
