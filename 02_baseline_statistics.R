@@ -50,6 +50,15 @@ tables <- lapply(
             table1(
               ~ . | lag_time,
               data = .,
+              render.continuous = function(x) {
+                with(
+                  stats.default(x),
+                  c(
+                    "",
+                    `Median (IQR)` = sprintf("%.2f (%.2f-%.2f)", MEDIAN, Q1, Q3)
+                  )
+                )
+              },
               overall = FALSE,
               extra.col = NULL
             ) %>%
