@@ -55,7 +55,7 @@ cal_hr <- function(data) {
   )
 }
 
-# graph created by ggplot2 ----
+# natural spline plot created by ggplot2 ----
 
 geom_hr <- function(data) {
   dataset <- data$dataset
@@ -103,17 +103,14 @@ geom_hr <- function(data) {
       # y = ceiling(max(dst_y_rsc)),
       label = ifelse(
         p < 0.001,
-        # paste("\ud835\ude17-value =", sprintf("%.3e", p)),
         paste(
           "paste(italic(P), '-', 'value') == ",
-          # gsub("e", "%*%10^", sprintf("%.3e", p))
           paste(
             "'", unlist(strsplit(sprintf("%.3e", p), "e"))[1], "'",
             "%*%10^", unlist(strsplit(sprintf("%.3e", p), "e"))[2]
           ),
           sep = ""
         ),
-        # paste("\ud835\ude17-value =", sprintf("%.3f", p))
         paste(
           "paste(italic(P), '-', 'value') == ",
           "'", sprintf("%.3f", p), "'",
@@ -157,4 +154,33 @@ geom_hr <- function(data) {
     )
 
   p1
+}
+
+# multiple natural spline plots into one plot ----
+
+geom_multi_hr <- function(
+    plots,
+    caption) {
+  p <- wrap_plots(
+    lapply(
+      plots,
+      function(x) x + theme(plot.caption = element_blank())
+    )
+  ) +
+    guide_area() +
+    plot_annotation(
+      tag_levels = "A",
+      caption = caption,
+      theme = theme(plot.caption = element_text(size = 15))
+    ) +
+    plot_layout(
+      ncol = 4,
+      guides = "collect"
+    ) &
+    theme(
+      legend.position = "right",
+      legend.text = element_text(size = 15)
+    )
+
+  p
 }

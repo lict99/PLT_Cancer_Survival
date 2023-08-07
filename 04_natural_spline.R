@@ -13,7 +13,7 @@ load("01/whole_cancer_data_for_Cox.RData")
 load("00/cancer_ICD_codes_with_attr.RData")
 load("00/cancer_names.RData")
 source("functions/Cox_regression.R")
-source("functions/natural_spline.R")
+source("functions/natural_spline_plot.R")
 
 dir.create("04", FALSE)
 
@@ -64,7 +64,7 @@ for (i in names(whole_cancer_data)) {
     }
 }
 
-p_patch <- plot_list[["OS"]][["All_sites"]] +
+p_pan_cancer <- plot_list[["OS"]][["All_sites"]] +
   plot_list[["CSS"]][["All_sites"]] +
   guide_area() +
   plot_annotation(tag_levels = "A") +
@@ -78,24 +78,80 @@ p_patch <- plot_list[["OS"]][["All_sites"]] +
   ) &
   theme(legend.position = "bottom")
 
+p_os <- geom_multi_hr(
+  plots = plot_list[["OS"]][
+    !is.element(
+      names(plot_list[["OS"]]),
+      c(
+        "All_sites", "E_lymphoid_haematopoietic",
+        "Lymphoid_haematopoietic", "Secondary"
+      )
+    )
+  ],
+  caption = paste(
+    "The reference value is the median of platelet counts",
+    "\n",
+    "Cancer Survival: Overall Survival",
+    sep = ""
+  )
+)
+
+p_css <- geom_multi_hr(
+  plots = plot_list[["CSS"]][
+    !is.element(
+      names(plot_list[["CSS"]]),
+      c(
+        "All_sites", "E_lymphoid_haematopoietic",
+        "Lymphoid_haematopoietic", "Secondary"
+      )
+    )
+  ],
+  caption = paste(
+    "The reference value is the median of platelet counts",
+    "\n",
+    "Cancer Survival: Cancer-specific Survival",
+    sep = ""
+  )
+)
+
 # plots saving ----
 
 for (i in names(plot_list)) {
   for (j in names(plot_list[[i]])) {
+    nm <- gsub("\\s", "_", cancer_names[[j]])
+    if (grepl("/", nm)) {
+      nm <- gsub("/", "_or_", nm)
+    }
     ggsave(
-      paste0("04/", i, "_", cancer_names[[j]], ".pdf"),
+      paste0("04/", i, "_", nm, ".pdf"),
       plot_list[[i]][[j]],
       height = 9,
       width = 12,
-      device = grDevices::cairo_pdf
+      device = "pdf"
     )
   }
 }
 
 ggsave(
   "04/Pan-cancer.pdf",
-  p_patch,
+  p_pan_cancer,
   height = 9,
   width = 18,
-  device = grDevices::cairo_pdf
+  device = "pdf"
+)
+
+ggsave(
+  "04/OS.pdf",
+  p_os,
+  height = 25,
+  width = 25,
+  device = "pdf"
+)
+
+ggsave(
+  "04/CSS.pdf",
+  p_css,
+  height = 25,
+  width = 25,
+  device = "pdf"
 )
