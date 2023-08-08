@@ -3,58 +3,130 @@
 geom_forest <- function(data, lag, title) {
   data <- lapply(data, function(x) subset(x, lag_time == lag))
 
-  p1 <- ggplot(data = data[["OS"]]) +
+  df_os <- data[["OS"]] %>%
+    transform(
+      p_f = ifelse(p < 0.001, "< 0.001", sprintf("%.3f", p)),
+      index = seq(nrow(.), 1)
+    ) %>%
+    {
+      inset(
+        .,
+        which(extract(., "lower.95") == 0),
+        c("HR", "lower.95", "upper.95"),
+        c(NA, NA, NA)
+      )
+    } %>%
+    {
+      inset(
+        .,
+        which(is.na(extract(., "lower.95"))),
+        c("HR_f", "p_f"),
+        c("-", "-")
+      )
+    }
+
+  df_css <- data[["CSS"]] %>%
+    transform(
+      p_f = ifelse(p < 0.001, "< 0.001", sprintf("%.3f", p)),
+      index = seq(nrow(.), 1)
+    ) %>%
+    {
+      inset(
+        .,
+        which(extract(., "lower.95") == 0),
+        c("HR", "lower.95", "upper.95"),
+        c(NA, NA, NA)
+      )
+    } %>%
+    {
+      inset(
+        .,
+        which(is.na(extract(., "lower.95"))),
+        c("HR_f", "p_f"),
+        c("-", "-")
+      )
+    }
+
+  x_lmt <- c(
+    min(df_os$lower.95, df_css$lower.95, na.rm = TRUE),
+    max(df_os$HR, df_css$HR, na.rm = TRUE) + 0.1
+  )
+
+  p1 <- ggplot(data = df_os) +
     geom_text(
       aes(
         x = 0,
-        y = seq(nrow(data[["OS"]]), 1),
+        y = index,
         label = unlist(cancer_names[cancer_site])
       ),
-      hjust = 0
+      hjust = 0,
+      na.rm = TRUE
     ) +
     coord_cartesian(xlim = c(0, 1)) +
+    scale_x_continuous(expand = c(0, 0)) +
     labs(title = "Cancer type") +
     theme_void() +
-    theme(plot.title = element_text(hjust = 0.1, face = "bold"))
+    theme(plot.title = element_text(hjust = 0, face = "bold"))
 
-  p2 <- ggplot(data = data[["OS"]]) +
+  p2 <- ggplot(data = df_os) +
     geom_text(
       aes(
         x = 0,
-        y = seq(nrow(data[["OS"]]), 1),
+        y = index,
         label = HR_f
       ),
-      hjust = 0.5
+      hjust = 0.5,
+      na.rm = TRUE
     ) +
     labs(title = "HR (95% CI)\nfor OS") +
     theme_void() +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
-  p3 <- ggplot(data = data[["OS"]]) +
+  p3 <- ggplot(data = df_os) +
     geom_text(
       aes(
         x = 0,
-        y = seq(nrow(data[["OS"]]), 1),
+        y = index,
         label = p_f
       ),
-      hjust = 0.5
+      hjust = 0.5,
+      na.rm = TRUE
     ) +
-    labs(title = "\ud835\ude17-value") +
+    labs(title = expression(paste(bolditalic(P), bold("-"), bold("value")))) +
     theme_void() +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
-  p4 <- ggplot(data = data[["OS"]]) +
+  p4 <- ggplot(data = df_os) +
     geom_vline(xintercept = 1, linetype = "dashed", color = "grey") +
     geom_pointrange(
       aes(
         x = HR,
-        y = seq(nrow(data[["OS"]]), 1),
+        y = index,
         xmin = lower.95,
         xmax = upper.95
       ),
-      size = 0.1
+      size = 0.1,
+      na.rm = TRUE
+    ) +
+    geom_segment(
+      aes(
+        x = x_lmt[2],
+        y = c(
+          index[which(upper.95 > x_lmt[2])],
+          rep(NA, times = length(index) - length(which(upper.95 > x_lmt[2])))
+        ),
+        xend = x_lmt[2] + 0.1,
+        yend = c(
+          index[which(upper.95 > x_lmt[2])],
+          rep(NA, times = length(index) - length(which(upper.95 > x_lmt[2])))
+        )
+      ),
+      arrow = arrow(length = unit(3, "points"), type = "closed"),
+      na.rm = TRUE
     ) +
     xlab("Hazard ratio (95% CI)") +
+    coord_cartesian(xlim = x_lmt) +
+    scale_x_continuous(expand = c(0, 0.1)) +
     theme_classic() +
     theme(
       axis.title.y = element_blank(),
@@ -64,44 +136,65 @@ geom_forest <- function(data, lag, title) {
       plot.margin = margin()
     )
 
-  p5 <- ggplot(data = data[["CSS"]]) +
+  p5 <- ggplot(data = df_css) +
     geom_text(
       aes(
         x = 0,
-        y = seq(nrow(data[["CSS"]]), 1),
+        y = index,
         label = HR_f
       ),
-      hjust = 0.5
+      hjust = 0.5,
+      na.rm = TRUE
     ) +
     labs(title = "HR (95% CI)\nfor CSS") +
     theme_void() +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
-  p6 <- ggplot(data = data[["CSS"]]) +
+  p6 <- ggplot(data = df_css) +
     geom_text(
       aes(
         x = 0,
-        y = seq(nrow(data[["CSS"]]), 1),
+        y = index,
         label = p_f
       ),
-      hjust = 0.5
+      hjust = 0.5,
+      na.rm = TRUE
     ) +
-    labs(title = "\ud835\ude17-value") +
+    labs(title = expression(paste(bolditalic(P), bold("-"), bold("value")))) +
     theme_void() +
     theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
-  p7 <- ggplot(data = data[["CSS"]]) +
+  p7 <- ggplot(data = df_css) +
     geom_vline(xintercept = 1, linetype = "dashed", color = "grey") +
     geom_pointrange(
       aes(
         x = HR,
-        y = seq(nrow(data[["CSS"]]), 1),
+        y = index,
         xmin = lower.95,
         xmax = upper.95
       ),
-      size = 0.1
+      size = 0.1,
+      na.rm = TRUE
+    ) +
+    geom_segment(
+      aes(
+        x = x_lmt[2],
+        y = c(
+          index[which(upper.95 > x_lmt[2])],
+          rep(NA, times = length(index) - length(which(upper.95 > x_lmt[2])))
+        ),
+        xend = x_lmt[2] + 0.1,
+        yend = c(
+          index[which(upper.95 > x_lmt[2])],
+          rep(NA, times = length(index) - length(which(upper.95 > x_lmt[2])))
+        )
+      ),
+      arrow = arrow(length = unit(3, "points"), type = "closed"),
+      na.rm = TRUE
     ) +
     xlab("Hazard ratio (95% CI)") +
+    coord_cartesian(xlim = x_lmt) +
+    scale_x_continuous(expand = c(0, 0.1)) +
     theme_classic() +
     theme(
       axis.title.y = element_blank(),
