@@ -80,3 +80,5 @@ Temporary Items
 /*/
 deprec*
 !/functions/
+.Rprofile
+*.code-workspace
