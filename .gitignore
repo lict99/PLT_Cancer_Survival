@@ -82,3 +82,5 @@ deprec*
 !/functions/
 .Rprofile
 *.code-workspace
+*.Rproj
+.gitignore
