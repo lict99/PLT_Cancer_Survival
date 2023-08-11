@@ -82,7 +82,7 @@ prs_cancer <- lapply(
   function(x) {
     extract_Cox_data(
       data_list = x,
-      vars = c("eid", "fu_time", "fu_event", "age", "sex", "platelet"),
+      vars = c("eid", "platelet"),
       lagtime = c(0, Inf)
     ) %>%
       lapply(

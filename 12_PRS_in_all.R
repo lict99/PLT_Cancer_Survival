@@ -81,7 +81,7 @@ prs_all <- data.frame(
   })()
 ) %>%
   merge(
-    UKb_baseline[, c("eid", "platelet", "age", "sex")],
+    UKb_baseline[, c("eid", "platelet")],
     by = "eid",
     all.x = TRUE
   ) %>%
@@ -91,13 +91,13 @@ prs_all <- data.frame(
 
 prs_w_plot <- geom_prs(
   data = prs_all,
-  annotate = "All participants in UK biobank",
+  annotate = "All participants in UK Biobank",
   x_col = "prs_w"
 )
 
 prs_u_plot <- geom_prs(
   data = prs_all,
-  annotate = "All participants in UK biobank",
+  annotate = "All participants in UK Biobank",
   x_col = "prs_u"
 )
 

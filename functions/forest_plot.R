@@ -1,6 +1,6 @@
 # forest plot created by ggplot2 ----
 
-geom_forest <- function(data, lag, title) {
+geom_forest <- function(data, lag, title, subtitle) {
   data <- lapply(data, function(x) subset(x, lag_time == lag))
 
   df_os <- data[["OS"]] %>%
@@ -208,8 +208,10 @@ geom_forest <- function(data, lag, title) {
     plot_layout(nrow = 1, width = c(1.8, 1, 1, 2, 1, 1, 2)) +
     plot_annotation(
       title = title,
+      subtitle = subtitle,
       theme = theme(
-        plot.title = element_text(face = "bold", hjust = 0.5)
+        plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5)
       )
     )
 

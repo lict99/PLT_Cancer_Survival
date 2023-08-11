@@ -27,21 +27,31 @@ for (i in ls(pattern = "platelet.+m[12]")) {
     stop("Invalid objects! Check ls() call.")
   }
   model <- switch(strsplit(i, "_")[[1]][length(strsplit(i, "_")[[1]])],
-    "m1" = "Model 1",
-    "m2" = "Model 2",
+    "m1" = "Adjusted for age and sex",
+    "m2" = paste(
+      "Adjusted for",
+      "age, sex,",
+      "race, BMI, TDI, aspirin use, smoking status, and alcohol status"
+    ),
     stop("Invalid model name!")
   )
   for (j in lag_time) {
+    lagtime <- switch(strsplit(j, " ")[[1]][1],
+      `365.25` = " with a lag time of 1 year",
+      `182.625` = " with a lag time of 6 months",
+      `0` = "",
+      stop("Invalid lag time!")
+    )
     fp <- geom_forest(
       data = get(i),
       lag = j,
       title = paste0(
         "Cox proportional hazards model",
-        " (", model, ") ",
         "\nfor platelet counts ",
         " (", pc_type, ") ",
         "on cancer survival"
-      )
+      ),
+      subtitle = paste0(model, lagtime)
     )
     ggsave(
       paste0("07/", i, "_", strsplit(j, " ")[[1]][1], ".pdf"),

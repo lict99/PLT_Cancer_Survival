@@ -57,9 +57,9 @@ geom_prs <- function(
     labs(
       x = NULL,
       y = if (x_col == "prs_w") {
-        "Density of Weighted PRS"
+        "Density of weighted PRS"
       } else if (x_col == "prs_u") {
-        "Density of Unweighted PRS"
+        "Density of unweighted PRS"
       } else {
         stop("x_col should be either \'prs_w\' or \'prs_u\'!")
       }
@@ -80,7 +80,7 @@ geom_prs <- function(
       fill = alpha(col_d, 0.8),
       color = col_d
     ) +
-    labs(x = NULL, y = "Density of Platelet Count") +
+    labs(x = NULL, y = "Density of platelet counts") +
     coord_flip() +
     theme_classic() +
     theme(
@@ -113,7 +113,7 @@ geom_prs <- function(
         stop("x_col should be either \'prs_w\' or \'prs_u\'!")
       }
     ) +
-    ylab(expression(paste("Platelet Count (", 10^9, "/L)", sep = ""))) +
+    ylab(expression(paste("Platelet counts (", 10^9, "/L)"))) +
     annotate(
       "text",
       x = max(data[, x_col]),

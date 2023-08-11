@@ -50,10 +50,10 @@ for (i in names(whole_cancer_data)) {
               "The reference value is the median of platelet counts",
               "\n",
               paste(
-                "Cancer Survival:",
+                "Cancer survival:",
                 switch(i,
-                  "OS" = "Overall Survival",
-                  "CSS" = "Cancer-specific Survival"
+                  "OS" = "overall survival",
+                  "CSS" = "cancer-specific survival"
                 )
               ),
               sep = ""
@@ -91,7 +91,7 @@ p_os <- geom_multi_hr(
   caption = paste(
     "The reference value is the median of platelet counts",
     "\n",
-    "Cancer Survival: Overall Survival",
+    "Cancer survival: overall survival",
     sep = ""
   )
 )
@@ -109,28 +109,28 @@ p_css <- geom_multi_hr(
   caption = paste(
     "The reference value is the median of platelet counts",
     "\n",
-    "Cancer Survival: Cancer-specific Survival",
+    "Cancer survival: cancer-specific survival",
     sep = ""
   )
 )
 
 # plots saving ----
 
-for (i in names(plot_list)) {
-  for (j in names(plot_list[[i]])) {
-    nm <- gsub("\\s", "_", cancer_names[[j]])
-    if (grepl("/", nm)) {
-      nm <- gsub("/", "_or_", nm)
-    }
-    ggsave(
-      paste0("04/", i, "_", nm, ".pdf"),
-      plot_list[[i]][[j]],
-      height = 9,
-      width = 12,
-      device = "pdf"
-    )
-  }
-}
+# for (i in names(plot_list)) {
+#   for (j in names(plot_list[[i]])) {
+#     nm <- gsub("\\s", "_", cancer_names[[j]])
+#     if (grepl("/", nm)) {
+#       nm <- gsub("/", "_or_", nm)
+#     }
+#     ggsave(
+#       paste0("04/", i, "_", nm, ".pdf"),
+#       plot_list[[i]][[j]],
+#       height = 9,
+#       width = 12,
+#       device = "pdf"
+#     )
+#   }
+# }
 
 ggsave(
   "04/Pan-cancer.pdf",

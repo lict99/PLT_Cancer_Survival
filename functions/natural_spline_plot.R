@@ -81,17 +81,17 @@ geom_hr <- function(data) {
     ) +
     geom_hline(yintercept = 1, color = "gray") +
     geom_line(
-      aes(x = platelet, y = lower_95, color = "95% Confidence Interval"),
+      aes(x = platelet, y = lower_95, color = "95% Confidence interval"),
       point,
       linetype = 2
     ) +
     geom_line(
-      aes(x = platelet, y = upper_95, color = "95% Confidence Interval"),
+      aes(x = platelet, y = upper_95, color = "95% Confidence interval"),
       point,
       linetype = 2
     ) +
     geom_line(
-      aes(x = platelet, y = HR, color = "Hazard Ratio"),
+      aes(x = platelet, y = HR, color = "Hazard ratio"),
       point,
       linewidth = 0.9,
       linetype = 1
@@ -104,15 +104,15 @@ geom_hr <- function(data) {
       label = ifelse(
         p < 0.001,
         paste(
-          "paste(italic(P), '-', 'value') == ",
-          paste(
+          "paste(italic(P), '-', 'value')==",
+          paste0(
             "'", unlist(strsplit(sprintf("%.3e", p), "e"))[1], "'",
             "%*%10^", unlist(strsplit(sprintf("%.3e", p), "e"))[2]
           ),
           sep = ""
         ),
         paste(
-          "paste(italic(P), '-', 'value') == ",
+          "paste(italic(P), '-', 'value')==",
           "'", sprintf("%.3f", p), "'",
           sep = ""
         )
@@ -121,18 +121,18 @@ geom_hr <- function(data) {
       hjust = 1
     ) +
     scale_x_continuous(
-      name = expression(paste("Platelet Counts (", 10^9, "/L)"))
+      name = expression(paste("Platelet counts (", 10^9, "/L)"))
     ) +
     scale_y_continuous(
       breaks = seq(0, ceiling(hr_lmt[2]), by = 1),
-      name = "Hazard Ratio",
+      name = "Hazard ratio",
       sec.axis = sec_axis(
         trans = ~ rescale(., dst_lmt, c(0, max(.))),
-        name = "Density of Platelet Counts"
+        name = "Density of platelet counts"
       )
     ) +
     scale_color_manual(
-      breaks = c("Hazard Ratio", "95% Confidence Interval"),
+      breaks = c("Hazard ratio", "95% Confidence interval"),
       values = c(col_hr, col_ci),
       guide = guide_legend(
         title = NULL,
@@ -169,7 +169,7 @@ geom_multi_hr <- function(
   ) +
     guide_area() +
     plot_annotation(
-      tag_levels = "A",
+      tag_levels = NULL,
       caption = caption,
       theme = theme(plot.caption = element_text(size = 15))
     ) +
