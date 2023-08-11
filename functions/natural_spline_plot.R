@@ -97,10 +97,9 @@ geom_hr <- function(data) {
       linetype = 1
     ) +
     annotate(
-      "text",
-      x = max(dst$x),
-      y = 0.3,
-      # y = ceiling(max(dst_y_rsc)),
+      "label",
+      x = min(dst$x),
+      y = ceiling(hr_lmt[2]),
       label = ifelse(
         p < 0.001,
         paste(
@@ -117,8 +116,10 @@ geom_hr <- function(data) {
           sep = ""
         )
       ),
+      label.size = 0,
       parse = TRUE,
-      hjust = 1
+      hjust = 0,
+      vjust = 0.1
     ) +
     scale_x_continuous(
       name = expression(paste("Platelet counts (", 10^9, "/L)"))
