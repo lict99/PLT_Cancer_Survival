@@ -9,8 +9,8 @@ library(openxlsx)
 load("00/cancer_names.RData")
 load("08/Cox_regression_of_SNP.RData")
 pc_snps <- read.xlsx("src/SNP/PC_SNPs.xlsx", 1)
-pheno_df <- read.xlsx("src/SNP/phenoscanner_confounder.xlsx", 1)
-confounder <- read.xlsx("src/SNP/phenoscanner_confounder.xlsx", 2)
+pheno_df <- read.xlsx("src/SNP/phenoscanner.xlsx", 1)
+confounder <- read.xlsx("src/SNP/phenoscanner.xlsx", 2)
 
 dir.create("09", FALSE)
 
@@ -166,7 +166,7 @@ if (file.exists("09/pc_snp_exp_all.RData")) {
 }
 
 ## confounding SNPs
-cfd_trait <- subset(confounder, confounder == 1)$trait %>% unique()
+cfd_trait <- subset(confounder, mark == 1)$trait %>% unique()
 cfd_snp <- subset(pheno_df, is.element(trait, cfd_trait))$snp %>% unique()
 
 ## remove confounding SNPs
