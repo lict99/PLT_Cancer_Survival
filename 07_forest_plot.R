@@ -20,7 +20,7 @@ for (i in ls(pattern = "platelet.+m[12]")) {
   pc_type <- if (grepl("_100_", i)) {
     "100\u00d710\u2079/L increase"
   } else if (grepl("300_", i)) {
-    "\u2265300\u00d710\u2079/L vs. \u003c5300\u00d710\u2079/L"
+    "\u2265300\u00d710\u2079/L vs. \u003c300\u00d710\u2079/L"
   } else if (grepl("400_", i)) {
     "\u2265400\u00d710\u2079/L vs. \u003c400\u00d710\u2079/L"
   } else {
