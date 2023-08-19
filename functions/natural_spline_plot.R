@@ -81,12 +81,12 @@ geom_hr <- function(data) {
     ) +
     geom_hline(yintercept = 1, color = "gray") +
     geom_line(
-      aes(x = platelet, y = lower_95, color = "95% Confidence interval"),
+      aes(x = platelet, y = lower_95, color = "95% confidence interval"),
       point,
       linetype = 2
     ) +
     geom_line(
-      aes(x = platelet, y = upper_95, color = "95% Confidence interval"),
+      aes(x = platelet, y = upper_95, color = "95% confidence interval"),
       point,
       linetype = 2
     ) +
@@ -133,7 +133,7 @@ geom_hr <- function(data) {
       )
     ) +
     scale_color_manual(
-      breaks = c("Hazard ratio", "95% Confidence interval"),
+      breaks = c("Hazard ratio", "95% confidence interval"),
       values = c(col_hr, col_ci),
       guide = guide_legend(
         title = NULL,
