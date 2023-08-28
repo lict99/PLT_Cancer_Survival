@@ -4,14 +4,17 @@ library(magrittr)
 library(TwoSampleMR)
 library(parallel)
 library(openxlsx)
+library(ggplot2)
+library(patchwork)
 
 load("00/cancer_names.RData")
 load("09/MR_harmonised_data.RData")
 
+source("functions/leave_one_out_plot.R")
+
 dir.create("10", FALSE)
 
 set.seed(1)
-cl <- makeCluster(detectCores())
 
 # MR ----
 
@@ -87,6 +90,7 @@ mr_plei <- lapply(
   }
 )
 
+cl <- makeCluster(detectCores())
 mr_presso_raw <- lapply(
   mr_data,
   function(x) {
@@ -148,12 +152,16 @@ mr_loo_plot <- lapply(
     lapply(
       x,
       function(y) {
-        z <- mr_leaveoneout(y) %>% mr_leaveoneout_plot()
-        z
+        mr_leaveoneout(y) %>% geom_loo()
       }
     )
   }
 )
+
+loo_pan <- mr_loo_plot[["OS"]][["All_sites"]] +
+  mr_loo_plot[["CSS"]][["All_sites"]] +
+  plot_layout(ncol = 2) +
+  plot_annotation(tag_levels = "A")
 
 # data saving ----
 
@@ -216,4 +224,14 @@ write.xlsx(
   ),
   "10/MR_presso.xlsx",
   TRUE
+)
+
+# plots saving
+
+ggsave(
+  "10/loo_pan-cacner.pdf",
+  loo_pan,
+  height = 7,
+  width = 14,
+  device = "pdf"
 )
