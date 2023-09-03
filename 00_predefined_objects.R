@@ -44,7 +44,7 @@ cancer_ICD_codes <- list(
   Secondary = "^C7[7-9]|^19[6-8]"
 )
 
-## full cancer sites
+## cancer sites
 cancer_sites <- list(
   All_sites = "All sites",
   E_lymphoid_haematopoietic =
@@ -77,7 +77,7 @@ cancer_sites <- list(
   Secondary = "Secondary malignant neoplasm"
 )
 
-## full cancer names
+## cancer names (cancer types)
 cancer_names <- list(
   All_sites = "Pan-cancer",
   E_lymphoid_haematopoietic = "Solid cancer",

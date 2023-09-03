@@ -20,7 +20,6 @@ dir.create("11", FALSE)
 # PRS calculation ----
 
 ## extract IV information
-
 iv_info <- mr_data[["OS"]][["All_sites"]] %>%
   subset(mr_keep == TRUE) %>%
   merge(
@@ -59,10 +58,10 @@ snp_score <- data.frame(eid = snp_ind_ca$eid) %>%
       }
       x[, i] <- as.numeric(col_geno)
     }
-    return(x)
+    x
   })()
 
-## un-weighted and weighted PRS for various cancers
+## unweighted and weighted PRS for various cancers
 prs <- data.frame(
   eid = snp_score$eid,
   prs_u = rowSums(snp_score[, -1]),
@@ -73,10 +72,11 @@ prs <- data.frame(
     } else {
       stop("Not indentical in names!")
     }
-    return(a %*% b)
+    a %*% b
   })()
 )
 
+## PRS of cancer patients
 prs_cancer <- lapply(
   whole_cancer_data,
   function(x) {
@@ -96,6 +96,7 @@ prs_cancer <- lapply(
 
 # plotting ----
 
+## weighted PRS plots for different cancer types
 prs_w_plot <- lapply(
   prs_cancer,
   function(x) {
@@ -111,6 +112,7 @@ prs_w_plot <- lapply(
   }
 )
 
+## unweighted PRS plots for different cancer types
 prs_u_plot <- lapply(
   prs_cancer,
   function(x) {

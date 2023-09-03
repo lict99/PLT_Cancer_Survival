@@ -12,12 +12,14 @@ dir.create("03", FALSE)
 
 # Cox regression ----
 
+## multiple lag time (0 day, 6 months, and 1 year)
 multi_lag <- list(
   c(0, Inf),
   c(365.25 / 2, Inf),
   c(365.25, Inf)
 )
 
+## variables to be analyzed in complex Cox regression
 vars_per_100 <- c(
   "platelet_per_100",
   "age",
@@ -35,7 +37,7 @@ vars_per_100 <- c(
 vars_300 <- vars_per_100 %>% inset(1, "platelet_300")
 vars_400 <- vars_per_100 %>% inset(1, "platelet_400")
 
-## model 2
+## complex model
 platelet_per_100_m2 <- lapply(
   whole_cancer_data,
   function(x) {
@@ -72,7 +74,7 @@ platelet400_m2 <- lapply(
   }
 )
 
-## model 1
+## basic model
 platelet_per_100_m1 <- lapply(
   whole_cancer_data,
   function(x) {

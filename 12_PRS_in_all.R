@@ -17,6 +17,7 @@ dir.create("12", FALSE)
 
 # calculation ----
 
+## extract individual data of valid genetic instruments
 snp_ind <- merge(
   ukb_snp_ind,
   ukb_snp_ind_supp,
@@ -26,6 +27,7 @@ snp_ind <- merge(
   extract(, c("eid", iv_info$affy)) %>%
   set_colnames(c("eid", iv_info$SNP))
 
+## calculate SNP effect allele score
 snp_score <- data.frame(eid = snp_ind$eid) %>%
   {
     score <- .
@@ -67,6 +69,7 @@ snp_score <- data.frame(eid = snp_ind$eid) %>%
     score
   }
 
+## PRS for all participants in the UK biobank
 prs_all <- data.frame(
   eid = snp_score$eid,
   prs_u = rowSums(snp_score[, -1]),
@@ -89,12 +92,14 @@ prs_all <- data.frame(
 
 # plotting ----
 
+## weighted PRS plot
 prs_w_plot <- geom_prs(
   data = prs_all,
   annotate = "All participants in UK Biobank",
   x_col = "prs_w"
 )
 
+## unweighted PRS plot
 prs_u_plot <- geom_prs(
   data = prs_all,
   annotate = "All participants in UK Biobank",
@@ -111,6 +116,7 @@ ggsave(
   units = "in",
   device = grDevices::cairo_pdf
 )
+
 ggsave(
   "12/unweighted_PRS_in_all.pdf",
   prs_u_plot,

@@ -12,6 +12,7 @@ dir.create("06", FALSE)
 
 # Cox regression for aspirin ----
 
+## multiple lag time
 multi_lag <- list(
   c(-Inf, 0),
   c(0, Inf),
@@ -19,6 +20,7 @@ multi_lag <- list(
   c(365.25, Inf)
 )
 
+## variables to be analyzed in complex Cox regression
 vars_aspirin <- c(
   "platelet_per_100",
   "age",
@@ -33,7 +35,8 @@ vars_aspirin <- c(
   "fu_event"
 )
 
-## model 1
+## basic model
+## extract the effect of aspirin on cancer survival
 aspirin_m1 <- lapply(
   whole_cancer_data,
   function(x) {
@@ -46,7 +49,8 @@ aspirin_m1 <- lapply(
   }
 )
 
-## model 2
+## complex model
+## extract the effect of aspirin on cancer survival
 aspirin_m2 <- lapply(
   whole_cancer_data,
   function(x) {

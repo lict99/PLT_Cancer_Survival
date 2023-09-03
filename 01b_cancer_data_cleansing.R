@@ -22,8 +22,9 @@ whole_cancer_data_pre <- list(
   )
 )
 
-## which cancer types have more than 1000 cases?
+## include cancer types which have 1000 cases or more
 ## only consider eligible cases
+## (cancer diagnosis after assessment canter visit)
 n1k <- lapply(
   whole_cancer_data_pre,
   function(x) {

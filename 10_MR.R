@@ -18,6 +18,7 @@ set.seed(1)
 
 # MR ----
 
+## MR analysis using IVW, MR-Egger, and weighted median methods
 mr_res <- lapply(
   mr_data,
   function(x) {
@@ -49,6 +50,7 @@ mr_res <- lapply(
   }
 )
 
+## heterogeneity test
 mr_hete <- lapply(
   mr_data,
   function(x) {
@@ -69,6 +71,7 @@ mr_hete <- lapply(
   }
 )
 
+## pleiotropy test by MR-Egger intercept
 mr_plei <- lapply(
   mr_data,
   function(x) {
@@ -90,6 +93,7 @@ mr_plei <- lapply(
   }
 )
 
+## pleiotropy test by MR-PRESSO
 cl <- makeCluster(detectCores())
 mr_presso_raw <- lapply(
   mr_data,
@@ -146,6 +150,7 @@ mr_presso <- lapply(
   }
 )
 
+## leave-one-out plots
 mr_loo_plot <- lapply(
   mr_data,
   function(x) {
@@ -158,6 +163,7 @@ mr_loo_plot <- lapply(
   }
 )
 
+## combine leave-one-out plots of pan-cancer
 loo_pan <- mr_loo_plot[["OS"]][["All_sites"]] +
   mr_loo_plot[["CSS"]][["All_sites"]] +
   plot_layout(ncol = 2) +
@@ -165,6 +171,7 @@ loo_pan <- mr_loo_plot[["OS"]][["All_sites"]] +
 
 # data saving ----
 
+## save MR results
 write.xlsx(
   lapply(
     mr_res,
@@ -180,6 +187,7 @@ write.xlsx(
   TRUE
 )
 
+## save heterogeneity test results
 write.xlsx(
   lapply(
     mr_hete,
@@ -195,6 +203,7 @@ write.xlsx(
   TRUE
 )
 
+## save MR-Egger intercept test results
 write.xlsx(
   lapply(
     mr_plei,
@@ -210,6 +219,7 @@ write.xlsx(
   TRUE
 )
 
+## save MR-PRESSO results
 write.xlsx(
   lapply(
     mr_presso,
@@ -226,7 +236,7 @@ write.xlsx(
   TRUE
 )
 
-# plots saving
+# plots saving ----
 
 ggsave(
   "10/loo_pan-cacner.pdf",

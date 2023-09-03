@@ -13,6 +13,7 @@ dir.create("02", FALSE)
 
 # statistics ----
 
+## variables to be considered in this study
 vars <- c(
   "platelet", "age", "sex", "bmi", "TDI", "aspirin",
   "smoking_status", "alcohol_status", "race",

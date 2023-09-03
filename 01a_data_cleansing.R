@@ -1,11 +1,12 @@
-# env settings ------------------------------------------------------------
+# env settings ----
 
 library(magrittr)
 
 dir.create("01", FALSE)
 
-# data input --------------------------------------------------------------
+# data input ----
 
+## read csv files all in one step
 csv_files <- list.files(path = "src", pattern = "\\.csv")
 names_csv <- gsub("\\.csv", "", csv_files)
 for (i in seq_along(csv_files)) {
@@ -15,7 +16,7 @@ for (i in seq_along(csv_files)) {
   )
 }
 
-# data arrangement ---------------------------------------------------------
+# data arrangement ----
 
 ## basic info
 Basic2 <- subset(
@@ -87,7 +88,7 @@ weight2 <- subset(weight, !duplicated(eid))
 rm(weight)
 gc()
 
-# mergence of all data ----------------------------------------------------
+# mergence of all data ----
 
 data_merged <- merge(
   Basic2,
@@ -124,11 +125,12 @@ data_merged <- merge(
     tolower(colnames(.))
   )
 
-# transformation of data --------------------------------------------------
+# transformation of data ----
 
 tidy_colnames <- colnames(data_merged) %>%
   inset(c(2, 4), c("age", "TDI"))
 
+## baseline information
 UKb_baseline <- data_merged %>%
   set_colnames(tidy_colnames) %>%
   transform(
@@ -157,10 +159,12 @@ UKb_baseline <- data_merged %>%
       factor(levels = c("Others", "British"))
   )
 
+## diagnosis information
 UKb_diagnosis <- ICD_diagnoses %>%
   set_colnames(c("eid", "ICD_diagnosis", "date_diagnosis")) %>%
   transform(date_diagnosis = as.Date(date_diagnosis))
 
+## death information
 UKb_death <- subset(
   Date_death,
   (Date_death != "") & (ICD10 != "")
@@ -168,6 +172,6 @@ UKb_death <- subset(
   set_colnames(c("eid", "date_death", "ICD10_death")) %>%
   transform(date_death = as.Date(date_death))
 
-# data saving -------------------------------------------------------------
+# data saving ----
 
 save(UKb_baseline, UKb_diagnosis, UKb_death, file = "01/UKB_all_info.RData")

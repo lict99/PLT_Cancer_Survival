@@ -19,8 +19,11 @@ dir.create("04", FALSE)
 
 # calculation and plotting ----
 
+## lag time of 0 day
+## namely no lag time
 lag <- c(0, Inf)
 
+## variables to be analyzed in Cox regression with natural splines
 vars <- c(
   "fu_time", "fu_event",
   "platelet", "age",
@@ -28,6 +31,7 @@ vars <- c(
   "aspirin", "smoking_status", "alcohol_status", "bmi", "TDI", "race"
 )
 
+## all graphs in one list
 plot_list <- list()
 for (i in names(whole_cancer_data)) {
   plot_list[[i]] <- lapply(
@@ -64,6 +68,7 @@ for (i in names(whole_cancer_data)) {
     }
 }
 
+## combine pan-cancer plots
 p_pan_cancer <- plot_list[["OS"]][["All_sites"]] +
   plot_list[["CSS"]][["All_sites"]] +
   guide_area() +
@@ -78,6 +83,7 @@ p_pan_cancer <- plot_list[["OS"]][["All_sites"]] +
   ) &
   theme(legend.position = "bottom")
 
+## combine plots of overall survival
 p_os <- geom_multi_hr(
   plots = plot_list[["OS"]][
     !is.element(
@@ -96,6 +102,7 @@ p_os <- geom_multi_hr(
   )
 )
 
+## combine plots of cancer-specific survival
 p_css <- geom_multi_hr(
   plots = plot_list[["CSS"]][
     !is.element(
@@ -115,22 +122,6 @@ p_css <- geom_multi_hr(
 )
 
 # plots saving ----
-
-# for (i in names(plot_list)) {
-#   for (j in names(plot_list[[i]])) {
-#     nm <- gsub("\\s", "_", cancer_names[[j]])
-#     if (grepl("/", nm)) {
-#       nm <- gsub("/", "_or_", nm)
-#     }
-#     ggsave(
-#       paste0("04/", i, "_", nm, ".pdf"),
-#       plot_list[[i]][[j]],
-#       height = 9,
-#       width = 12,
-#       device = "pdf"
-#     )
-#   }
-# }
 
 ggsave(
   "04/Pan-cancer.pdf",

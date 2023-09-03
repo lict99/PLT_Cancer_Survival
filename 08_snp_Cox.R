@@ -19,6 +19,7 @@ dir.create("08", FALSE)
 
 # data preprocessing ----
 
+## transform SNP summary information
 snp_smr <- ukb_snp_sum %>%
   transform(
     affy = paste0("affy", affy_id),
@@ -58,6 +59,7 @@ snp_smr <- ukb_snp_sum %>%
     )
   )
 
+## extract baseline data for Cox regression
 Cox_data <- lapply(
   whole_cancer_data,
   function(x) {
@@ -69,6 +71,8 @@ Cox_data <- lapply(
   }
 )
 
+## extract all patients with cancer
+## and corresponding SNP information
 cancer_eid <- Cox_data[["OS"]][["All_sites"]][, "eid"]
 
 snp_ind_ca <- subset(
@@ -76,7 +80,8 @@ snp_ind_ca <- subset(
   is.element(eid, cancer_eid)
 )
 
-## a safe process of substitution
+## substitute genotype with 0, 1, 2
+## with a safe process of substitution
 snp_ind <- data.frame(eid = snp_ind_ca$eid)
 for (i in snp_smr$affy) {
   ref_i <- snp_smr[snp_smr$affy == i, "ref_allele"]
@@ -103,6 +108,7 @@ for (i in snp_smr$affy) {
   snp_ind[, i] <- as.numeric(col_snp)
 }
 
+## merge baseline data and SNP data
 data_Cox_snp <- list()
 for (i in names(Cox_data)) {
   data_Cox_snp[[i]] <- lapply(
@@ -115,6 +121,8 @@ for (i in names(Cox_data)) {
 
 # Cox regression of SNP ----
 
+## compute the association between SNPs and cancer survival
+## using UKB individual data
 Cox_snp <- list()
 for (j in names(data_Cox_snp)) {
   Cox_snp[[j]] <- lapply(

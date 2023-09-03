@@ -12,10 +12,14 @@ dir.create("07", FALSE)
 
 # forest plot ----
 
+## multiple lag time
 lag_time <- c(
   "0 to Inf day(s)", "182.625 to Inf day(s)", "365.25 to Inf day(s)"
 )
 
+## visualize the results of Cox regression by forest plot
+## there are some display problems using Cairo graphics device
+## but it is not a big deal
 for (i in ls(pattern = "platelet.+m[12]")) {
   pc_type <- if (grepl("_100_", i)) {
     "100\u00d710\u2079/L increase"

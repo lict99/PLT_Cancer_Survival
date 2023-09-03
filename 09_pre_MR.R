@@ -16,10 +16,10 @@ dir.create("09", FALSE)
 
 # data arrangement ----
 
-# snps in Cox regression
+## SNPs in Cox regression
 snps_cox <- Cox_snp[["OS"]][["All_sites"]][, "snp"]
 
-# find allele frequency of EUR
+## find allele frequencies of EUR using LDlink
 if (file.exists("09/allele_frequency_of_EUR_in_LDlink.RData")) {
   load("09/allele_frequency_of_EUR_in_LDlink.RData")
 } else {
@@ -42,6 +42,7 @@ if (file.exists("09/allele_frequency_of_EUR_in_LDlink.RData")) {
   save(snp_eaf, file = "09/allele_frequency_of_EUR_in_LDlink.RData")
 }
 
+## linkage disequilibrium test
 if (file.exists("09/pc_snp_ieu.RData")) {
   load("09/pc_snp_ieu.RData")
 } else {
@@ -63,7 +64,7 @@ if (file.exists("09/pc_snp_ieu.RData")) {
   save(pc_snps_ieu, file = "09/pc_snp_ieu.RData")
 }
 
-# find proxies
+## find proxies
 snp_need_prx <- setdiff(
   pc_snps_ieu$SNP,
   snps_cox
@@ -89,7 +90,7 @@ if (file.exists("09/snp_proxies.RData")) {
   save(snp_prx, file = "09/snp_proxies.RData")
 }
 
-# select proxies
+## select proxies
 snp_prx_fil <- lapply(
   snp_prx,
   function(x) {
@@ -99,7 +100,7 @@ snp_prx_fil <- lapply(
   }
 )
 
-# substitute proxies
+## substitute proxies
 pc_snps_prx <- pc_snps %>%
   subset(is.element(SNP, pc_snps_ieu$SNP))
 for (i in snp_need_prx) {
@@ -121,7 +122,7 @@ for (i in snp_need_prx) {
   pc_snps_prx[pc_snps_prx$SNP == i, ][1:3] <- prx_sub
 }
 
-# impute EAF
+## impute effect allele frequency (EAF)
 pc_snps_eaf <- transform(
   pc_snps_prx,
   eaf = apply(
@@ -140,6 +141,7 @@ pc_snps_eaf <- transform(
   )
 )
 
+## second round of LD clumping
 if (file.exists("09/pc_snp_exp_all.RData")) {
   load("09/pc_snp_exp_all.RData")
 } else {
@@ -172,6 +174,7 @@ cfd_snp <- subset(pheno_df, is.element(trait, cfd_trait))$snp %>% unique()
 ## remove confounding SNPs
 pc_snps_exp <- subset(pc_snps_exp_all, !is.element(SNP, cfd_snp))
 
+## format data regarding the effect of SNPs on outcomes
 snp_out <- list()
 for (i in names(Cox_snp)) {
   for (j in names(Cox_snp[[i]])) {
@@ -198,6 +201,7 @@ for (i in names(Cox_snp)) {
   }
 }
 
+## harmonize data
 mr_data <- lapply(
   snp_out,
   function(x) {

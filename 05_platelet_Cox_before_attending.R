@@ -12,8 +12,11 @@ dir.create("05", FALSE)
 
 # Cox regression for diagnosis before attending ----
 
+## negative lag time
+## namely cancer diagnosis before assessment center visit
 lag <- list(c(-Inf, 0))
 
+## variables to be analyzed in complex Cox regression
 vars_per_100 <- c(
   "platelet_per_100",
   "age",
@@ -31,7 +34,7 @@ vars_per_100 <- c(
 vars_300 <- vars_per_100 %>% inset(1, "platelet_300")
 vars_400 <- vars_per_100 %>% inset(1, "platelet_400")
 
-## model 2
+## complex model
 platelet_per_100_bam2 <- lapply(
   whole_cancer_data,
   function(x) {
@@ -68,7 +71,7 @@ platelet400_bam2 <- lapply(
   }
 )
 
-## model 1
+## basic model
 platelet_per_100_bam1 <- lapply(
   whole_cancer_data,
   function(x) {
