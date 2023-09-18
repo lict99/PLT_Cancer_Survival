@@ -1,5 +1,11 @@
 # survival outcomes defined by ICD codes ----
 
+#' @param death_codes `list` a list of death ICD codes
+#' @param diag_codes `list` a list of diagnosis ICD codes
+#' @param death_df `data.frame` death data
+#' @param diag_df `data.frame` diagnosis data
+#' @param when_end `Date` maximum follow-up time
+#' @param baseline `data.frame` baseline data
 extract_survival <- function(
     death_codes,
     diag_codes = cancer_ICD_codes,

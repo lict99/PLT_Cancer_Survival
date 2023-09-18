@@ -1,5 +1,9 @@
 # PRS plot created by ggplot2 ----
 
+#' @param data `data.frame` data to visualize
+#' @param annotate `char` annotation of the plot
+#' @param x_col `char` column name of x-axis
+#' @param y_col `char` column name of y-axis
 geom_prs <- function(
     data,
     annotate = NULL,

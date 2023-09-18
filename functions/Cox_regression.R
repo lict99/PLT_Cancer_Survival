@@ -1,8 +1,14 @@
 # functions used in Cox proportional hazard regression ----
 
 ## extract data by vars and filter by "sex"
+
+#' @param data_list `list` a list nested with different diseases data
+#' @param vars `char` variables to be extracted
+#' @param lagtime_col `char` column name of lag time
+#' @param lagtime  `num` a time window between attending and diagnosis
+#' @param ICD_codes `list` cancer ICD codes with "sex" attributes
 extract_Cox_data <- function(
-    data_list, # a list nested with different diseases data
+    data_list,
     vars,
     lagtime_col = "lag_time",
     lagtime = NULL,
@@ -44,6 +50,10 @@ extract_Cox_data <- function(
 }
 
 ## run Cox regression per lag time, data is from extract_Cox_data() call
+#' @param ext_data `list` a list from extract_Cox_data() call
+#' @param fultime_col `char` column name of follow-up time
+#' @param event_col `char` column name of event
+#' @param eventcode `vec` event indicator
 run_Cox_per_lag <- function(
     ext_data,
     futime_col = "fu_time",
@@ -72,6 +82,8 @@ run_Cox_per_lag <- function(
 }
 
 ## extract summary table from run_Cox_per_lag() call
+#' @param run_data `list` a list from run_Cox_per_lag() call
+#' @param target `char` target variable
 extract_smr_data <- function(
     run_data,
     target) {
@@ -123,6 +135,15 @@ extract_smr_data <- function(
 }
 
 ## run Cox regression for multiple lag time values
+#' @param mlagtime `num` multiple lag time values
+#' @param vars `char` variables to be extracted
+#' @param target `char` target variable
+#' @param data_list `list` a list nested with different diseases data
+#' @param lagtime_col `char` column name of lag time
+#' @param ICD_codes `list` cancer ICD codes with "sex" attributes
+#' @param futime_col `char` column name of follow-up time
+#' @param event_col `char` column name of event
+#' @param eventcode `vec` event indicator
 run_Cox_loop <- function(
     mlagtime,
     vars,

@@ -1,5 +1,6 @@
 # HR estimates ----
 
+#' @param data `data.frame` data to run Cox proportional hazards model
 cal_hr <- function(data) {
   if (any(grepl("sex", colnames(data)))) {
     fit <- coxph(
@@ -57,6 +58,7 @@ cal_hr <- function(data) {
 
 # natural spline plot created by ggplot2 ----
 
+#' @param data `list` data from cal_hr()
 geom_hr <- function(data) {
   dataset <- data$dataset
   p <- data$lrtest
@@ -159,6 +161,8 @@ geom_hr <- function(data) {
 
 # multiple natural spline plots into one plot ----
 
+#' @param plots `list` a list of plots
+#' @param caption `char` caption of the plot
 geom_multi_hr <- function(
     plots,
     caption) {

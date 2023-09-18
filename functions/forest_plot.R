@@ -1,5 +1,9 @@
 # forest plot created by ggplot2 ----
 
+#' @param data `list` a list of data frames
+#' @param lag `char` lag time window
+#' @param title `char` title of the plot
+#' @param subtitle `char` subtitle of the plot
 geom_forest <- function(data, lag, title, subtitle) {
   data <- lapply(data, function(x) subset(x, lag_time == lag))
 

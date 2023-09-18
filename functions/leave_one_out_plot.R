@@ -1,5 +1,6 @@
 # Leave-one-out sensitivity analysis plot created by ggplot2
 
+#' @param loo `data.frame` result from TwoSampleMR::mr_leaveoneout()
 geom_loo <- function(loo) {
   if (sum(!grepl("All", loo$SNP)) < 3) {
     stop("Number of SNPs < 3!")
