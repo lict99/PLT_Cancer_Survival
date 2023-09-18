@@ -79,7 +79,7 @@ cancer_sites <- list(
 
 ## cancer names (cancer types)
 cancer_names <- list(
-  All_sites = "Pan-cancer",
+  All_sites = "Cancer", # pan-cancer
   E_lymphoid_haematopoietic = "Solid cancer",
   Lymphoid_haematopoietic = "Hematologic/lymphatic cancer",
   Female_breast = "Breast cancer",
