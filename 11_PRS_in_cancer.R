@@ -8,7 +8,7 @@ library(patchwork)
 load("01/whole_cancer_data_for_Cox.RData")
 load("08/genotype_with_cancer.RData")
 load("08/pc_snp_summary.RData")
-load("10/MR_harmonised_data.RData")
+load("09/MR_harmonised_data.RData")
 load("00/cancer_ICD_codes_with_attr.RData")
 load("00/cancer_names.RData")
 
