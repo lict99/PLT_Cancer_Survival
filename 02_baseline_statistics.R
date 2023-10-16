@@ -3,6 +3,7 @@
 library(magrittr)
 library(table1)
 library(openxlsx)
+library(ggplot2)
 
 load(file = "01/whole_cancer_data_for_Cox.RData")
 load(file = "00/cancer_ICD_codes_with_attr.RData")
@@ -20,6 +21,32 @@ vars <- c(
   "fu_time", "fu_event", "lag_time"
 )
 
+## produce density plots of lag time
+dplot <- extract_Cox_data(
+  data_list = whole_cancer_data[["OS"]],
+  vars = vars,
+  lagtime = c(0, Inf)
+) %>%
+  lapply(
+    function(x) {
+      data <- transform(
+        x,
+        lag_time = as.numeric(lag_time) %>% divide_by(365.25)
+      )
+      p1 <- ggplot(data = data, aes(x = lag_time)) +
+        geom_density(
+          color = "#7876B1FF",
+          fill = alpha("#7876B1FF", 0.8)
+        ) +
+        labs(
+          x = "Lag time (years)",
+          y = "Density of lag time"
+        ) +
+        theme_classic()
+      p1
+    }
+  )
+
 ## produce tables
 tables <- lapply(
   whole_cancer_data,
@@ -35,12 +62,13 @@ tables <- lapply(
             y,
             aspirin = factor(aspirin, levels = c("YES", "NO")),
             race = factor(race, levels = c("British", "Others")),
-            lag_time = ifelse(
+            lag_group = ifelse(
               lag_time >= 0,
               "lag_time >= 0",
               "lag_time < 0"
             ) %>%
               factor(),
+            lag_time = as.numeric(lag_time) %>% divide_by(365.25),
             fu_time = as.numeric(fu_time) %>% divide_by(365.25),
             fu_event = factor(
               fu_event,
@@ -49,14 +77,19 @@ tables <- lapply(
             )
           ) %>%
             table1(
-              ~ . | lag_time,
+              ~ . | lag_group,
               data = .,
               render.continuous = function(x) {
                 with(
                   stats.default(x),
                   c(
                     "",
-                    `Median (IQR)` = sprintf("%.2f (%.2f-%.2f)", MEDIAN, Q1, Q3)
+                    `Median (IQR)` = sprintf(
+                      "%.2f (%.2f-%.2f)", MEDIAN, Q1, Q3
+                    ),
+                    `Min - Max` = sprintf(
+                      "%.2f-%.2f", MIN, MAX
+                    )
                   )
                 )
               },
@@ -102,6 +135,15 @@ nprop <- list(
         proportion = paste0(sprintf("%.1f", prop * 100), "%")
       )
     }
+)
+
+# plot saving ----
+
+ggsave(
+  filename = "02/density_plot_of_lag_time.pdf",
+  plot = dplot[["All_sites"]],
+  width = 6,
+  height = 4
 )
 
 # data saving ----
