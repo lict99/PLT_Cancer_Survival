@@ -13,9 +13,7 @@ dir.create("07", FALSE)
 # forest plot ----
 
 ## multiple lag time
-lag_time <- c(
-  "0 to Inf day(s)", "182.625 to Inf day(s)", "365.25 to Inf day(s)"
-)
+lag_time <- c("0-Inf", "182.625-Inf", "365.25-Inf", "0-1826.25")
 
 ## visualize the results of Cox regression by forest plot
 ## there are some display problems using Cairo graphics device
@@ -31,8 +29,8 @@ for (i in ls(pattern = "platelet.+m[12]")) {
     stop("Invalid objects! Check ls() call.")
   }
   model <- switch(strsplit(i, "_")[[1]][length(strsplit(i, "_")[[1]])],
-    "m1" = "Adjusted for age and sex",
-    "m2" = paste(
+    m1 = "Adjusted for age and sex",
+    m2 = paste(
       "Adjusted for",
       "age, sex,",
       "race, BMI, TDI, aspirin use, smoking status, and alcohol status"
@@ -40,10 +38,11 @@ for (i in ls(pattern = "platelet.+m[12]")) {
     stop("Invalid model name!")
   )
   for (j in lag_time) {
-    lagtime <- switch(strsplit(j, " ")[[1]][1],
-      `365.25` = " with a lag time of 1 year",
-      `182.625` = " with a lag time of 6 months",
-      `0` = "",
+    lagtime <- switch(j,
+      `365.25-Inf` = " with a lag time of ≥1 year",
+      `182.625-Inf` = " with a lag time of ≥6 months",
+      `0-Inf` = "",
+      `0-1826.25` = " with a lag time of <5 years",
       stop("Invalid lag time!")
     )
     fp <- geom_forest(
@@ -58,7 +57,7 @@ for (i in ls(pattern = "platelet.+m[12]")) {
       subtitle = paste0(model, lagtime)
     )
     ggsave(
-      paste0("07/", i, "_", strsplit(j, " ")[[1]][1], ".pdf"),
+      paste0("07/", i, "_", j, ".pdf"),
       fp,
       width = 13,
       height = 9,

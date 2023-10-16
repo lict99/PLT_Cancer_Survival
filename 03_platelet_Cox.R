@@ -16,7 +16,8 @@ dir.create("03", FALSE)
 multi_lag <- list(
   c(0, Inf),
   c(365.25 / 2, Inf),
-  c(365.25, Inf)
+  c(365.25, Inf),
+  c(0, 365.25 * 5)
 )
 
 ## variables to be analyzed in complex Cox regression

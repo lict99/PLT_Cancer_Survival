@@ -156,11 +156,10 @@ run_Cox_loop <- function(
     eventcode = 1) {
   df <- data.frame()
   for (i in seq_along(mlagtime)) {
-    lag <- paste(
+    lag <- paste0(
       min(mlagtime[[i]]),
-      "to",
-      max(mlagtime[[i]]),
-      "day(s)"
+      "-",
+      max(mlagtime[[i]])
     )
     dfi <- extract_Cox_data(
       data_list,
