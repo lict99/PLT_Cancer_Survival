@@ -3,6 +3,7 @@
 library(magrittr)
 library(rsnps)
 library(clusterProfiler)
+library(Qtlizer)
 library(openxlsx)
 
 load("11/IV_info.RData")
@@ -28,54 +29,34 @@ genelist <- ncbi_snp$gene %>%
     TRUE
   ) %>%
   {
-    ensembl <- bitr(
+    alias <- bitr(
       extract2(., "SYMBOL"),
       "SYMBOL",
       "ALIAS",
       "org.Hs.eg.db",
       FALSE
     )
-    merge(., ensembl, by = "SYMBOL", all = TRUE)
+    merge(., alias, by = "SYMBOL", all = TRUE)
   }
 
-# go <- enrichGO(
-#   genelist$ENTREZID,
-#   "org.Hs.eg.db",
-#   ont = "ALL",
-#   readable = TRUE,
-#   pvalueCutoff = 0.05,
-#   qvalueCutoff = 0.05
-# )
+if (!file.exists("13/QTL.RData")) {
+  qtl <- get_qtls(genelist$ALIAS, corr = NA, ref_version = "hg19")
+  save(qtl, file = "13/QTL.RData")
+} else {
+  load("13/QTL.RData")
+}
 
-# kegg <- enrichKEGG(
-#   genelist$ENTREZID,
-#   "hsa",
-#   pvalueCutoff = 0.05,
-#   qvalueCutoff = 0.05
-# ) %>%
-#   setReadable(
-#     "org.Hs.eg.db",
-#     keyType = "ENTREZID"
-#   )
+eqtl <- subset(
+  qtl,
+  p <= 5e-08 &
+    type == "eQTL" &
+    grepl("blood", tissue, ignore.case = TRUE) &
+    !grepl("cell", tissue, ignore.case = TRUE) &
+    is.element(gene, genelist$ALIAS)
+  # & source == "GTEx v8"
+)
 
-# mkegg <- enrichMKEGG(
-#   genelist$ENTREZID,
-#   pvalueCutoff = 0.05,
-#   qvalueCutoff = 0.05
-# )
-
-# wp <- enrichWP(
-#   genelist$ENTREZID,
-#   "Homo sapiens",
-#   pvalueCutoff = 0.05,
-#   qvalueCutoff = 0.05
-# )
-
-# # plot saving ----
-
-# pdf("13/enrichment_dotplot.pdf")
-# dotplot(go)
-# dev.off()
+ncbi_snp[, "eqtl"] <- ifelse(ncbi_snp$rsid %in% eqtl$sentinel, "yes", "no")
 
 # data saving ----
 

@@ -49,7 +49,8 @@ geom_survival <- function(
     legend = "top",
     legend.title = paste(gene, "expression"),
     legend.labs = levels(data[, gene]),
-    alpha = 0.8
+    alpha = 0.8,
+    censor = FALSE
   )
   if (pval < 0.001) {
     p_ann <- "<0.001"
@@ -68,5 +69,41 @@ geom_survival <- function(
       hjust = 0
     ) +
     theme(axis.title.x = element_blank())
+  p1
+}
+
+# point plot of survival analysis ----
+
+geom_point_surv <- function() {
+  p1 <- ggplot(
+    transform(
+      pan_surv_df,
+      HR = as.numeric(HR)
+    ),
+    aes(
+      x = HR,
+      y = -log10(fdr)
+    )
+  ) +
+    geom_hline(yintercept = -log10(0.05), linetype = 2, color = "grey") +
+    geom_point() +
+    geom_text_repel(
+      aes(
+        label = gene,
+        color = eqtl
+      ),
+      seed = 1,
+      nudge_y = 0.1,
+      size = 2,
+      max.overlaps = 30
+    ) +
+    facet_grid(. ~ survival) +
+    scale_color_manual(
+      labels = c("No", "Yes"),
+      values = c("grey", "red")
+    ) +
+    labs(color = "eQTL", y = expression(paste(-log[10], "FDR"))) +
+    theme_classic() +
+    theme(legend.position = "top")
   p1
 }
