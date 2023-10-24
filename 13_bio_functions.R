@@ -61,4 +61,5 @@ ncbi_snp[, "eqtl"] <- ifelse(ncbi_snp$rsid %in% eqtl$sentinel, "yes", "no")
 # data saving ----
 
 save(genelist, file = "13/genes_by_loci.RData")
+save(eqtl, file = "13/eQTL.RData")
 write.xlsx(ncbi_snp, "13/SNP_info_from_NCBI.xlsx", TRUE)

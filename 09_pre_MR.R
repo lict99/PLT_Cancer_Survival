@@ -221,3 +221,4 @@ mr_data <- lapply(
 # data saving ----
 
 save(mr_data, file = "09/MR_harmonised_data.RData")
+save(snp_out, file = "09/snp_outcomes.RData")
