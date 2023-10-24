@@ -1,6 +1,7 @@
 # env settings ----
 
 library(magrittr)
+library(data.table)
 
 dir.create("01", FALSE)
 
@@ -12,7 +13,11 @@ names_csv <- gsub("\\.csv", "", csv_files)
 for (i in seq_along(csv_files)) {
   assign(
     names_csv[i],
-    read.csv(file.path("src", csv_files[i]))
+    fread(
+      file.path("src", csv_files[i]),
+      data.table = FALSE,
+      na.strings = c("", "NA")
+    )
   )
 }
 
@@ -44,19 +49,19 @@ gc()
 
 diagnosis_ICD10_2 <- subset(
   diagnosis_ICD10,
-  (DIAGNOSES_ICD10 != "") & (DATE_ICD10 != "")
+  !(is.na(DIAGNOSES_ICD10) | is.na(DATE_ICD10))
 )
 rm(diagnosis_ICD10)
 gc()
 
 diagnosis_ICD9_2 <- subset(
   diagnosis_ICD9,
-  (DIAGNOSES_ICD9 != "") & (DATE_ICD9 != "")
+  !(is.na(DIAGNOSES_ICD9) | is.na(DATE_ICD9))
 ) %>%
   transform(
     DIAGNOSES_ICD9 = ifelse(
       grepl("^[A-Z]", DIAGNOSES_ICD9, ignore.case = TRUE),
-      paste(DIAGNOSES_ICD9, "icd9", sep = "-"),
+      paste("icd9", DIAGNOSES_ICD9, sep = "-"),
       DIAGNOSES_ICD9
     )
   )
@@ -167,7 +172,7 @@ UKb_diagnosis <- ICD_diagnoses %>%
 ## death information
 UKb_death <- subset(
   Date_death,
-  (Date_death != "") & (ICD10 != "")
+  !(is.na(Date_death) | is.na(ICD10))
 ) %>%
   set_colnames(c("eid", "date_death", "ICD10_death")) %>%
   transform(date_death = as.Date(date_death))

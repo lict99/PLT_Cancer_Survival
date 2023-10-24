@@ -3,14 +3,18 @@
 library(magrittr)
 library(survival)
 library(openxlsx)
+library(data.table)
 
 load("01/whole_cancer_data_for_Cox.RData")
 load("00/cancer_ICD_codes_with_attr.RData")
 source("functions/Cox_regression.R")
 
-ukb_snp_ind <- read.csv("src/SNP/UKb_snp_individual.csv")
-ukb_snp_ind_supp <- read.csv("src/SNP/UKb_snp_individual_supp.csv")
-ukb_snp_sum <- read.delim("src/SNP/UKb_snp_summary.txt")
+ukb_snp_ind <- fread("src/SNP/UKb_snp_individual.csv", data.table = FALSE)
+ukb_snp_ind_supp <- fread(
+  "src/SNP/UKb_snp_individual_supp.csv",
+  data.table = FALSE
+)
+ukb_snp_sum <- fread("src/SNP/UKb_snp_summary.txt", data.table = FALSE)
 
 pc_snp <- read.xlsx("src/SNP/PC_SNPs.xlsx", 1)
 pc_snp_prx <- read.xlsx("src/SNP/query_snp.xlsx", 1)

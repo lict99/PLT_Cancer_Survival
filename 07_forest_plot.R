@@ -1,5 +1,7 @@
 # env settings ----
 
+rm(list = ls())
+
 library(magrittr)
 library(ggplot2)
 library(patchwork)

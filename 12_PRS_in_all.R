@@ -4,14 +4,18 @@ library(magrittr)
 library(survival)
 library(ggplot2)
 library(patchwork)
+library(data.table)
 
 load("11/IV_info.RData")
 load("01/UKB_all_info.RData")
 
 source("functions/PRS_plot.R")
 
-ukb_snp_ind <- read.csv("src/SNP/UKb_snp_individual.csv")
-ukb_snp_ind_supp <- read.csv("src/SNP/UKb_snp_individual_supp.csv")
+ukb_snp_ind <- fread("src/SNP/UKb_snp_individual.csv", data.table = FALSE)
+ukb_snp_ind_supp <- fread(
+  "src/SNP/UKb_snp_individual_supp.csv",
+  data.table = FALSE
+)
 
 dir.create("12", FALSE)
 
@@ -29,8 +33,7 @@ snp_ind <- merge(
 
 ## calculate SNP effect allele score
 snp_score <- data.frame(eid = snp_ind$eid) %>%
-  {
-    score <- .
+  (function(score) {
     for (i in iv_info$SNP) {
       eff <- subset(
         iv_info,
@@ -67,7 +70,7 @@ snp_score <- data.frame(eid = snp_ind$eid) %>%
       score[, i] <- as.numeric(col)
     }
     score
-  }
+  })()
 
 ## PRS for all participants in the UK biobank
 prs_all <- data.frame(
