@@ -83,13 +83,11 @@ pan_data <- merge(
     for (i in seq_len(nrow(x))) {
       if (anyNA(c(x[i, "OS_time"], x[i, "OS"]))) {
         x[i, "OS_time"] <- x[i, "OS"] <- NA
-        next
-      }
-      if (x[i, "OS_time"] > 10 && x[i, "OS"] == 1) {
-        x[i, "OS"] <- 0
+      } else if (x[i, "OS_time"] > 10) {
         x[i, "OS_time"] <- 10
-      } else if (x[i, "OS_time"] > 10 && x[i, "OS"] == 0) {
-        x[i, "OS_time"] <- 10
+        if (x[i, "OS"] == 1) {
+          x[i, "OS"] <- 0
+        }
       }
     }
     x
@@ -98,13 +96,11 @@ pan_data <- merge(
     for (i in seq_len(nrow(x))) {
       if (anyNA(c(x[i, "CSS_time"], x[i, "CSS"]))) {
         x[i, "CSS_time"] <- x[i, "CSS"] <- NA
-        next
-      }
-      if (x[i, "CSS_time"] > 10 && x[i, "CSS"] == 1) {
-        x[i, "CSS"] <- 0
+      } else if (x[i, "CSS_time"] > 10) {
         x[i, "CSS_time"] <- 10
-      } else if (x[i, "CSS_time"] > 10 && x[i, "CSS"] == 0) {
-        x[i, "CSS_time"] <- 10
+        if (x[i, "CSS"] == 1) {
+          x[i, "CSS"] <- 0
+        }
       }
     }
     x
