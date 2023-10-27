@@ -114,17 +114,15 @@ prs_u_plot <- geom_prs(
 ggsave(
   "12/weighted_PRS_in_all.pdf",
   prs_w_plot,
-  width = 13.4,
-  height = 9.91,
-  units = "in",
-  device = grDevices::cairo_pdf
+  width = 9.5,
+  height = 9.5,
+  units = "in"
 )
 
 ggsave(
   "12/unweighted_PRS_in_all.pdf",
   prs_u_plot,
-  width = 13.4,
-  height = 9.91,
-  units = "in",
-  device = grDevices::cairo_pdf
+  width = 9.5,
+  height = 9.5,
+  units = "in"
 )

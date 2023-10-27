@@ -97,11 +97,9 @@ geom_prs <- function(
     )
 
   p_xy <- ggplot() +
-    geom_point(
-      aes(x = data[, x_col], y = data[, y_col]),
-      alpha = 0.15,
-      size = 0.1
-    ) +
+    geom_hex(aes(x = data[, x_col], y = data[, y_col]), bins = 100) +
+    scale_fill_gradient(low = "white", high = "black") +
+    stat_ellipse(aes(x = data[, x_col], y = data[, y_col]), linetype = 2) +
     geom_smooth(
       aes(x = data[, x_col], y = data[, y_col]),
       method = "lm",
@@ -118,33 +116,48 @@ geom_prs <- function(
       }
     ) +
     ylab(expression(paste("Platelet counts (", 10^9, "/L)"))) +
-    annotate(
-      "text",
-      x = max(data[, x_col]),
-      y = max(data[, y_col]),
-      label = paste(
-        annotate,
-        "\n",
-        "Sample size = ", nrow(data),
-        "\n",
-        "Pearson r = ", cor, "; \ud835\ude17-value ", cor_p,
-        "\n",
-        "R\u00b2 = ", r_squared,
-        "\n",
-        "F(", fv1, ", ", fv2, ") = ", f, "; \ud835\ude17-value ", fit_p,
-        sep = ""
-      ),
-      hjust = 1,
-      vjust = 1
-    ) +
-    theme_classic()
+    theme_classic() +
+    theme(
+      legend.position = c(0.9, 0.8),
+      legend.justification = c(1, 0.5)
+    )
 
-  p_all <- p_x + plot_spacer() + p_xy + p_y +
+  p_ann <- ggplot() +
+    geom_text(
+      aes(
+        x = rep(1, times = 5),
+        y = 5:1,
+        label = c(
+          paste0("'", annotate, "'"),
+          paste0("'Sample size'==", nrow(data)),
+          paste0(
+            "paste('Pearson r'=='", cor, "'",
+            ",';'~~italic('P')*'-value ", cor_p, "')"
+          ),
+          paste0("'R'^2=='", r_squared, "'"),
+          paste0(
+            "paste(F[list(", fv1, ",", fv2, ")]=='", f, "'",
+            ",';'~~italic('P')*'-value ", fit_p, "')"
+          )
+        )
+      ),
+      parse = TRUE,
+      hjust = 0
+    ) +
+    coord_cartesian(
+      xlim = c(1, 2)
+    ) +
+    theme_void()
+
+  p_xy_ann <- p_xy + inset_element(p_ann, 0.1, 0.65, 0.8, 0.9)
+
+  p_all <- p_x + plot_spacer() + p_xy_ann + p_y +
     plot_layout(
       ncol = 2,
       byrow = TRUE,
       widths = c(8, 2),
-      heights = c(2, 8)
+      heights = c(2, 8),
+      guides = "keep"
     )
 
   p_all
