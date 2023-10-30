@@ -74,36 +74,48 @@ geom_survival <- function(
 
 # point plot of survival analysis ----
 
-geom_point_surv <- function() {
+geom_point_surv <- function(data) {
   p1 <- ggplot(
-    transform(
-      pan_surv_df,
-      HR = as.numeric(HR)
-    ),
+    data,
     aes(
       x = HR,
       y = -log10(fdr)
     )
   ) +
     geom_hline(yintercept = -log10(0.05), linetype = 2, color = "grey") +
-    geom_point() +
+    geom_point(aes(color = eqtl)) +
     geom_text_repel(
       aes(
-        label = gene,
-        color = eqtl
+        label = ifelse(eqtl == "yes" & fdr < 0.05, gene, NA)
       ),
       seed = 1,
-      nudge_y = 0.1,
+      nudge_y = -0.1,
+      size = 3,
+      na.rm = TRUE
+    ) +
+    annotate(
+      "text",
+      x = max(data$HR),
+      y = -log10(0.05),
+      label = "'FDR'=='0.05'",
       size = 2,
-      max.overlaps = 30
+      parse = TRUE,
+      hjust = 1,
+      vjust = -0.5
     ) +
     facet_grid(. ~ survival) +
     scale_color_manual(
       labels = c("No", "Yes"),
-      values = c("grey", "red")
+      values = c("#6F99ADFF", "#BC3C29FF")
     ) +
-    labs(color = "eQTL", y = expression(paste(-log[10], "FDR"))) +
-    theme_classic() +
-    theme(legend.position = "top")
+    labs(
+      color = "eQTL",
+      y = expression(paste(-log[10], "FDR")),
+      x = "Hazard ratio"
+    ) +
+    theme(
+      legend.position = "top",
+      panel.grid = element_blank()
+    )
   p1
 }

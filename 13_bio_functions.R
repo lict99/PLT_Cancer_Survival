@@ -52,8 +52,8 @@ eqtl <- subset(
     type == "eQTL" &
     grepl("blood", tissue, ignore.case = TRUE) &
     !grepl("cell", tissue, ignore.case = TRUE) &
-    is.element(gene, genelist$ALIAS)
-  # & source == "GTEx v8"
+    is.element(gene, genelist$ALIAS) &
+    source == "GTEx v8"
 )
 
 ncbi_snp[, "eqtl"] <- ifelse(ncbi_snp$rsid %in% eqtl$sentinel, "yes", "no")

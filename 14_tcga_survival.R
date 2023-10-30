@@ -184,7 +184,19 @@ pan_surv_df <- pan_data %>%
 # plotting ----
 
 ## scatter plot of survival
-surv_plot <- geom_point_surv()
+
+surv_plot <- geom_point_surv(
+  data = transform(
+    pan_surv_df,
+    HR = as.numeric(HR),
+    eqtl = ifelse(eqtl == "yes" & fdr < 0.05, "yes", "no"),
+    survival = factor(
+      survival,
+      levels = c("OS", "CSS"),
+      labels = c("Overall survival", "Cancer-specific survival")
+    )
+  )
+)
 
 ## survival plots of OS
 pan_survplot_os <- sapply(
@@ -220,7 +232,7 @@ ggsave(
   surv_plot,
   filename = "14/survival_scatter.pdf",
   width = 7,
-  height = 7
+  height = 5
 )
 
 # data saving ----
