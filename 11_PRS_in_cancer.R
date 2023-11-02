@@ -82,7 +82,7 @@ prs_cancer <- lapply(
   function(x) {
     extract_Cox_data(
       data_list = x,
-      vars = c("eid", "platelet"),
+      vars = c("eid", "platelet", "fu_time", "fu_event", "age", "sex"),
       lagtime = c(0, Inf)
     ) %>%
       lapply(
@@ -131,3 +131,4 @@ prs_u_plot <- lapply(
 # data saving ----
 
 save(iv_info, file = "11/IV_info.RData")
+save(prs_cancer, file = "11/PRS_by_cancer.RData")
