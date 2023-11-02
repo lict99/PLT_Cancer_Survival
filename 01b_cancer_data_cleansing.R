@@ -1,5 +1,8 @@
 # env settings ----
 
+rm(list = ls())
+gc()
+
 library(magrittr)
 
 load("01/UKB_all_info.RData")

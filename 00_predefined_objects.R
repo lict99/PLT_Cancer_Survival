@@ -1,5 +1,8 @@
 # env settings ----
 
+rm(list = ls())
+gc()
+
 library(magrittr)
 
 dir.create("00", FALSE)

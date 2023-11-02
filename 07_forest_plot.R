@@ -1,6 +1,7 @@
 # env settings ----
 
 rm(list = ls())
+gc()
 
 library(magrittr)
 library(ggplot2)

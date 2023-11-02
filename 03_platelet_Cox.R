@@ -1,5 +1,8 @@
 # env settings ----
 
+rm(list = ls())
+gc()
+
 library(magrittr)
 library(survival)
 library(openxlsx)
