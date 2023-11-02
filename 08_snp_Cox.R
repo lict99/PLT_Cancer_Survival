@@ -10,7 +10,7 @@ library(data.table)
 
 load("01/whole_cancer_data_for_Cox.RData")
 load("00/cancer_ICD_codes_with_attr.RData")
-source("functions/Cox_regression.R")
+source("functions/Cox_regression.R", local = TRUE)
 
 ukb_snp_ind <- fread("src/SNP/UKb_snp_individual.csv", data.table = FALSE)
 ukb_snp_ind_supp <- fread(

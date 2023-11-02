@@ -15,8 +15,8 @@ library(patchwork)
 load("01/whole_cancer_data_for_Cox.RData")
 load("00/cancer_ICD_codes_with_attr.RData")
 load("00/cancer_names.RData")
-source("functions/Cox_regression.R")
-source("functions/natural_spline_plot.R")
+source("functions/Cox_regression.R", local = TRUE)
+source("functions/natural_spline_plot.R", local = TRUE)
 
 dir.create("04", FALSE)
 

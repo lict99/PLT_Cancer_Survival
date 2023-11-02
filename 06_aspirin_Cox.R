@@ -9,7 +9,7 @@ library(magrittr)
 
 load("00/cancer_ICD_codes_with_attr.RData")
 load("01/whole_cancer_data_for_Cox.RData")
-source("functions/Cox_regression.R")
+source("functions/Cox_regression.R", local = TRUE)
 
 dir.create("06", FALSE)
 

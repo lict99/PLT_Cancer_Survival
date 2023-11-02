@@ -12,7 +12,7 @@ library(data.table)
 load("11/IV_info.RData")
 load("01/UKB_all_info.RData")
 
-source("functions/PRS_plot.R")
+source("functions/PRS_plot.R", local = TRUE)
 
 ukb_snp_ind <- fread("src/SNP/UKb_snp_individual.csv", data.table = FALSE)
 ukb_snp_ind_supp <- fread(

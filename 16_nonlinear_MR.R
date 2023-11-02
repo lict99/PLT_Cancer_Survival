@@ -11,7 +11,7 @@ library(metafor)
 load("11/PRS_by_cancer.RData")
 load("00/cancer_names.RData")
 
-source("functions/nonlinear_MR_plot.R")
+source("functions/nonlinear_MR_plot.R", local = TRUE)
 
 dir.create("16", FALSE)
 

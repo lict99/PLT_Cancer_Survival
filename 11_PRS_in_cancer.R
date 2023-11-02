@@ -15,8 +15,8 @@ load("09/MR_harmonised_data.RData")
 load("00/cancer_ICD_codes_with_attr.RData")
 load("00/cancer_names.RData")
 
-source("functions/Cox_regression.R")
-source("functions/PRS_plot.R")
+source("functions/Cox_regression.R", local = TRUE)
+source("functions/PRS_plot.R", local = TRUE)
 
 dir.create("11", FALSE)
 

@@ -11,7 +11,7 @@ library(ggplot2)
 load(file = "01/whole_cancer_data_for_Cox.RData")
 load(file = "00/cancer_ICD_codes_with_attr.RData")
 load(file = "00/cancer_names.RData")
-source("functions/Cox_regression.R")
+source("functions/Cox_regression.R", local = TRUE)
 
 dir.create("02", FALSE)
 

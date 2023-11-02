@@ -13,7 +13,7 @@ library(patchwork)
 load("00/cancer_names.RData")
 load("09/MR_harmonised_data.RData")
 
-source("functions/leave_one_out_plot.R")
+source("functions/leave_one_out_plot.R", local = TRUE)
 
 dir.create("10", FALSE)
 

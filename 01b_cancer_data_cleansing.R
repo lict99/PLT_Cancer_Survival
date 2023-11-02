@@ -7,8 +7,8 @@ library(magrittr)
 
 load("01/UKB_all_info.RData")
 load("00/cancer_ICD_codes_with_attr.RData")
-source("functions/different_survival.R")
-source("functions/Cox_regression.R")
+source("functions/different_survival.R", local = TRUE)
+source("functions/Cox_regression.R", local = TRUE)
 
 # expiration of research ----
 

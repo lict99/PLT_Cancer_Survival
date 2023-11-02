@@ -10,7 +10,7 @@ library(survminer)
 library(ggplot2)
 library(ggrepel)
 
-source("functions/survival_tcga_plot.R")
+source("functions/survival_tcga_plot.R", local = TRUE)
 
 load("src/tcga/gene_expression.RData")
 load("13/genes_by_loci.RData")

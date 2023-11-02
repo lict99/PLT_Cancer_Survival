@@ -9,7 +9,7 @@ library(patchwork)
 
 load("00/cancer_names.RData")
 load("03/platelet_Cox.RData")
-source("functions/forest_plot.R")
+source("functions/forest_plot.R", local = TRUE)
 
 dir.create("07", FALSE)
 
