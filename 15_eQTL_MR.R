@@ -1,8 +1,5 @@
 # env settings ----
 
-rm(list = ls())
-gc()
-
 library(magrittr)
 library(TwoSampleMR)
 library(data.table)

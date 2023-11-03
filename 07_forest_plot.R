@@ -1,8 +1,5 @@
 # env settings ----
 
-rm(list = ls())
-gc()
-
 library(magrittr)
 library(ggplot2)
 library(patchwork)
@@ -16,7 +13,9 @@ dir.create("07", FALSE)
 # forest plot ----
 
 ## multiple lag time
-lag_time <- c("0-Inf", "182.625-Inf", "365.25-Inf", "0-1826.25", "1826.25-Inf")
+lag_time <- c(
+  "0-Inf", "182.625-Inf", "365.25-Inf", "1095.75-Inf", "1826.25-Inf"
+)
 
 ## visualize the results of Cox regression by forest plot
 ## there are some display problems using Cairo graphics device
@@ -45,7 +44,7 @@ for (i in ls(pattern = "platelet.+m[12]")) {
       `365.25-Inf` = " with a lag time of ≥1 year",
       `182.625-Inf` = " with a lag time of ≥6 months",
       `0-Inf` = "",
-      `0-1826.25` = " with a lag time of <5 years",
+      `1095.75-Inf` = " with a lag time of ≥3 years",
       `1826.25-Inf` = " with a lag time of ≥5 years",
       stop("Invalid lag time!")
     )

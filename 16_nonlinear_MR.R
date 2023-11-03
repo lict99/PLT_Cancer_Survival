@@ -1,8 +1,5 @@
 # env settings ----
 
-rm(list = ls())
-gc()
-
 library(magrittr)
 library(nlmr)
 library(ggplot2)
@@ -31,6 +28,7 @@ nlmr_plot <- lapply(
             }
           }
         }
+        set.seed(1)
         res_w <- fracpoly_mr2(
           y = y[, "fu_event"],
           x = y[, "platelet"],
@@ -46,6 +44,7 @@ nlmr_plot <- lapply(
           ref = median(y[, "platelet"], na.rm = TRUE),
           fig = TRUE
         )
+        set.seed(1)
         res_u <- fracpoly_mr2(
           y = y[, "fu_event"],
           x = y[, "platelet"],

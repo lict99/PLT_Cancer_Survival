@@ -1,8 +1,5 @@
 # env settings ----
 
-rm(list = ls())
-gc()
-
 library(magrittr)
 library(survival)
 library(openxlsx)
@@ -20,7 +17,7 @@ multi_lag <- list(
   c(0, Inf),
   c(365.25 / 2, Inf),
   c(365.25, Inf),
-  c(0, 365.25 * 5),
+  c(365.25 * 3, Inf),
   c(365.25 * 5, Inf)
 )
 

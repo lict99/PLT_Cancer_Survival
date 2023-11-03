@@ -1,8 +1,5 @@
 # env settings ----
 
-rm(list = ls())
-gc()
-
 library(magrittr)
 library(TwoSampleMR)
 library(parallel)
@@ -16,8 +13,6 @@ load("09/MR_harmonised_data.RData")
 source("functions/leave_one_out_plot.R", local = TRUE)
 
 dir.create("10", FALSE)
-
-set.seed(1)
 
 # MR ----
 
