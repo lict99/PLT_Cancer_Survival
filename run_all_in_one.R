@@ -1,11 +1,11 @@
 # env settings ----
 
-rm(list = ls())
-gc()
-
 options(verbose = FALSE)
 options(datatable.verbose = FALSE)
 options(datatable.showProgress = FALSE)
+
+rm(list = ls())
+gc()
 
 library(magrittr)
 library(progress)
@@ -16,9 +16,10 @@ r_files <- list.files(pattern = "^\\d\\d.+\\.R$") %>%
   sort()
 
 pb <- progress_bar$new(
-  format = "Running [:bar] :percent in :elapsed",
+  format = "Running :current/:total [:bar] :percent in :elapsed",
   total = length(r_files),
-  clear = FALSE
+  clear = FALSE,
+  show_after = 0
 )
 
 one_step <- new.env(parent = globalenv())
@@ -35,6 +36,3 @@ for (fs in seq_along(r_files)) {
   gc()
 }
 cat("Mission complete!\n")
-
-# TODO: add rm() and gc()
-# TODO: add src/caches directory

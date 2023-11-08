@@ -12,11 +12,11 @@ dir.create("13", FALSE)
 
 # function query ----
 
-if (file.exists("13/ncbi_snp.RData")) {
-  load("13/ncbi_snp.RData")
+if (file.exists("src/cache/13_ncbi_snp.RData")) {
+  load("src/cache/13_ncbi_snp.RData")
 } else {
   ncbi_snp <- ncbi_snp_query(iv_info$SNP)
-  save(ncbi_snp, file = "13/ncbi_snp.RData")
+  save(ncbi_snp, file = "src/cache/13_ncbi_snp.RData")
 }
 
 genelist <- ncbi_snp$gene %>%
@@ -39,11 +39,11 @@ genelist <- ncbi_snp$gene %>%
     merge(., alias, by = "SYMBOL", all = TRUE)
   }
 
-if (!file.exists("13/QTL.RData")) {
+if (!file.exists("src/cache/13_QTL.RData")) {
   qtl <- get_qtls(genelist$ALIAS, corr = NA, ref_version = "hg19")
-  save(qtl, file = "13/QTL.RData")
+  save(qtl, file = "src/cache/13_QTL.RData")
 } else {
-  load("13/QTL.RData")
+  load("src/cache/13_QTL.RData")
 }
 
 eqtl <- subset(
@@ -62,4 +62,5 @@ ncbi_snp[, "eqtl"] <- ifelse(ncbi_snp$rsid %in% eqtl$sentinel, "yes", "no")
 
 save(genelist, file = "13/genes_by_loci.RData")
 save(eqtl, file = "13/eQTL.RData")
+save(ncbi_snp, file = "13/ncbi_snp.RData")
 write.xlsx(ncbi_snp, "13/SNP_info_from_NCBI.xlsx", TRUE)

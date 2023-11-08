@@ -20,8 +20,8 @@ dir.create("09", FALSE)
 snps_cox <- Cox_snp[["OS"]][["All_sites"]][, "snp"]
 
 ## find allele frequencies of EUR using LDlink
-if (file.exists("09/allele_frequency_of_EUR_in_LDlink.RData")) {
-  load("09/allele_frequency_of_EUR_in_LDlink.RData")
+if (file.exists("src/cache/09_allele_frequency_of_EUR_in_LDlink.RData")) {
+  load("src/cache/09_allele_frequency_of_EUR_in_LDlink.RData")
 } else {
   snp_eaf <- sapply(
     union(pc_snps$SNP, snps_cox),
@@ -39,12 +39,12 @@ if (file.exists("09/allele_frequency_of_EUR_in_LDlink.RData")) {
     },
     simplify = FALSE
   )
-  save(snp_eaf, file = "09/allele_frequency_of_EUR_in_LDlink.RData")
+  save(snp_eaf, file = "src/cache/09_allele_frequency_of_EUR_in_LDlink.RData")
 }
 
 ## linkage disequilibrium test
-if (file.exists("09/pc_snp_ieu.RData")) {
-  load("09/pc_snp_ieu.RData")
+if (file.exists("src/cache/09_pc_snp_ieu.RData")) {
+  load("src/cache/09_pc_snp_ieu.RData")
 } else {
   pc_snps_ieu <- subset(
     pc_snps,
@@ -61,7 +61,7 @@ if (file.exists("09/pc_snp_ieu.RData")) {
       samplesize_col = "n"
     ) %>%
     clump_data(pop = "EUR")
-  save(pc_snps_ieu, file = "09/pc_snp_ieu.RData")
+  save(pc_snps_ieu, file = "src/cache/09_pc_snp_ieu.RData")
 }
 
 ## find proxies
@@ -70,8 +70,8 @@ snp_need_prx <- setdiff(
   snps_cox
 )
 
-if (file.exists("09/snp_proxies.RData")) {
-  load("09/snp_proxies.RData")
+if (file.exists("src/cache/09_snp_proxies.RData")) {
+  load("src/cache/09_snp_proxies.RData")
 } else {
   snp_prx <- sapply(
     snp_need_prx,
@@ -87,7 +87,7 @@ if (file.exists("09/snp_proxies.RData")) {
     },
     simplify = FALSE
   )
-  save(snp_prx, file = "09/snp_proxies.RData")
+  save(snp_prx, file = "src/cache/09_snp_proxies.RData")
 }
 
 ## select proxies
@@ -142,8 +142,8 @@ pc_snps_eaf <- transform(
 )
 
 ## second round of LD clumping
-if (file.exists("09/pc_snp_exp_all.RData")) {
-  load("09/pc_snp_exp_all.RData")
+if (file.exists("src/cache/09_pc_snp_exp_all.RData")) {
+  load("src/cache/09_pc_snp_exp_all.RData")
 } else {
   pc_snps_exp_all <- format_data(
     dat = transform(
@@ -164,7 +164,7 @@ if (file.exists("09/pc_snp_exp_all.RData")) {
     id_col = "id"
   ) %>%
     clump_data(pop = "EUR")
-  save(pc_snps_exp_all, file = "09/pc_snp_exp_all.RData")
+  save(pc_snps_exp_all, file = "src/cache/09_pc_snp_exp_all.RData")
 }
 
 ## confounding SNPs
