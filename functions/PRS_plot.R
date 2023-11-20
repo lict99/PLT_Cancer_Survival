@@ -132,21 +132,19 @@ geom_prs <- function(
           paste0("'Sample size'==", nrow(data)),
           paste0(
             "paste('Pearson r'=='", cor, "'",
-            ",';'~~italic('P')*'-value ", cor_p, "')"
+            ",';'~~italic('p')*' ", cor_p, "')"
           ),
           paste0("'R'^2=='", r_squared, "'"),
           paste0(
             "paste(F[list(", fv1, ",", fv2, ")]=='", f, "'",
-            ",';'~~italic('P')*'-value ", fit_p, "')"
+            ",';'~~italic('p')*' ", fit_p, "')"
           )
         )
       ),
       parse = TRUE,
       hjust = 0
     ) +
-    coord_cartesian(
-      xlim = c(1, 2)
-    ) +
+    coord_cartesian(xlim = c(1, 2)) +
     theme_void()
 
   p_xy_ann <- p_xy + inset_element(p_ann, 0.1, 0.65, 0.8, 0.9)

@@ -105,7 +105,7 @@ geom_hr <- function(data) {
       label = ifelse(
         p < 0.001,
         paste(
-          "paste(italic(P), '-', 'value')==",
+          "italic('p')==",
           paste0(
             "'", unlist(strsplit(sprintf("%.3e", p), "e"))[1], "'",
             "%*%10^", unlist(strsplit(sprintf("%.3e", p), "e"))[2]
@@ -113,7 +113,7 @@ geom_hr <- function(data) {
           sep = ""
         ),
         paste(
-          "paste(italic(P), '-', 'value')==",
+          "italic('p')==",
           "'", sprintf("%.3f", p), "'",
           sep = ""
         )
@@ -176,10 +176,10 @@ geom_multi_hr <- function(
     plot_annotation(
       tag_levels = NULL,
       caption = caption,
-      theme = theme(plot.caption = element_text(size = 15))
+      theme = theme(plot.caption = element_text(size = 15, hjust = 0))
     ) +
     plot_layout(
-      ncol = 4,
+      ncol = 5,
       guides = "collect"
     ) &
     theme(

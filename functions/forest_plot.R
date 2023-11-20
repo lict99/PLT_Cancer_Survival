@@ -84,7 +84,10 @@ geom_forest <- function(data, lag, title, subtitle) {
     ) +
     labs(title = "HR (95% CI)\nfor OS") +
     theme_void() +
-    theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold"),
+      plot.margin = margin()
+    )
 
   p3 <- ggplot(data = df_os) +
     geom_text(
@@ -96,9 +99,12 @@ geom_forest <- function(data, lag, title, subtitle) {
       hjust = 0.5,
       na.rm = TRUE
     ) +
-    labs(title = expression(paste(bolditalic(P), bold("-"), bold("value")))) +
+    labs(title = expression(bolditalic("p"))) +
     theme_void() +
-    theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold"),
+      plot.margin = margin()
+    )
 
   p4 <- ggplot(data = df_os) +
     geom_vline(xintercept = 1, linetype = "dashed", color = "grey") +
@@ -137,7 +143,7 @@ geom_forest <- function(data, lag, title, subtitle) {
       axis.text.y = element_blank(),
       axis.line.y = element_blank(),
       axis.ticks.y = element_blank(),
-      plot.margin = margin()
+      plot.margin = margin(r = 10)
     )
 
   p5 <- ggplot(data = df_css) +
@@ -152,7 +158,10 @@ geom_forest <- function(data, lag, title, subtitle) {
     ) +
     labs(title = "HR (95% CI)\nfor CSS") +
     theme_void() +
-    theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold"),
+      plot.margin = margin()
+    )
 
   p6 <- ggplot(data = df_css) +
     geom_text(
@@ -164,9 +173,12 @@ geom_forest <- function(data, lag, title, subtitle) {
       hjust = 0.5,
       na.rm = TRUE
     ) +
-    labs(title = expression(paste(bolditalic(P), bold("-"), bold("value")))) +
+    labs(title = expression(bolditalic("p"))) +
     theme_void() +
-    theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold"),
+      plot.margin = margin()
+    )
 
   p7 <- ggplot(data = df_css) +
     geom_vline(xintercept = 1, linetype = "dashed", color = "grey") +
@@ -205,11 +217,11 @@ geom_forest <- function(data, lag, title, subtitle) {
       axis.text.y = element_blank(),
       axis.line.y = element_blank(),
       axis.ticks.y = element_blank(),
-      plot.margin = margin()
+      plot.margin = margin(r = 10)
     )
 
   p_all <- p1 + p2 + p3 + p4 + p5 + p6 + p7 +
-    plot_layout(nrow = 1, width = c(1.8, 1, 1, 2, 1, 1, 2)) +
+    plot_layout(nrow = 1, width = c(2, 1.2, 0.8, 2, 1.2, 0.8, 2)) +
     plot_annotation(
       title = title,
       subtitle = subtitle,

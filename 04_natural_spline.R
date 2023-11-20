@@ -51,13 +51,11 @@ for (i in names(whole_cancer_data)) {
           labs(
             title = cancer_names[[j]],
             caption = paste(
-              "The reference value is the median of platelet counts",
-              "\n",
               paste(
                 "Cancer survival:",
                 switch(i,
-                  "OS" = "overall survival",
-                  "CSS" = "cancer-specific survival"
+                  OS = "overall survival",
+                  CSS = "cancer-specific survival"
                 )
               ),
               sep = ""
@@ -88,18 +86,10 @@ p_os <- geom_multi_hr(
   plots = plot_list[["OS"]][
     !is.element(
       names(plot_list[["OS"]]),
-      c(
-        "All_sites", "E_lymphoid_haematopoietic",
-        "Lymphoid_haematopoietic", "Secondary"
-      )
+      c("All_sites")
     )
   ],
-  caption = paste(
-    "The reference value is the median of platelet counts",
-    "\n",
-    "Cancer survival: overall survival",
-    sep = ""
-  )
+  caption = NULL
 )
 
 ## combine plots of cancer-specific survival
@@ -107,18 +97,10 @@ p_css <- geom_multi_hr(
   plots = plot_list[["CSS"]][
     !is.element(
       names(plot_list[["CSS"]]),
-      c(
-        "All_sites", "E_lymphoid_haematopoietic",
-        "Lymphoid_haematopoietic", "Secondary"
-      )
+      c("All_sites")
     )
   ],
-  caption = paste(
-    "The reference value is the median of platelet counts",
-    "\n",
-    "Cancer survival: cancer-specific survival",
-    sep = ""
-  )
+  caption = NULL
 )
 
 # plots saving ----
@@ -126,23 +108,23 @@ p_css <- geom_multi_hr(
 ggsave(
   "04/Pan-cancer.pdf",
   p_pan_cancer,
-  height = 9,
-  width = 18,
+  height = 6.5,
+  width = 11,
   device = "pdf"
 )
 
 ggsave(
   "04/OS.pdf",
   p_os,
-  height = 25,
-  width = 25,
+  height = 27,
+  width = 27,
   device = "pdf"
 )
 
 ggsave(
   "04/CSS.pdf",
   p_css,
-  height = 25,
-  width = 25,
+  height = 27,
+  width = 27,
   device = "pdf"
 )

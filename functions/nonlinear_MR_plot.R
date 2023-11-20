@@ -108,8 +108,8 @@ fracpoly_figure2 <- function(beta, cov, x.min, x.max, family = "gaussian", d = 1
       plot.data.ref$y <- exp(0)
       figure <- ggplot(plot.data, aes(x = x)) +
         geom_hline(yintercept = 1, colour = "grey") +
-        geom_line(aes(y = lci, color = "ci"), linetype = 2) +
-        geom_line(aes(y = uci, color = "ci"), linetype = 2) +
+        geom_line(aes(y = lci, color = "ci"), linetype = 1) +
+        geom_line(aes(y = uci, color = "ci"), linetype = 1) +
         geom_line(aes(y = yest, color = "y"), linewidth = 1) +
         geom_point(
           aes(x = x, y = y),
@@ -128,10 +128,10 @@ fracpoly_figure2 <- function(beta, cov, x.min, x.max, family = "gaussian", d = 1
         scale_color_manual(
           breaks = c("y", "ci"),
           labels = c("Odds ratio", "95% confidence interval"),
-          values = c("#BC3C29FF", "black"),
+          values = c("#BC3C29FF", "#6F99ADFF"),
           guide = guide_legend(
             title = NULL,
-            override.aes = list(linetype = c(1, 2), linewidth = 0.4)
+            override.aes = list(linetype = c(1, 1), linewidth = 0.4)
           )
         ) +
         annotate(
@@ -139,7 +139,7 @@ fracpoly_figure2 <- function(beta, cov, x.min, x.max, family = "gaussian", d = 1
           x = max(plot.data$x),
           y = 1 + 0.5,
           label = paste0(
-            "italic('P')*'-value'['non-linearity']=='",
+            "italic('p')['non-linearity']=='",
             sprintf("%.3f", p),
             "'"
           ),

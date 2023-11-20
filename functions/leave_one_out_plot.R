@@ -34,8 +34,8 @@ geom_loo <- function(loo) {
         "\n",
         "for", loo$exposure, "on",
         switch(unique(loo$outcome),
-          "OS" = "overall survival",
-          "CSS" = "cancer-specific survival",
+          OS = "overall survival",
+          CSS = "cancer-specific survival",
           stop()
         )
       )

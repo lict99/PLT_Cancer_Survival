@@ -63,7 +63,7 @@ geom_survival <- function(
       x = 0,
       y = 0.2,
       label = paste0(
-        "paste(HR=='", hr, "',';',", "italic('P'),'-value'", p_ann, ")"
+        "paste(HR=='", hr, "',';',", "italic('p')", p_ann, ")"
       ),
       parse = TRUE,
       hjust = 0
