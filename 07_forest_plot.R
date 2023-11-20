@@ -14,7 +14,7 @@ dir.create("07", FALSE)
 
 ## multiple lag time
 lag_time <- c(
-  "0-Inf", "182.625-Inf", "365.25-Inf", "1095.75-Inf", "1826.25-Inf"
+  "0-Inf", "182.625-Inf", "365.25-Inf", "1095.75-Inf"
 )
 
 ## visualize the results of Cox regression by forest plot
@@ -41,11 +41,10 @@ for (i in ls(pattern = "platelet.+m[12]")) {
   )
   for (j in lag_time) {
     lagtime <- switch(j,
-      `365.25-Inf` = " with a lag time of ≥1 year",
-      `182.625-Inf` = " with a lag time of ≥6 months",
       `0-Inf` = "",
+      `182.625-Inf` = " with a lag time of ≥6 months",
+      `365.25-Inf` = " with a lag time of ≥1 year",
       `1095.75-Inf` = " with a lag time of ≥3 years",
-      `1826.25-Inf` = " with a lag time of ≥5 years",
       stop("Invalid lag time!")
     )
     fp <- geom_forest(
@@ -62,8 +61,8 @@ for (i in ls(pattern = "platelet.+m[12]")) {
     ggsave(
       paste0("07/", i, "_", j, ".pdf"),
       fp,
-      width = 13,
-      height = 9,
+      width = 11.5,
+      height = 7.5,
       units = "in",
       device = grDevices::cairo_pdf
     )
