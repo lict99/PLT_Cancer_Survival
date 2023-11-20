@@ -218,7 +218,39 @@ mr_data <- lapply(
   }
 )
 
+##
+mr_data_outcome <- lapply(
+  mr_data,
+  function(x) {
+    lapply(
+      x,
+      function(y) {
+        df <- subset(y, mr_keep) %>%
+          extract(c(
+            "SNP",
+            "effect_allele.outcome",
+            "other_allele.outcome",
+            "id.outcome",
+            "beta.outcome",
+            "se.outcome",
+            "pval.outcome",
+            "eaf.outcome"
+          )) %>%
+          transform(
+            beta.outcome = sprintf("%.3f", beta.outcome),
+            se.outcome = sprintf("%.3f", se.outcome),
+            pval.outcome = sprintf("%.3f", pval.outcome),
+            eaf.outcome = sprintf("%.3f", eaf.outcome)
+          )
+      }
+    )
+  }
+)
+
 # data saving ----
+
+write.xlsx(mr_data_outcome[["OS"]], "09/MR_outcome_data_OS.xlsx", TRUE)
+write.xlsx(mr_data_outcome[["CSS"]], "09/MR_outcome_data_CSS.xlsx", TRUE)
 
 save(mr_data, file = "09/MR_harmonised_data.RData")
 save(snp_out, file = "09/snp_outcomes.RData")
