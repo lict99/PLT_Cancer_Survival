@@ -122,7 +122,7 @@ mr_presso <- lapply(
           is.null(res_d),
           NA,
           switch(class(res_d[["Outliers Indices"]]),
-            "integer" = length(res_d[["Outliers Indices"]]),
+            integer = length(res_d[["Outliers Indices"]]),
             paste(res_d[["Outliers Indices"]], collapse = "|")
           )
         )
@@ -153,7 +153,7 @@ mr_loo_plot <- lapply(
   mr_data,
   function(x) {
     lapply(
-      x,
+      x["All_sites"],
       function(y) {
         mr_leaveoneout(y) %>% geom_loo()
       }
@@ -166,6 +166,36 @@ loo_pan <- mr_loo_plot[["OS"]][["All_sites"]] +
   mr_loo_plot[["CSS"]][["All_sites"]] +
   plot_layout(ncol = 2) +
   plot_annotation(tag_levels = "A")
+
+
+scatter_pan <- mapply(
+  function(x, y) {
+    mapply(
+      function(xx, yy) {
+        p <- mr_scatter_plot(xx, yy)[[1]] +
+          labs(title = "Cancer") +
+          guides(color = guide_legend(ncol = NULL, nrow = 1)) +
+          theme(
+            panel.grid = element_blank(),
+            legend.direction = "horizontal"
+          )
+        p
+      },
+      x[1],
+      y[1],
+      SIMPLIFY = FALSE
+    )
+  },
+  mr_res,
+  mr_data,
+  SIMPLIFY = FALSE
+) %>%
+  unlist(FALSE) %>%
+  {
+    wrap_plots(., ncol = 2, guides = "collect") +
+      plot_annotation(tag_levels = "A") &
+      theme(legend.position = "bottom")
+  }
 
 # data saving ----
 
@@ -241,5 +271,13 @@ ggsave(
   loo_pan,
   height = 7,
   width = 14,
+  device = "pdf"
+)
+
+ggsave(
+  "10/scatter_pan-cacner.pdf",
+  scatter_pan,
+  height = 6,
+  width = 12,
   device = "pdf"
 )
