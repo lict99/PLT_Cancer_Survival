@@ -4,6 +4,7 @@ library(magrittr)
 library(table1)
 library(openxlsx)
 library(ggplot2)
+library(patchwork)
 
 load(file = "01/whole_cancer_data_for_Cox.RData")
 load(file = "00/cancer_ICD_codes_with_attr.RData")
@@ -22,30 +23,68 @@ vars <- c(
 )
 
 ## produce density plots of lag time
-dplot <- extract_Cox_data(
+lag_plot_pan <- extract_Cox_data(
   data_list = whole_cancer_data[["OS"]],
   vars = vars,
   lagtime = c(0, Inf)
 ) %>%
-  lapply(
-    function(x) {
-      data <- transform(
-        x,
-        lag_time = as.numeric(lag_time) %>% divide_by(365.25)
+  {
+    data <- transform(
+      extract2(., "All_sites"),
+      lag_time = as.numeric(lag_time) %>% divide_by(365.25)
+    )
+    range_lag <- range(data[["lag_time"]])
+    p1 <- ggplot(data = data, aes(x = lag_time)) +
+      geom_histogram(
+        aes(y = after_stat(density)),
+        color = "#7876B1FF",
+        fill = alpha("#7876B1FF", 0.8),
+        binwidth = 0.5
+      ) +
+      geom_density(
+        color = "#BC3C29FF"
+      ) +
+      labs(
+        y = "Density of lag time"
+      ) +
+      coord_cartesian(
+        xlim = c(floor(range_lag[[1]]), ceiling(range_lag[[2]]))
+      ) +
+      theme_classic() +
+      theme(
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.ticks.length.x = unit(0, "pt"),
+        plot.margin = margin()
       )
-      p1 <- ggplot(data = data, aes(x = lag_time)) +
-        geom_density(
-          color = "#7876B1FF",
-          fill = alpha("#7876B1FF", 0.8)
-        ) +
-        labs(
-          x = "Lag time (years)",
-          y = "Density of lag time"
-        ) +
-        theme_classic()
-      p1
-    }
-  )
+
+    p2 <- ggplot(data = data, aes(y = lag_time)) +
+      stat_boxplot(
+        geom = "errorbar",
+        width = 0.1,
+        color = "#BC3C29FF"
+      ) +
+      geom_boxplot(
+        width = 0.2,
+        color = "#BC3C29FF"
+      ) +
+      labs(y = "Lag time (years)") +
+      coord_flip(
+        ylim = c(floor(range_lag[[1]]), ceiling(range_lag[[2]]))
+      ) +
+      theme_classic() +
+      theme(
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.ticks.length.y = unit(0, "pt"),
+        plot.margin = margin()
+      )
+
+    p <- p1 + p2 + plot_layout(ncol = 1, heights = c(9, 1))
+    p
+  }
 
 ## produce tables
 tables <- lapply(
@@ -139,12 +178,7 @@ nprop <- list(
 
 # plot saving ----
 
-ggsave(
-  filename = "02/density_plot_of_lag_time.pdf",
-  plot = dplot[["All_sites"]],
-  width = 6,
-  height = 4
-)
+save(lag_plot_pan, file = "02/density_plot_of_lag_time_in_pan-cancer.RData")
 
 # data saving ----
 

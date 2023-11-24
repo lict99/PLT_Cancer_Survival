@@ -23,6 +23,7 @@ mr_res <- lapply(
     lapply(
       x,
       function(y) {
+        set.seed(1)
         mr(
           y,
           method_list = c(
@@ -175,8 +176,13 @@ scatter_pan <- mapply(
         p <- mr_scatter_plot(xx, yy)[[1]] +
           labs(title = "Cancer") +
           guides(color = guide_legend(ncol = NULL, nrow = 1)) +
+          scale_color_manual(
+            values = c("#BC3C29FF", "#0072B5FF", "#20854EFF")
+          ) +
+          theme_classic() +
           theme(
             panel.grid = element_blank(),
+            legend.position = "bottom",
             legend.direction = "horizontal"
           )
         p
@@ -189,13 +195,7 @@ scatter_pan <- mapply(
   mr_res,
   mr_data,
   SIMPLIFY = FALSE
-) %>%
-  unlist(FALSE) %>%
-  {
-    wrap_plots(., ncol = 2, guides = "collect") +
-      plot_annotation(tag_levels = "A") &
-      theme(legend.position = "bottom")
-  }
+)
 
 # data saving ----
 
@@ -275,9 +275,12 @@ ggsave(
 )
 
 ggsave(
-  "10/scatter_pan-cacner.pdf",
-  scatter_pan,
+  "10/scatter_pan_css.pdf",
+  scatter_pan[["CSS"]][["All_sites"]],
   height = 6,
-  width = 12,
+  width = 6,
   device = "pdf"
 )
+
+scatter_pan_os <- scatter_pan[["OS"]][["All_sites"]]
+save(scatter_pan_os, file = "10/scatter_mr_pan_os.RData")

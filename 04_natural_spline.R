@@ -94,24 +94,14 @@ p_os <- geom_multi_hr(
 
 ## combine plots of cancer-specific survival
 p_css <- geom_multi_hr(
-  plots = plot_list[["CSS"]][
-    !is.element(
-      names(plot_list[["CSS"]]),
-      c("All_sites")
-    )
-  ],
+  plots = plot_list[["CSS"]],
   caption = NULL
 )
 
 # plots saving ----
 
-ggsave(
-  "04/Pan-cancer.pdf",
-  p_pan_cancer,
-  height = 6.5,
-  width = 11,
-  device = "pdf"
-)
+p_pan_os <- plot_list[["OS"]][["All_sites"]]
+save(p_pan_os, file = "04/rcs_plot_pan_os.RData")
 
 ggsave(
   "04/OS.pdf",

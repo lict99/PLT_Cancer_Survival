@@ -235,6 +235,9 @@ ggsave(
   height = 5
 )
 
+tpm4_os <- pan_survplot_os[["TPM4"]]
+save(tpm4_os, file = "14/km_tpm4_os.RData")
+
 # data saving ----
 
 write.xlsx(

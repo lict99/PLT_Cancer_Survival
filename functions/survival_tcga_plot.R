@@ -47,7 +47,7 @@ geom_survival <- function(
     risk.table.y.text.col = TRUE,
     xlab = "Follow-up time (years)",
     legend = "top",
-    legend.title = paste(gene, "expression"),
+    legend.title = parse(text = paste0("italic('", gene, "')~~expression")),
     legend.labs = levels(data[, gene]),
     alpha = 0.8,
     censor = FALSE
@@ -63,7 +63,7 @@ geom_survival <- function(
       x = 0,
       y = 0.2,
       label = paste0(
-        "paste(HR=='", hr, "',';',", "italic('p')", p_ann, ")"
+        "paste(HR=='", hr, "',';'~~italic('p')", p_ann, ")"
       ),
       parse = TRUE,
       hjust = 0
