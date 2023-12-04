@@ -1,4 +1,4 @@
-# env settings ----
+# env settings -----------------------------------------------------------------
 
 library(survival)
 library(openxlsx)
@@ -6,11 +6,12 @@ library(magrittr)
 
 load("00/cancer_ICD_codes_with_attr.RData")
 load("01/whole_cancer_data_for_Cox.RData")
+
 source("functions/Cox_regression.R", local = TRUE)
 
 dir.create("06", FALSE)
 
-# Cox regression for aspirin ----
+# Cox regression for aspirin ---------------------------------------------------
 
 ## multiple lag time
 multi_lag <- list(
@@ -63,7 +64,7 @@ aspirin_m2 <- lapply(
   }
 )
 
-# data saving ----
+# results saving ---------------------------------------------------------------
 
 for (i in ls(pattern = "^aspirin_m")) {
   write.xlsx(

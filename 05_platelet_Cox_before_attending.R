@@ -1,4 +1,4 @@
-# env settings ----
+# env settings -----------------------------------------------------------------
 
 library(magrittr)
 library(survival)
@@ -6,11 +6,12 @@ library(openxlsx)
 
 load("00/cancer_ICD_codes_with_attr.RData")
 load("01/whole_cancer_data_for_Cox.RData")
+
 source("functions/Cox_regression.R", local = TRUE)
 
 dir.create("05", FALSE)
 
-# Cox regression for diagnosis before attending ----
+# Cox regression for diagnosis before attending --------------------------------
 
 ## negative lag time
 ## namely cancer diagnosis before assessment center visit
@@ -108,7 +109,7 @@ platelet400_bam1 <- lapply(
   }
 )
 
-# data saving ----
+# results saving ---------------------------------------------------------------
 
 for (i in ls(pattern = "^platelet.+_bam")) {
   write.xlsx(

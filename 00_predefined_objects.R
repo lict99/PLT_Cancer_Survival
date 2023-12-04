@@ -1,10 +1,10 @@
-# env settings ----
+# env settings -----------------------------------------------------------------
 
 library(magrittr)
 
 dir.create("00", FALSE)
 
-# predefined objects ----
+# predefined objects -----------------------------------------------------------
 
 ## cancer ICD codes
 cancer_ICD_codes <- list(
@@ -109,15 +109,19 @@ cancer_names <- list(
   Secondary = "Secondary cancer"
 )
 
-# data saving ----
+# data saving ------------------------------------------------------------------
 
 if (
   identical(names(cancer_ICD_codes), names(cancer_names)) &&
     identical(names(cancer_ICD_codes), names(cancer_sites))
 ) {
-  save(cancer_names, file = "00/cancer_names.RData")
-  save(cancer_sites, file = "00/cancer_sites.RData")
-  save(cancer_ICD_codes, file = "00/cancer_ICD_codes_with_attr.RData")
+  save(cancer_names, file = "00/cancer_names.RData", compress = FALSE)
+  save(cancer_sites, file = "00/cancer_sites.RData", compress = FALSE)
+  save(
+    cancer_ICD_codes,
+    file = "00/cancer_ICD_codes_with_attr.RData",
+    compress = FALSE
+  )
 } else {
   stop("Different cancer definitions!")
 }

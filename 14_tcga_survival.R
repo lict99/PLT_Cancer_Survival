@@ -1,4 +1,4 @@
-# env settings ----
+# env settings -----------------------------------------------------------------
 
 library(magrittr)
 library(openxlsx)
@@ -17,7 +17,7 @@ eqtl_index <- read.xlsx("13/SNP_info_from_NCBI.xlsx")
 
 dir.create("14", FALSE)
 
-# combination of gene expression and clinical information ----
+# combination of gene expression and clinical information ----------------------
 
 alias_index <- tapply(genelist[, 3], genelist[, 1], c)
 
@@ -181,7 +181,7 @@ pan_surv_df <- pan_data %>%
     df
   })()
 
-# plotting ----
+# plotting ---------------------------------------------------------------------
 
 ## scatter plot of survival
 
@@ -218,7 +218,15 @@ pan_survplot_css <- sapply(
   simplify = FALSE
 )
 
-# plot saving ----
+# results saving ---------------------------------------------------------------
+
+write.xlsx(
+  pan_surv_df,
+  "14/pancancer_survival_summary.xlsx",
+  TRUE
+)
+
+# plots saving -----------------------------------------------------------------
 
 pdf(paste0("14/OS.pdf"), 7, 7)
 print(pan_survplot_os)
@@ -235,13 +243,7 @@ ggsave(
   height = 5
 )
 
+# data saving ------------------------------------------------------------------
+
 tpm4_os <- pan_survplot_os[["TPM4"]]
-save(tpm4_os, file = "14/km_tpm4_os.RData")
-
-# data saving ----
-
-write.xlsx(
-  pan_surv_df,
-  "14/pancancer_survival_summary.xlsx",
-  TRUE
-)
+save(tpm4_os, file = "14/km_tpm4_os.RData", compress = FALSE)

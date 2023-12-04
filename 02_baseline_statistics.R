@@ -1,4 +1,4 @@
-# env settings ----
+# env settings -----------------------------------------------------------------
 
 library(magrittr)
 library(table1)
@@ -9,11 +9,12 @@ library(patchwork)
 load(file = "01/whole_cancer_data_for_Cox.RData")
 load(file = "00/cancer_ICD_codes_with_attr.RData")
 load(file = "00/cancer_names.RData")
+
 source("functions/Cox_regression.R", local = TRUE)
 
 dir.create("02", FALSE)
 
-# statistics ----
+# statistics -------------------------------------------------------------------
 
 ## variables to be considered in this study
 vars <- c(
@@ -176,12 +177,16 @@ nprop <- list(
     }
 )
 
-# plot saving ----
-
-save(lag_plot_pan, file = "02/density_plot_of_lag_time_in_pan-cancer.RData")
-
-# data saving ----
+# results saving ---------------------------------------------------------------
 
 write.xlsx(tables[["OS"]], file = "02/table1_for_OS.xlsx")
 write.xlsx(tables[["CSS"]], file = "02/table1_for_CSS.xlsx")
 write.xlsx(nprop, file = "02/number_and_proportion.xlsx")
+
+# data saving ------------------------------------------------------------------
+
+save(
+  lag_plot_pan,
+  file = "02/density_plot_of_lag_time_in_pan-cancer.RData",
+  compress = FALSE
+)

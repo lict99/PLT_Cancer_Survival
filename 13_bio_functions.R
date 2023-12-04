@@ -1,4 +1,4 @@
-# env settings ----
+# env settings -----------------------------------------------------------------
 
 library(magrittr)
 library(rsnps)
@@ -6,18 +6,12 @@ library(clusterProfiler)
 library(Qtlizer)
 library(openxlsx)
 
+load("src/cache/13_ncbi_snp.RData")
 load("11/IV_info.RData")
 
 dir.create("13", FALSE)
 
-# function query ----
-
-if (file.exists("src/cache/13_ncbi_snp.RData")) {
-  load("src/cache/13_ncbi_snp.RData")
-} else {
-  ncbi_snp <- ncbi_snp_query(iv_info$SNP)
-  save(ncbi_snp, file = "src/cache/13_ncbi_snp.RData")
-}
+# function query ---------------------------------------------------------------
 
 genelist <- ncbi_snp$gene %>%
   strsplit("/", fixed = TRUE) %>%
@@ -58,9 +52,11 @@ eqtl <- subset(
 
 ncbi_snp[, "eqtl"] <- ifelse(ncbi_snp$rsid %in% eqtl$sentinel, "yes", "no")
 
-# data saving ----
+# results saving ---------------------------------------------------------------
 
-save(genelist, file = "13/genes_by_loci.RData")
-save(eqtl, file = "13/eQTL.RData")
-save(ncbi_snp, file = "13/ncbi_snp.RData")
 write.xlsx(ncbi_snp, "13/SNP_info_from_NCBI.xlsx", TRUE)
+
+# data saving ------------------------------------------------------------------
+
+save(genelist, file = "13/genes_by_loci.RData", compress = FALSE)
+save(eqtl, file = "13/eQTL.RData", compress = FALSE)

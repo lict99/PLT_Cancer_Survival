@@ -1,4 +1,4 @@
-# env settings ----
+# env settings -----------------------------------------------------------------
 
 options(verbose = FALSE)
 options(datatable.verbose = FALSE)
@@ -10,7 +10,7 @@ gc()
 library(magrittr)
 library(progress)
 
-# run R scripts ----
+# run R scripts ----------------------------------------------------------------
 
 r_files <- list.files(pattern = "^\\d\\d.+\\.R$") %>%
   sort()

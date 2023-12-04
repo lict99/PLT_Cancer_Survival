@@ -122,13 +122,14 @@ geom_prs <- function(
       legend.justification = c(1, 0.5)
     )
 
+  ann <- annotate # must do it, or wrong in for loop
   p_ann <- ggplot() +
     geom_text(
       aes(
         x = rep(1, times = 5),
         y = 5:1,
         label = c(
-          paste0("'", annotate, "'"),
+          paste0("'", ann, "'"),
           paste0("'Sample size'==", nrow(data)),
           paste0(
             "paste('Pearson r'=='", cor, "'",

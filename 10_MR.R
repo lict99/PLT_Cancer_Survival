@@ -1,4 +1,4 @@
-# env settings ----
+# env settings -----------------------------------------------------------------
 
 library(magrittr)
 library(TwoSampleMR)
@@ -14,7 +14,7 @@ source("functions/leave_one_out_plot.R", local = TRUE)
 
 dir.create("10", FALSE)
 
-# MR ----
+# MR ---------------------------------------------------------------------------
 
 ## MR analysis using IVW, MR-Egger, and weighted median methods
 mr_res <- lapply(
@@ -197,18 +197,14 @@ scatter_pan <- mapply(
   SIMPLIFY = FALSE
 )
 
-# data saving ----
+# results saving ---------------------------------------------------------------
 
 ## save MR results
 write.xlsx(
   lapply(
     mr_res,
     function(x) {
-      df <- data.frame()
-      for (i in names(x)) {
-        df <- rbind(df, x[[i]])
-      }
-      df
+      Reduce(rbind, x)
     }
   ),
   "10/MR_results.xlsx",
@@ -220,11 +216,7 @@ write.xlsx(
   lapply(
     mr_hete,
     function(x) {
-      df <- data.frame()
-      for (i in names(x)) {
-        df <- rbind(df, x[[i]])
-      }
-      df
+      Reduce(rbind, x)
     }
   ),
   "10/MR_heterogeneity.xlsx",
@@ -236,11 +228,7 @@ write.xlsx(
   lapply(
     mr_plei,
     function(x) {
-      df <- data.frame()
-      for (i in names(x)) {
-        df <- rbind(df, x[[i]])
-      }
-      df
+      Reduce(rbind, x)
     }
   ),
   "10/MR_pleiotropy.xlsx",
@@ -264,7 +252,7 @@ write.xlsx(
   TRUE
 )
 
-# plots saving ----
+# plots saving -----------------------------------------------------------------
 
 ggsave(
   "10/loo_pan-cacner.pdf",
@@ -282,5 +270,7 @@ ggsave(
   device = "pdf"
 )
 
+# data saving ------------------------------------------------------------------
+
 scatter_pan_os <- scatter_pan[["OS"]][["All_sites"]]
-save(scatter_pan_os, file = "10/scatter_mr_pan_os.RData")
+save(scatter_pan_os, file = "10/scatter_mr_pan_os.RData", compress = FALSE)

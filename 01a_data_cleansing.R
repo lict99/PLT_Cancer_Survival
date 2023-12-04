@@ -1,11 +1,11 @@
-# env settings ----
+# env settings -----------------------------------------------------------------
 
 library(magrittr)
 library(data.table)
 
 dir.create("01", FALSE)
 
-# data input ----
+# data input -------------------------------------------------------------------
 
 ## read csv files all in one step
 csv_files <- list.files(path = "src", pattern = "\\.csv")
@@ -21,7 +21,7 @@ for (i in seq_along(csv_files)) {
   )
 }
 
-# data arrangement ----
+# data arrangement -------------------------------------------------------------
 
 ## basic info
 Basic2 <- subset(
@@ -93,7 +93,7 @@ weight2 <- subset(weight, !duplicated(eid))
 rm(weight)
 gc()
 
-# mergence of all data ----
+# mergence of all data ---------------------------------------------------------
 
 data_merged <- merge(
   Basic2,
@@ -130,7 +130,7 @@ data_merged <- merge(
     tolower(colnames(.))
   )
 
-# transformation of data ----
+# transformation of data -------------------------------------------------------
 
 tidy_colnames <- colnames(data_merged) %>%
   inset(c(2, 4), c("age", "TDI"))
@@ -177,6 +177,10 @@ UKb_death <- subset(
   set_colnames(c("eid", "date_death", "ICD10_death")) %>%
   transform(date_death = as.Date(date_death))
 
-# data saving ----
+# data saving ------------------------------------------------------------------
 
-save(UKb_baseline, UKb_diagnosis, UKb_death, file = "01/UKB_all_info.RData")
+save(
+  UKb_baseline, UKb_diagnosis, UKb_death,
+  file = "01/UKB_all_info.RData",
+  compress = FALSE
+)

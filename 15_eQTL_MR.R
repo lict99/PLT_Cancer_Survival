@@ -1,4 +1,4 @@
-# env settings ----
+# env settings -----------------------------------------------------------------
 
 library(magrittr)
 library(TwoSampleMR)
@@ -7,18 +7,18 @@ library(openxlsx)
 
 load("13/eQTL.RData")
 load("09/snp_outcomes.RData")
-load("13/ncbi_snp.RData")
-
-dir.create("15", FALSE)
 
 gtex <- fread(
   "src/GTEx_Analysis_v8_eQTL/Whole_Blood.v8.signif_variant_gene_pairs.txt.gz",
   data.table = FALSE
 )
 
-tcga_surv <- read.xlsx("14/pancancer_survival_summary.xlsx")
+tcga_surv <- read.xlsx("14/pancancer_survival_summary.xlsx", 1)
+ncbi_snp <- read.xlsx("13/SNP_info_from_NCBI.xlsx", 1)
 
-# ----
+dir.create("15", FALSE)
+
+# calculation ------------------------------------------------------------------
 
 eqtl_filter <- subset(
   eqtl,
@@ -111,16 +111,13 @@ mr_res_eqtl <- lapply(
   }
 )
 
+# results saving ---------------------------------------------------------------
 
 write.xlsx(
   lapply(
     mr_res_eqtl,
     function(x) {
-      df <- data.frame()
-      for (i in names(x)) {
-        df <- rbind(df, x[[i]])
-      }
-      df
+      Reduce(rbind, x)
     }
   ),
   "15/MR_results_eQTL.xlsx",

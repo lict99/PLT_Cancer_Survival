@@ -1,4 +1,4 @@
-# env settings ----
+# env settings -----------------------------------------------------------------
 
 library(magrittr)
 library(survival)
@@ -6,11 +6,12 @@ library(openxlsx)
 
 load("00/cancer_ICD_codes_with_attr.RData")
 load("01/whole_cancer_data_for_Cox.RData")
+
 source("functions/Cox_regression.R", local = TRUE)
 
 dir.create("03", FALSE)
 
-# Cox regression ----
+# Cox regression ---------------------------------------------------------------
 
 ## multiple lag time (0 day, 6 months, and 1 year)
 multi_lag <- list(
@@ -112,12 +113,18 @@ platelet400_m1 <- lapply(
   }
 )
 
-# data saving ----
-
-save(list = ls(pattern = "^platelet.+_m"), file = "03/platelet_Cox.RData")
+# results saving ---------------------------------------------------------------
 
 for (i in ls(pattern = "^platelet.+_m")) {
   write.xlsx(
     get(i), paste0("03/", i, ".xlsx"), TRUE
   )
 }
+
+# data saving ------------------------------------------------------------------
+
+save(
+  list = ls(pattern = "^platelet.+_m"),
+  file = "03/platelet_Cox.RData",
+  compress = FALSE
+)

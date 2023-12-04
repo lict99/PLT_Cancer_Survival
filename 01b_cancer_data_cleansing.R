@@ -1,24 +1,32 @@
-# env settings ----
+# env settings -----------------------------------------------------------------
 
 library(magrittr)
 
 load("01/UKB_all_info.RData")
 load("00/cancer_ICD_codes_with_attr.RData")
+
 source("functions/different_survival.R", local = TRUE)
 source("functions/Cox_regression.R", local = TRUE)
 
-# expiration of research ----
+# expiration of research -------------------------------------------------------
 
 date_end <- as.Date("2021-07-01")
 
-# extract different survival outcomes ----
+# extract different survival outcomes ------------------------------------------
+
+UKb_diagnosis_cancer <- subset(
+  UKb_diagnosis,
+  grepl(cancer_ICD_codes[["All_sites"]], ICD_diagnosis)
+)
 
 whole_cancer_data_pre <- list(
   OS = extract_survival(
-    death_codes = lapply(cancer_ICD_codes, function(x) ".")
+    death_codes = lapply(cancer_ICD_codes, function(x) "."),
+    diag_df = UKb_diagnosis_cancer
   ),
   CSS = extract_survival(
-    death_codes = cancer_ICD_codes
+    death_codes = cancer_ICD_codes,
+    diag_df = UKb_diagnosis_cancer
   )
 )
 
@@ -49,7 +57,12 @@ whole_cancer_data <- mapply(
   n1k,
   SIMPLIFY = FALSE
 )
-# data saving ----
 
-save(whole_cancer_data, file = "01/whole_cancer_data_for_Cox.RData")
-save(n1k, file = "01/cancers_with_more_than_1k_cases.RData")
+# data saving ------------------------------------------------------------------
+
+save(
+  whole_cancer_data,
+  file = "01/whole_cancer_data_for_Cox.RData",
+  compress = FALSE
+)
+save(n1k, file = "01/cancers_with_more_than_1k_cases.RData", compress = FALSE)

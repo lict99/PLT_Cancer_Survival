@@ -1,4 +1,4 @@
-# env settings ----
+# env settings -----------------------------------------------------------------
 
 library(magrittr)
 library(ieugwasr)
@@ -8,16 +8,17 @@ library(openxlsx)
 
 load("00/cancer_names.RData")
 load("08/Cox_regression_of_SNP.RData")
+
 pc_snps <- read.xlsx("src/SNP/PC_SNPs.xlsx", 1)
 pheno_df <- read.xlsx("src/SNP/phenoscanner.xlsx", 1)
 confounder <- read.xlsx("src/SNP/phenoscanner.xlsx", 2)
 
 dir.create("09", FALSE)
 
-# data arrangement ----
+# data arrangement -------------------------------------------------------------
 
 ## SNPs in Cox regression
-snps_cox <- Cox_snp[["OS"]][["All_sites"]][, "snp"]
+snps_cox <- Cox_snp[["OS"]][["All_sites"]][["snp"]]
 
 ## find allele frequencies of EUR using LDlink
 if (file.exists("src/cache/09_allele_frequency_of_EUR_in_LDlink.RData")) {
@@ -247,10 +248,12 @@ mr_data_outcome <- lapply(
   }
 )
 
-# data saving ----
+# results saving ---------------------------------------------------------------
 
 write.xlsx(mr_data_outcome[["OS"]], "09/MR_outcome_data_OS.xlsx", TRUE)
 write.xlsx(mr_data_outcome[["CSS"]], "09/MR_outcome_data_CSS.xlsx", TRUE)
 
-save(mr_data, file = "09/MR_harmonised_data.RData")
-save(snp_out, file = "09/snp_outcomes.RData")
+# data saving ------------------------------------------------------------------
+
+save(mr_data, file = "09/MR_harmonised_data.RData", compress = FALSE)
+save(snp_out, file = "09/snp_outcomes.RData", compress = FALSE)

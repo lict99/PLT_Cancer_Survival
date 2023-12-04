@@ -1,4 +1,4 @@
-# env settings ----
+# env settings -----------------------------------------------------------------
 
 library(magrittr)
 library(survival)
@@ -12,12 +12,13 @@ library(patchwork)
 load("01/whole_cancer_data_for_Cox.RData")
 load("00/cancer_ICD_codes_with_attr.RData")
 load("00/cancer_names.RData")
+
 source("functions/Cox_regression.R", local = TRUE)
 source("functions/natural_spline_plot.R", local = TRUE)
 
 dir.create("04", FALSE)
 
-# calculation and plotting ----
+# calculation and plotting -----------------------------------------------------
 
 ## lag time of 0 day
 ## namely no lag time
@@ -98,10 +99,7 @@ p_css <- geom_multi_hr(
   caption = NULL
 )
 
-# plots saving ----
-
-p_pan_os <- plot_list[["OS"]][["All_sites"]]
-save(p_pan_os, file = "04/rcs_plot_pan_os.RData")
+# plots saving -----------------------------------------------------------------
 
 ggsave(
   "04/OS.pdf",
@@ -118,3 +116,8 @@ ggsave(
   width = 27,
   device = "pdf"
 )
+
+# data saving ------------------------------------------------------------------
+
+p_pan_os <- plot_list[["OS"]][["All_sites"]]
+save(p_pan_os, file = "04/rcs_plot_pan_os.RData", compress = FALSE)

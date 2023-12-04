@@ -1,4 +1,4 @@
-# env settings ----
+# env settings -----------------------------------------------------------------
 
 library(magrittr)
 library(nlmr)
@@ -13,13 +13,13 @@ source("functions/nonlinear_MR_plot.R", local = TRUE)
 
 dir.create("16", FALSE)
 
-# ----
+# calculation ------------------------------------------------------------------
 
 nlmr_plot <- lapply(
   prs_cancer,
   function(x) {
     lapply(
-      x[c(1)],
+      x[c("All_sites")],
       function(y) {
         for (i in seq_len(nrow(y))) {
           if (y[i, "fu_time"] > 365.25 * 5) {
@@ -31,9 +31,9 @@ nlmr_plot <- lapply(
         }
         set.seed(1)
         res_w <- fracpoly_mr2(
-          y = y[, "fu_event"],
-          x = y[, "platelet"],
-          g = y[, "prs_w"],
+          y = y[["fu_event"]],
+          x = y[["platelet"]],
+          g = y[["prs_w"]],
           d = "both",
           covar = if ("sex" %in% colnames(y)) {
             y[, c("age", "sex")]
@@ -48,9 +48,9 @@ nlmr_plot <- lapply(
         )
         set.seed(1)
         res_u <- fracpoly_mr2(
-          y = y[, "fu_event"],
-          x = y[, "platelet"],
-          g = y[, "prs_u"],
+          y = y[["fu_event"]],
+          x = y[["platelet"]],
+          g = y[["prs_u"]],
           d = "both",
           covar = if ("sex" %in% colnames(y)) {
             y[, c("age", "sex")]
@@ -101,7 +101,7 @@ nlmr_plot <- lapply(
       theme(legend.position = "bottom")
   }
 
-# plots saving ----
+# plots saving -----------------------------------------------------------------
 
 ggsave(
   "16/nonlinear_MR_plot.pdf",
