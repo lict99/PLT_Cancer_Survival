@@ -95,37 +95,20 @@ gc()
 
 # mergence of all data ---------------------------------------------------------
 
-data_merged <- merge(
-  Basic2,
-  aspirin,
-  by = "eid",
-  all = TRUE
-) %>%
-  merge(
+data_merged <- Reduce(
+  function(x, y) {
+    merge(x, y, by = "eid", all = TRUE)
+  },
+  list(
+    Basic2,
+    aspirin,
     Date_attending,
-    by = "eid",
-    all = TRUE
-  ) %>%
-  merge(
     Platelet,
-    by = "eid",
-    all = TRUE
-  ) %>%
-  merge(
     smoking_alcohol_day,
-    by = "eid",
-    all = TRUE
-  ) %>%
-  merge(
     weight2[, -2],
-    by = "eid",
-    all = TRUE
-  ) %>%
-  merge(
-    basic_disease,
-    by = "eid",
-    all = TRUE
-  ) %>%
+    basic_disease
+  )
+) %>%
   set_colnames(
     tolower(colnames(.))
   )
