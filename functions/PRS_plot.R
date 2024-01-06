@@ -11,15 +11,15 @@ geom_prs <- function(
     y_col = "platelet") {
   ## calculation
   cor <- cor(
-    data[, x_col],
-    data[, y_col],
+    data[[x_col]],
+    data[[y_col]],
     method = "pearson"
   ) %>%
     sprintf("%.3f", .)
 
   cor_p <- cor.test(
-    data[, x_col],
-    data[, y_col],
+    data[[x_col]],
+    data[[y_col]],
     method = "pearson",
     alternative = "two.sided"
   ) %>%
@@ -52,9 +52,14 @@ geom_prs <- function(
   col_d <- "#7876B1FF"
   col_l <- "#BC3C29FF"
 
-  p_x <- ggplot() +
+  plot_df <- data.frame(
+    x = data[[x_col]],
+    y = data[[y_col]]
+  )
+
+  p_x <- ggplot(data = plot_df) +
     geom_density(
-      aes(x = data[, x_col]),
+      aes(x = x),
       fill = alpha(col_d, 0.8),
       color = col_d
     ) +
@@ -78,9 +83,9 @@ geom_prs <- function(
       axis.ticks.length.x = unit(0, "pt")
     )
 
-  p_y <- ggplot() +
+  p_y <- ggplot(data = plot_df) +
     geom_density(
-      aes(x = data[, y_col]),
+      aes(x = y),
       fill = alpha(col_d, 0.8),
       color = col_d
     ) +
@@ -96,12 +101,11 @@ geom_prs <- function(
       axis.ticks.length.y = unit(0, "pt")
     )
 
-  p_xy <- ggplot() +
-    geom_hex(aes(x = data[, x_col], y = data[, y_col]), bins = 100) +
+  p_xy <- ggplot(data = plot_df, aes(x = x, y = y)) +
+    geom_hex(bins = 100) +
     scale_fill_gradient(low = "white", high = "black") +
-    stat_ellipse(aes(x = data[, x_col], y = data[, y_col]), linetype = 2) +
+    stat_ellipse(linetype = 2) +
     geom_smooth(
-      aes(x = data[, x_col], y = data[, y_col]),
       method = "lm",
       formula = "y ~ x",
       color = col_l
@@ -122,26 +126,27 @@ geom_prs <- function(
       legend.justification = c(1, 0.5)
     )
 
-  ann <- annotate # must do it, or wrong in for loop
-  p_ann <- ggplot() +
-    geom_text(
-      aes(
-        x = rep(1, times = 5),
-        y = 5:1,
-        label = c(
-          paste0("'", ann, "'"),
-          paste0("'Sample size'==", nrow(data)),
-          paste0(
-            "paste('Pearson r'=='", cor, "'",
-            ",';'~~italic('p')*' ", cor_p, "')"
-          ),
-          paste0("'R'^2=='", r_squared, "'"),
-          paste0(
-            "paste(F[list(", fv1, ",", fv2, ")]=='", f, "'",
-            ",';'~~italic('p')*' ", fit_p, "')"
-          )
-        )
+  ann_df <- data.frame(
+    x = rep(1, times = 5),
+    y = 5:1,
+    label = c(
+      paste0("'", annotate, "'"),
+      paste0("'Sample size'==", nrow(data)),
+      paste0(
+        "paste('Pearson r'=='", cor, "'",
+        ",';'~~italic('p')*' ", cor_p, "')"
       ),
+      paste0("'R'^2=='", r_squared, "'"),
+      paste0(
+        "paste(F[list(", fv1, ",", fv2, ")]=='", f, "'",
+        ",';'~~italic('p')*' ", fit_p, "')"
+      )
+    )
+  )
+
+  p_ann <- ggplot(data = ann_df) +
+    geom_text(
+      aes(x = x, y = y, label = label),
       parse = TRUE,
       hjust = 0
     ) +

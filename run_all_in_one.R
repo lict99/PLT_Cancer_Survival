@@ -22,7 +22,7 @@ pb <- progress_bar$new(
   show_after = 0
 )
 
-one_step <- new.env(parent = globalenv())
+one_step <- new.env()
 
 cat("Start running ...\n")
 for (fs in seq_along(r_files)) {
