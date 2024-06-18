@@ -14,9 +14,7 @@ dir.create("07", FALSE)
 # forest plot ------------------------------------------------------------------
 
 ## multiple lag time
-lag_time <- c(
-  "0-Inf", "182.625-Inf", "365.25-Inf", "1095.75-Inf"
-)
+lag_time <- c("0-Inf")
 
 ## visualize the results of Cox regression by forest plot
 ## there are some display problems using Cairo graphics device
@@ -36,16 +34,13 @@ for (i in ls(pattern = "platelet.+m[12]")) {
     m2 = paste(
       "Adjusted for",
       "age, sex,",
-      "race, BMI, TDI, aspirin use, smoking status, and alcohol status"
+      "ethnic background, BMI, TDI, smoking status, and alcohol status"
     ),
     stop("Invalid model name!")
   )
   for (j in lag_time) {
     lagtime <- switch(j,
       `0-Inf` = "",
-      `182.625-Inf` = " with a lag time of ≥6 months",
-      `365.25-Inf` = " with a lag time of ≥1 year",
-      `1095.75-Inf` = " with a lag time of ≥3 years",
       stop("Invalid lag time!")
     )
     fp <- geom_forest(

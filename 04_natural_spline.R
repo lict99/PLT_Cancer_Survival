@@ -20,8 +20,8 @@ dir.create("04", FALSE)
 
 # calculation and plotting -----------------------------------------------------
 
-## lag time of 0 day
-## namely no lag time
+## lag time of >=0 day
+## namely no lag time limit
 lag <- c(0, Inf)
 
 ## variables to be analyzed in Cox regression with natural splines
@@ -29,7 +29,7 @@ vars <- c(
   "fu_time", "fu_event",
   "platelet", "age",
   "sex",
-  "aspirin", "smoking_status", "alcohol_status", "bmi", "TDI", "race"
+  "smoking_status", "alcohol_status", "bmi", "TDI", "race"
 )
 
 ## all graphs in one list

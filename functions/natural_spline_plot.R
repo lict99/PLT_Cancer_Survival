@@ -6,7 +6,7 @@ cal_hr <- function(data) {
     fit <- coxph(
       formula = Surv(fu_time, fu_event == 1) ~
         rcspline.eval(platelet, nk = 3, inclx = TRUE) + sex +
-        age + aspirin + smoking_status + alcohol_status + bmi + TDI + race,
+        age + smoking_status + alcohol_status + bmi + TDI + race,
       data = data,
       x = TRUE,
       singular.ok = TRUE
@@ -15,7 +15,7 @@ cal_hr <- function(data) {
     fit <- coxph(
       formula = Surv(fu_time, fu_event == 1) ~
         rcspline.eval(platelet, nk = 3, inclx = TRUE) +
-        age + aspirin + smoking_status + alcohol_status + bmi + TDI + race,
+        age + smoking_status + alcohol_status + bmi + TDI + race,
       data = data,
       x = TRUE,
       singular.ok = TRUE
@@ -130,7 +130,7 @@ geom_hr <- function(data) {
       breaks = seq(0, ceiling(hr_lmt[2]), by = 1),
       name = "Hazard ratio",
       sec.axis = sec_axis(
-        trans = ~ rescale(., dst_lmt, c(0, max(.))),
+        transform = ~ rescale(., dst_lmt, c(0, max(.))),
         name = "Density of platelet counts"
       )
     ) +

@@ -150,7 +150,7 @@ fracpoly_figure2 <- function(beta, cov, x.min, x.max, family = "gaussian", d = 1
         ) +
         theme_classic() +
         theme(
-          legend.position = c(1, 1),
+          legend.position.inside = c(1, 1),
           legend.justification = c(1, 1),
           legend.direction = "horizontal"
         )

@@ -13,11 +13,12 @@ dir.create("03", FALSE)
 
 # Cox regression ---------------------------------------------------------------
 
-## multiple lag time (0 day, 6 months, and 1 year)
+## multiple lag times
 multi_lag <- list(
   c(0, Inf),
-  c(365.25 / 2, Inf),
-  c(365.25, Inf),
+  c(0, 365.25 / 2),
+  c(365.25 / 2, 365.25),
+  c(365.25, 365.25 * 3),
   c(365.25 * 3, Inf)
 )
 
@@ -26,7 +27,6 @@ vars_per_100 <- c(
   "platelet_per_100",
   "age",
   "sex",
-  "aspirin",
   "smoking_status",
   "alcohol_status",
   "bmi",

@@ -22,7 +22,6 @@ vars_per_100 <- c(
   "platelet_per_100",
   "age",
   "sex",
-  "aspirin",
   "smoking_status",
   "alcohol_status",
   "bmi",

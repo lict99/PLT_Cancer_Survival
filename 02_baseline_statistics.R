@@ -18,7 +18,7 @@ dir.create("02", FALSE)
 
 ## variables to be considered in this study
 vars <- c(
-  "platelet", "age", "sex", "bmi", "TDI", "aspirin",
+  "platelet", "age", "sex", "bmi", "TDI",
   "smoking_status", "alcohol_status", "race",
   "fu_time", "fu_event", "lag_time"
 )
@@ -100,7 +100,6 @@ tables <- lapply(
         function(y) {
           transform(
             y,
-            aspirin = factor(aspirin, levels = c("YES", "NO")),
             race = factor(race, levels = c("British", "Others")),
             lag_group = ifelse(
               lag_time >= 0,

@@ -101,7 +101,6 @@ data_merged <- Reduce(
   },
   list(
     Basic2,
-    aspirin,
     Date_attending,
     Platelet,
     smoking_alcohol_day,
@@ -126,7 +125,6 @@ UKb_baseline <- data_merged %>%
     race = race %>%
       ifelse(equals(., "Do not know"), NA, .) %>%
       ifelse(equals(., "Prefer not to answer"), NA, .),
-    aspirin = factor(aspirin, levels = c(0, 1), labels = c("NO", "YES")),
     date_attending = as.Date(date_attending),
     smoking_status = factor(
       smoking_status,

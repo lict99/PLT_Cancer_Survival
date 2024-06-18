@@ -5,7 +5,6 @@ options(datatable.verbose = FALSE)
 options(datatable.showProgress = FALSE)
 
 rm(list = ls())
-gc()
 
 library(magrittr)
 library(progress)
@@ -33,6 +32,5 @@ for (fs in seq_along(r_files)) {
     capture.output() %>%
     invisible()
   rm(list = ls(envir = one_step), envir = one_step)
-  gc()
 }
 cat("Mission complete!\n")
