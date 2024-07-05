@@ -21,7 +21,7 @@ This repository contains the code for analyzing the relationship between platele
    ```
    
 3. **Execute the R Scripts:**
-   Execute the R files sequentially, following the ordinal numbers in front of the file names (from `00` to `12`). Alternatively, you can run the `run_all_in_one.R` file directly.
+   Execute the R files sequentially, following the ordinal numbers in front of the file names (from `00` to `17`). Alternatively, you can run the `run_all_in_one.R` file directly.
 
 ## Note
 
