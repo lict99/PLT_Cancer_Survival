@@ -8,7 +8,7 @@ This repository contains the code for analyzing the relationship between platele
    You can clone this repository using Git by running the following command in your terminal:
 
    ```bash
-   git clone https://github.com/lict99/UKb_platelet.git
+   git clone https://github.com/lict99/PLT_Cancer_Survival.git
    ```
 
    Alternatively, you can download the repository manually from GitHub.
