@@ -1,6 +1,6 @@
 # Platelet Counts and Cancer Survival
 
-This repository contains the code for analyzing the relationship between platelet counts and cancer survival.
+This repository contains R source codes for the research article: "Appraising non-linear association between pre-diagnostic platelet counts and cancer survival outcomes: observational and genetic analysis".
 
 ## How to Use
 
@@ -25,10 +25,10 @@ This repository contains the code for analyzing the relationship between platele
 
 ## Note
 
-Before running the R scripts, you must have the source files available.
+Before running the R scripts, you must have the source data files available.
 
-If you have any queries, please contact the corresponding authors of the reference.
+If you have any queries, please contact the corresponding authors of reference.
 
 ## Reference
 
-The research article related to this repository is awaiting publication. The reference will be provided upon publication.
+[Changtao Li, Junhua Chen, Deqian Han, Chi Shu, Jun Huang, Linru Wei, Haoran Luo, Qingbin Wu, Xin Chen, Yazhou He & Yanhong Zhou (2024) Appraising non-linear association between pre-diagnostic platelet counts and cancer survival outcomes: observational and genetic analysis, Platelets, 35:1, DOI: 10.1080/09537104.2024.2379815](https://doi.org/10.1080/09537104.2024.2379815)
